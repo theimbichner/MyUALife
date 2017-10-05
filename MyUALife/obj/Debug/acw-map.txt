@@ -1,0 +1,8 @@
+MyUALife.MainActivity, MyUALife;md5b26a268dc2aa83d050a79129cfdc8f4a.MainActivity
+MyUALife.MainActivity, MyUALife, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md5b26a268dc2aa83d050a79129cfdc8f4a.MainActivity
+MyUALife.MainActivity;md5b26a268dc2aa83d050a79129cfdc8f4a.MainActivity
+myualife.MainActivity;md5b26a268dc2aa83d050a79129cfdc8f4a.MainActivity
+MyUALife.DateManager, MyUALife;md5b26a268dc2aa83d050a79129cfdc8f4a.DateManager
+MyUALife.DateManager, MyUALife, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md5b26a268dc2aa83d050a79129cfdc8f4a.DateManager
+MyUALife.DateManager;md5b26a268dc2aa83d050a79129cfdc8f4a.DateManager
+myualife.DateManager;md5b26a268dc2aa83d050a79129cfdc8f4a.DateManager

@@ -1,0 +1,15 @@
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\bin\Debug\MyUALife.dll
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\bin\Debug\MyUALife.pdb
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\bin\Debug\MyUALife.MyUALife.apk
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\bin\Debug\MyUALife.MyUALife-Signed.apk
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\MyUALife.csprojResolveAssemblyReference.cache
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\MyUALife.csproj.CoreCompileInputs.cache
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\MyUALife.dll
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\MyUALife.pdb
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\android\bin\MyUALife.MyUALife.apk
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\res\layout\main.xml
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\res\values\strings.xml
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\R.cs.flag
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\uploadflags.txt
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\bin\Debug\MyUALife.dll.mdb
+C:\Users\Taylor\source\repos\MyUALife\MyUALife\obj\Debug\android\assets\MyUALife.dll.mdb
