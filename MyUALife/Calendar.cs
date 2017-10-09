@@ -1,4 +1,9 @@
-﻿using System;
+﻿/* Team 7: MyUALife
+ * Daniel Alexander, Ryan Avila, Peter Chipman, Taylor Heimbichner
+ * Class: Calendar
+ */
+
+using System;
 using System.Collections.Generic;
 
 public class Calendar
