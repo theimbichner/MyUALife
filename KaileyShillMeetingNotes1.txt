@@ -1,0 +1,13 @@
+Kailey Shill
+kaileyshill@email.arizona.edu
+
+Kailey's Suggestions:
+ - When students schedule appointments with advisors, allow advisors to add this appointment to their schedule. Send students reminders about their advising appointments.
+ - Give certain users organizer privileges, allowing them to create community-wide events (e.g. UA sporting events, Honors events, etc.)
+ - During registration, remind users to register for classes and suggest a good time to do so.
+ - Take demographic information from UAccess incl.:
+    - Advisors
+    - Dorm
+    - Class Schedule
+    - Class Standing (Freshman, Sophomore, etc.)
+   Use this information to recommend events to users

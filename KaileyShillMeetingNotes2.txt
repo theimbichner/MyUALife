@@ -1,0 +1,13 @@
+Contacts:
+ - UAccess Integration, UITS: Alex Alvarez, Sebastian Nightshade
+ - Admissions: Kevin Hall, Alex Nunez, Jenny K.
+ - Orientation (depends on cohort): Assistant Dean Karna Walter
+ - Think Tank: ???
+Find more information from the Honors website
+
+Suggestions:
+ - Link with UAccess, Think Tank
+ - Inform users of Think Tank SI sessions/other events
+ - Instructors/Advisors as users
+ - "Semester on a page": All important dates for a semester (like Think Tank)
+ - Instructors register, push out HW assignments
