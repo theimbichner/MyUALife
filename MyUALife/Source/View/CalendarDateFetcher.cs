@@ -27,10 +27,10 @@ namespace MyUALife
         public CalendarDateFetcher(CalendarView cal)
         {
             // Initialize fields to correspond to the current date
-            DateTime date = new DateTime(cal.Date * TimeSpan.TicksPerMillisecond);
-            day = date.Day - 1;
+            DateTime date = DateTime.Now;
+            day = date.Day;
             month = date.Month;
-            year = date.Year + 1969;
+            year = date.Year;
 
             // Register as a listener for date changes
             cal.SetOnDateChangeListener(this);

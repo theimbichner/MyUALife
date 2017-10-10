@@ -12,7 +12,7 @@ using Android.Widget;
 
 namespace MyUALife
 {
-    [Activity(Label = "DayViewActivity")]
+    [Activity(Label = "Today's Events")]
     public class DayViewActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -35,8 +35,12 @@ namespace MyUALife
             // Get the events in range from the calendar
             var events = Model.getCalendar().GetEventsInRange(start, end);
 
-            // Get the main layout by id from resource
+            // Get the main layout and label by id
             LinearLayout mainLayout = FindViewById<LinearLayout>(Resource.Id.mainLayout);
+            TextView dayLabel = FindViewById<TextView>(Resource.Id.dayLabel);
+
+            // Set the text on the label to indicate the date
+            dayLabel.Text = "Events for " + month + "/" + day + "/" + year;
 
             // Add a button for each event
             foreach (Event e in events)
