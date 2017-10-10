@@ -54,12 +54,12 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Calendar.cs" />
-    <Compile Include="CalendarDateFetcher.cs" />
-    <Compile Include="DayViewActivity.cs" />
-    <Compile Include="Event.cs" />
-    <Compile Include="MainActivity.cs" />
-    <Compile Include="Model.cs" />
+    <Compile Include="Source\Model\Calendar.cs" />
+    <Compile Include="Source\View\CalendarDateFetcher.cs" />
+    <Compile Include="Source\View\DayViewActivity.cs" />
+    <Compile Include="Source\Model\Event.cs" />
+    <Compile Include="Source\View\MainActivity.cs" />
+    <Compile Include="Source\Model\Model.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -85,7 +85,6 @@
     <Folder Include="Resources\mipmap-xhdpi\" />
     <Folder Include="Resources\mipmap-xxhdpi\" />
     <Folder Include="Resources\mipmap-xxxhdpi\" />
-    <Folder Include="View\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
