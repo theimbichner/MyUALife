@@ -1,9 +1,4 @@
-﻿/* Team 7: MyUALife
- * Daniel Alexander, Ryan Avila, Peter Chipman, Taylor Heimbichner
- * Class: Event
- */
-
-using System;
+﻿using System;
 
 public class Event
 {
@@ -25,9 +20,23 @@ public class Event
         set;
     }
 
-    public Event(String name, DateTime start, DateTime end)
+    public String Description
+    {
+        get;
+        set;
+    }
+
+    public EventType Type
+    {
+        get;
+        set;
+    }
+
+    public Event(String name, String desc, EventType type, DateTime start, DateTime end)
     {
         Name = name;
+        Description = desc;
+        Type = type;
         StartTime = start;
         EndTime = end;
     }
