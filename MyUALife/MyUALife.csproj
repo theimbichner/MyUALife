@@ -54,12 +54,24 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainActivity.cs" />
+    <Compile Include="EventViewActivity.cs" />
+    <Compile Include="Source\Model\Calendar.cs" />
+    <Compile Include="Source\View\CalendarDateFetcher.cs" />
+    <Compile Include="Source\View\DayViewActivity.cs" />
+    <Compile Include="Source\Model\Event.cs" />
+    <Compile Include="Source\View\MainActivity.cs" />
+    <Compile Include="Source\Model\Model.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\layout\DayView.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
     <None Include="GettingStarted.Xamarin" />
+    <AndroidResource Include="Resources\layout\EventView.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
