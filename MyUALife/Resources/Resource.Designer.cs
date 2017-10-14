@@ -50,32 +50,53 @@ namespace MyUALife
 			// aapt resource value: 0x7f040004
 			public const int backButton = 2130968580;
 			
+			// aapt resource value: 0x7f040012
+			public const int changeEndButton = 2130968594;
+			
+			// aapt resource value: 0x7f04000d
+			public const int changeStartButton = 2130968589;
+			
 			// aapt resource value: 0x7f040000
 			public const int dayLabel = 2130968576;
 			
 			// aapt resource value: 0x7f040008
 			public const int descriptionText = 2130968584;
 			
-			// aapt resource value: 0x7f040006
-			public const int editText1 = 2130968582;
-			
-			// aapt resource value: 0x7f04000a
-			public const int editText3 = 2130968586;
-			
-			// aapt resource value: 0x7f04000b
-			public const int editText4 = 2130968587;
+			// aapt resource value: 0x7f040010
+			public const int endTimeLabel = 2130968592;
 			
 			// aapt resource value: 0x7f040001
 			public const int eventsLayout = 2130968577;
 			
-			// aapt resource value: 0x7f04000c
-			public const int mainCalendar = 2130968588;
+			// aapt resource value: 0x7f04000f
+			public const int linearLayout1 = 2130968591;
 			
-			// aapt resource value: 0x7f04000d
-			public const int openDayViewButton = 2130968589;
+			// aapt resource value: 0x7f04000a
+			public const int linearLayout2 = 2130968586;
+			
+			// aapt resource value: 0x7f04000c
+			public const int linearLayout3 = 2130968588;
+			
+			// aapt resource value: 0x7f040011
+			public const int linearLayout4 = 2130968593;
+			
+			// aapt resource value: 0x7f040014
+			public const int mainCalendar = 2130968596;
+			
+			// aapt resource value: 0x7f040006
+			public const int nameText = 2130968582;
+			
+			// aapt resource value: 0x7f040015
+			public const int openDayViewButton = 2130968597;
 			
 			// aapt resource value: 0x7f040002
 			public const int optionsText = 2130968578;
+			
+			// aapt resource value: 0x7f040013
+			public const int saveEditButton = 2130968595;
+			
+			// aapt resource value: 0x7f04000b
+			public const int startTimeLabel = 2130968587;
 			
 			// aapt resource value: 0x7f040005
 			public const int textView1 = 2130968581;
@@ -85,6 +106,9 @@ namespace MyUALife
 			
 			// aapt resource value: 0x7f040009
 			public const int textView3 = 2130968585;
+			
+			// aapt resource value: 0x7f04000e
+			public const int textView4 = 2130968590;
 			
 			static Id()
 			{
