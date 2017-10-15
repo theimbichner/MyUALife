@@ -15,6 +15,9 @@ namespace MyUALife
     [Activity(Label = "MyUALife")]
     public class DayViewActivity : Activity
     {
+        // GUI components
+        private LinearLayout eventsLayout;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -39,16 +42,14 @@ namespace MyUALife
             var events = Model.getCalendar().GetEventsInRange(start, end);
 
             // Get components by id
-            LinearLayout eventsLayout = FindViewById<LinearLayout>(Resource.Id.eventsLayout);
+            eventsLayout = FindViewById<LinearLayout>(Resource.Id.eventsLayout);
             TextView dayLabel = FindViewById<TextView>(Resource.Id.dayLabel);
             Button backButton = FindViewById<Button>(Resource.Id.backButton);
-            Button addEventButton = FindViewById<Button>(Resource.Id.addEventButton);
 
             // Add a button to the events layout for each event
             foreach (Event e in events)
             {
-                Button button = new Button(this);
-                button.Text = e.Name;
+                Button button = createDisplayButton(e);
                 eventsLayout.AddView(button);
             }
 
@@ -59,15 +60,42 @@ namespace MyUALife
                 StartActivity(intent);
             };
 
-            // Setup the add event button to take us to the add event activity
-            addEventButton.Click += (sender, e) =>
-            {
-                Intent intent = new Intent(this, typeof(EventViewActivity));
-                StartActivity(intent);
-            };
-
             // Set the text on the label to indicate the date
             dayLabel.Text = "Events for " + month + "/" + day + "/" + year;
+        }
+
+        private Button createDisplayButton(Event calEvent)
+        {
+            Button button = new Button(this);
+            button.Text = calEvent.Name;
+            button.Click += (sender, e) =>
+            {
+                var infoDialog = new AlertDialog.Builder(this);
+                string format = "Name: {0}\nDescription: {1}\nFrom: {2}\nTo: {3}";
+                object[] args = {calEvent.Name, calEvent.Description, calEvent.StartTime, calEvent.EndTime};
+                infoDialog.SetMessage(String.Format(format, args));
+                infoDialog.SetPositiveButton("Ok", delegate { });
+                infoDialog.SetNegativeButton("Edit", delegate
+                {
+                    var notYetImplementedDialog = new AlertDialog.Builder(this);
+                    notYetImplementedDialog.SetMessage("Not yet implemented");
+                    notYetImplementedDialog.SetPositiveButton("Ok", delegate { });
+                    notYetImplementedDialog.Show();
+                });
+                infoDialog.Show();
+            };
+            button.LongClick += (sender, e) =>
+            {
+                var infoDialog = new AlertDialog.Builder(this);
+                infoDialog.SetMessage("Delete this event?");
+                infoDialog.SetNegativeButton("Cancel", delegate { });
+                infoDialog.SetPositiveButton("Delete", delegate {
+                    eventsLayout.RemoveView(button);
+                    Model.getCalendar().RemoveEvent(calEvent);
+                });
+                infoDialog.Show();
+            };
+            return button;
         }
     }
 }

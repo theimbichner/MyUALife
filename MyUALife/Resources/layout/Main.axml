@@ -12,4 +12,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/openDayViewButton"
         android:text="Open Day View" />
+    <Button
+        android:text="Add Event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addEventButton" />
 </LinearLayout>

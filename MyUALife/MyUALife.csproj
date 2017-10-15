@@ -58,7 +58,6 @@
     <Compile Include="Source\Model\EventType.cs" />
     <Compile Include="Source\View\EventViewActivity.cs" />
     <Compile Include="Source\Model\Calendar.cs" />
-    <Compile Include="Source\View\CalendarDateFetcher.cs" />
     <Compile Include="Source\View\DayViewActivity.cs" />
     <Compile Include="Source\Model\Event.cs" />
     <Compile Include="Source\View\MainActivity.cs" />

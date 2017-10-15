@@ -111,10 +111,10 @@ namespace MyUALife
             };
 
             // Setup the start time button to display a time picker dialog
-            changeStartButton.Click += (sender, e) => pollTime(StartTimeIndex);
+            changeStartButton.Click += (sender, e) => pollDateTime(StartTimeIndex);
 
             // Setup the end time button to display a time picker dialog
-            changeEndButton.Click += (sender, e) => pollTime(EndTimeIndex);
+            changeEndButton.Click += (sender, e) => pollDateTime(EndTimeIndex);
 
             // Setup the save changes/edit event button
             saveEditButton.Click += (sender, e) =>
@@ -142,39 +142,65 @@ namespace MyUALife
             else
             {
                 selectedEvent.Name = nameText.Text;
-                selectedEvent.Description = nameText.Text;
+                selectedEvent.Description = descriptionText.Text;
                 selectedEvent.StartTime = StartTime;
                 selectedEvent.EndTime = EndTime;
             }
         }
 
         /*
-         * A DialogFragment that shows the user a TimePickerDialog and stores
-         * the picked time in eventTimes.
+         * A DialogFragment that shows the user a DatePickerDialog and passes
+         * the picked along to a TimePickerFragment.
          */
-        private class TimePickerFragment : DialogFragment, TimePickerDialog.IOnTimeSetListener
+        private class DatePickerFragment : DialogFragment, DatePickerDialog.IOnDateSetListener
         {
             private readonly int timeIndex;
-            private readonly EventViewActivity parent;
 
-            public TimePickerFragment(EventViewActivity parent, int timeIndex)
+            public DatePickerFragment(int timeIndex)
             {
-                this.parent = parent;
                 this.timeIndex = timeIndex;
             }
 
             public override Dialog OnCreateDialog(Bundle savedInstanceState)
             {
-                DateTime time = DateTime.Now;
-                int hour = time.Hour;
-                int minute = time.Minute;
-                return new TimePickerDialog(this.Activity, this, hour, minute, false);
+                DateTime date = DateTime.Today;
+                return new DatePickerDialog(this.Activity, this, date.Year, date.Month - 1, date.Day);
             }
 
-            public void OnTimeSet(TimePicker view, int hourOfDay, int minute)
+            public void OnDateSet(DatePicker view, int year, int month, int day)
             {
-                DateTime date = parent.eventTimes[timeIndex].Date;
-                parent.eventTimes[timeIndex] = date.AddHours(hourOfDay).AddMinutes(minute);
+                DateTime date = new DateTime(year, month + 1, day);
+                TimePickerFragment timePicker = new TimePickerFragment(date, timeIndex);
+                timePicker.Show(this.FragmentManager, "pickStartTime");
+            }
+        }
+
+        /*
+         * A DialogFragment that takes a date, gets a time from the user via a
+         * TimePickerDialog and creates a DateTime from this information. This
+         * DateTime is then stored in eventTimes.
+         */
+        private class TimePickerFragment : DialogFragment, TimePickerDialog.IOnTimeSetListener
+        {
+            private readonly int timeIndex;
+            private readonly DateTime date;
+
+            public TimePickerFragment(DateTime date, int timeIndex)
+            {
+                this.timeIndex = timeIndex;
+                this.date = date;
+            }
+
+            public override Dialog OnCreateDialog(Bundle savedInstanceState)
+            {
+                DateTime time = DateTime.Now;
+                return new TimePickerDialog(this.Activity, this, time.Hour, time.Minute, false);
+            }
+
+            public void OnTimeSet(TimePicker view, int hour, int minute)
+            {
+                EventViewActivity parent = (EventViewActivity) this.Activity;
+                parent.eventTimes[timeIndex] = date.AddHours(hour).AddMinutes(minute);
                 parent.updateTimeLabels();
             }
         }
@@ -193,10 +219,10 @@ namespace MyUALife
          * Opens a dialog asking the user for a time and stores the result in
          * the appropriate entry in eventTimes.
          */
-        private void pollTime(int timeIndex)
+        private void pollDateTime(int timeIndex)
         {
-            TimePickerFragment timePicker = new TimePickerFragment(this, timeIndex);
-            timePicker.Show(this.FragmentManager, "pickStartTime");
+            DatePickerFragment dateTimePicker = new DatePickerFragment(timeIndex);
+            dateTimePicker.Show(this.FragmentManager, "pickStartDateTime");
         }
     }
 }
