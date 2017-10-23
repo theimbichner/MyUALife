@@ -9,6 +9,8 @@ public class Category
     public static EventType appointment = new EventType("Appointment", false);
     public static EventType recreation = new EventType("Recreation", true);
 
+    public static EventType freeTime = new EventType("Free Time", true);
+
     List<EventType> theTypes = new List<EventType>(new EventType[] { classTime,
         studyTime, homework, appointment, recreation });
 }
