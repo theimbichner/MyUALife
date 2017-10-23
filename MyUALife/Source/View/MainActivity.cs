@@ -2,6 +2,8 @@
 using Android.Widget;
 using Android.OS;
 using System;
+using Android.Provider;
+using Android.Database;
 using Android.Content;
 
 namespace MyUALife
@@ -27,6 +29,7 @@ namespace MyUALife
             CalendarView mainCalendar = FindViewById<CalendarView>(Resource.Id.mainCalendar);
             openDayViewButton = FindViewById<Button>(Resource.Id.openDayViewButton);
             Button addEventButton = FindViewById<Button>(Resource.Id.addEventButton);
+            Button externalCalendarButton = FindViewById<Button>(Resource.Id.externalCalendarButton);
 
             // Create dateFetcher to read the current date from the calendar display
             mainCalendar.SetOnDateChangeListener(this);
@@ -48,6 +51,16 @@ namespace MyUALife
                 Intent intent = new Intent(this, typeof(EventViewActivity));
                 StartActivity(intent);
             };
+
+            // Setup the goto calendar button to open the android calendar app
+            externalCalendarButton.Click += (sender, e) =>
+            {
+                Android.Net.Uri.Builder builder = CalendarContract.ContentUri.BuildUpon();
+                builder.AppendPath("time");
+                ContentUris.AppendId(builder, (long) (DateTime.Today - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
+                Intent intent = new Intent(Intent.ActionView).SetData(builder.Build());
+                StartActivity(intent);
+            };
         }
 
         public void OnSelectedDayChange(CalendarView view, int year, int month, int day)
@@ -61,6 +74,33 @@ namespace MyUALife
         private void updateButtonText()
         {
             openDayViewButton.Text = String.Format("View events for {0}/{1}/{2}", selectedMonth, selectedDay, selectedYear);
+        }
+
+        private void queryAllEvents(long startMillis, long endMillis)
+        {
+            String[] InstanceProjection = new String[] {CalendarContract.Instances.EventId,
+                                                        CalendarContract.Instances.Begin,
+                                                        CalendarContract.Instances.End,
+                                                        CalendarContract.EventsColumns.Title};
+            ContentResolver cr = ContentResolver;
+
+            String selection = ""; // TODO Is this how we get all the instances?
+            String[] selectionArgs = {""};
+            Android.Net.Uri.Builder builder = CalendarContract.Instances.ContentUri.BuildUpon();
+            ContentUris.AppendId(builder, startMillis);
+            ContentUris.AppendId(builder, endMillis);
+
+            ICursor cur = cr.Query(builder.Build(), InstanceProjection, selection, selectionArgs, null);
+
+            while (cur.MoveToNext())
+            {
+                long eventId = cur.GetLong(0);
+                long begin = cur.GetLong(1);
+                long end = cur.GetLong(2);
+                String title = cur.GetString(3);
+
+                // do stuff with this information
+            }
         }
     }
 }

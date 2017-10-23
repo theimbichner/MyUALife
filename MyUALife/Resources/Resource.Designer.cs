@@ -68,6 +68,9 @@ namespace MyUALife
 			// aapt resource value: 0x7f040001
 			public const int eventsLayout = 2130968577;
 			
+			// aapt resource value: 0x7f040016
+			public const int externalCalendarButton = 2130968598;
+			
 			// aapt resource value: 0x7f04000e
 			public const int linearLayout1 = 2130968590;
 			
