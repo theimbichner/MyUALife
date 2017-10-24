@@ -50,11 +50,20 @@ namespace MyUALife
 			// aapt resource value: 0x7f040003
 			public const int backButton = 2130968579;
 			
+			// aapt resource value: 0x7f040018
+			public const int calendarButton = 2130968600;
+			
 			// aapt resource value: 0x7f040011
 			public const int changeEndButton = 2130968593;
 			
 			// aapt resource value: 0x7f04000c
 			public const int changeStartButton = 2130968588;
+			
+			// aapt resource value: 0x7f04001d
+			public const int createDeadlineButton = 2130968605;
+			
+			// aapt resource value: 0x7f04001c
+			public const int createEventButton = 2130968604;
 			
 			// aapt resource value: 0x7f040000
 			public const int dayLabel = 2130968576;
@@ -71,6 +80,12 @@ namespace MyUALife
 			// aapt resource value: 0x7f040016
 			public const int externalCalendarButton = 2130968598;
 			
+			// aapt resource value: 0x7f040017
+			public const int filterButton = 2130968599;
+			
+			// aapt resource value: 0x7f04001b
+			public const int happeningsButton = 2130968603;
+			
 			// aapt resource value: 0x7f04000e
 			public const int linearLayout1 = 2130968590;
 			
@@ -86,6 +101,9 @@ namespace MyUALife
 			// aapt resource value: 0x7f040013
 			public const int mainCalendar = 2130968595;
 			
+			// aapt resource value: 0x7f04001a
+			public const int mainTextLayout = 2130968602;
+			
 			// aapt resource value: 0x7f040005
 			public const int nameText = 2130968581;
 			
@@ -97,6 +115,9 @@ namespace MyUALife
 			
 			// aapt resource value: 0x7f040012
 			public const int saveEditButton = 2130968594;
+			
+			// aapt resource value: 0x7f040019
+			public const int scrollView1 = 2130968601;
 			
 			// aapt resource value: 0x7f04000a
 			public const int startTimeLabel = 2130968586;
@@ -134,6 +155,9 @@ namespace MyUALife
 			
 			// aapt resource value: 0x7f020002
 			public const int Main = 2130837506;
+			
+			// aapt resource value: 0x7f020003
+			public const int NewMain = 2130837507;
 			
 			static Layout()
 			{

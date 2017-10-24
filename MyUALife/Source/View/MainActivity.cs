@@ -8,7 +8,7 @@ using Android.Content;
 
 namespace MyUALife
 {
-    [Activity(Label = "MyUALife", MainLauncher = true)]
+    [Activity(Label = "MyUALife")]
     public class MainActivity : Activity, CalendarView.IOnDateChangeListener
     {
         private int selectedDay = DateTime.Now.Day;

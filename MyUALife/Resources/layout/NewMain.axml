@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<!-- Contains the buttons above the event list -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout1">
+    <!-- The filter button -->
+        <Button
+            android:text="Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/filterButton" />
+    <!-- The calendar button -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout4"
+            android:gravity="right">
+            <Button
+                android:text="Go to Calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/calendarButton" />
+        </LinearLayout>
+    </LinearLayout>
+<!-- The events display -->
+    <ScrollView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:id="@+id/scrollView1">
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mainTextLayout" />
+    </ScrollView>
+<!-- Contains the buttons below the event list -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout2">
+    <!-- The "Today's Happenings" button -->
+        <Button
+            android:text="Today's Happenings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/happeningsButton" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:id="@+id/linearLayout3">
+        <!-- The create event button -->
+            <Button
+                android:text="Create New Event"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/createEventButton" />
+        <!-- The create deadline button -->
+            <Button
+                android:text="Create New Deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/createDeadlineButton" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
