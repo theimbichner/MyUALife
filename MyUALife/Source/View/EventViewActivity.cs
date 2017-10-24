@@ -137,7 +137,7 @@ namespace MyUALife
             if (selectedEvent == null)
             {
                 selectedEvent = new Event(nameText.Text, descriptionText.Text, Category.recreation, StartTime, EndTime);
-                Model.getCalendar().AddEvent(selectedEvent);
+                Model.Calendar.AddEvent(selectedEvent);
             }
             else
             {

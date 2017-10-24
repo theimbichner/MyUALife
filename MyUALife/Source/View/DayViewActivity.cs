@@ -39,7 +39,7 @@ namespace MyUALife
             DateTime end = date.AddDays(1);
 
             // Get the events in range from the calendar
-            var events = Model.getCalendar().GetEventsInRange(start, end);
+            var events = Model.Calendar.GetEventsInRange(start, end);
 
             // Get components by id
             eventsLayout = FindViewById<LinearLayout>(Resource.Id.eventsLayout);
@@ -91,7 +91,7 @@ namespace MyUALife
                 infoDialog.SetNegativeButton("Cancel", delegate { });
                 infoDialog.SetPositiveButton("Delete", delegate {
                     eventsLayout.RemoveView(button);
-                    Model.getCalendar().RemoveEvent(calEvent);
+                    Model.Calendar.RemoveEvent(calEvent);
                 });
                 infoDialog.Show();
             };

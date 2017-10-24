@@ -40,4 +40,11 @@ public class Event
         StartTime = start;
         EndTime = end;
     }
+
+    public override string ToString()
+    {
+        string format = "Name: {0}\nDescription: {1}\nFrom: {2}\nTo: {3}";
+        object[] args = { Name, Description, StartTime, EndTime };
+        return String.Format(format, args);
+    }
 }

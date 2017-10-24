@@ -3,6 +3,7 @@ using Android.Widget;
 using Android.OS;
 using Android.Provider;
 using Android.Content;
+using Android.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -11,8 +12,12 @@ namespace MyUALife
     [Activity(Label = "MyUALife", MainLauncher = true)]
     public class NewMainActivity : Activity
     {
+        private readonly static Color Red = Color.ParseColor("#cc0033");
+        private readonly static Color Blue = Color.ParseColor("#003366");
+
         private DateTime loadedDate;
         private List<Event> loadedEvents;
+        private Color currentColor;
 
         // GUI components
         private Button filterButton;
@@ -36,9 +41,6 @@ namespace MyUALife
             createEventButton = FindViewById<Button>(Resource.Id.createEventButton);
             createDeadlineButton = FindViewById<Button>(Resource.Id.createDeadlineButton);
             mainTextLayout = FindViewById<LinearLayout>(Resource.Id.mainTextLayout);
-
-            // Load the events scheduled for today
-            LoadEvents();
 
             // Setup the filter button to filter events
             filterButton.Click += (sender, e) =>
@@ -66,7 +68,8 @@ namespace MyUALife
             // Setup the create event button to open the create event screen
             createEventButton.Click += (sender, e) =>
             {
-
+                Intent intent = new Intent(this, typeof(EventViewActivity));
+                StartActivity(intent);
             };
 
             // Setup the deadline button to open the create deadline screen
@@ -74,6 +77,14 @@ namespace MyUALife
             {
 
             };
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            // Load the events scheduled for today
+            LoadEvents();
         }
 
         /*
@@ -92,12 +103,13 @@ namespace MyUALife
             DateTime end = loadedDate.AddDays(1);
 
             // Get the events in range from the calendar
-            loadedEvents = Model.getCalendar().GetEventsInRange(start, end);
+            loadedEvents = Model.Calendar.GetEventsInRange(start, end);
 
             // Clear the main layout of text views
             mainTextLayout.RemoveAllViews();
 
             // Add a new text view for every event
+            currentColor = Blue;
             foreach (Event e in loadedEvents)
             {
                 mainTextLayout.AddView(GenerateTextView(e));
@@ -113,7 +125,7 @@ namespace MyUALife
         {
             // Create the text view and set its text
             TextView view = new TextView(this);
-            view.Text = Description(calEvent);
+            view.Text = calEvent.ToString();
 
             // Register the event handler to edit the event
             view.LongClick += (sender, e) =>
@@ -131,14 +143,25 @@ namespace MyUALife
                 infoDialog.SetNegativeButton("Cancel", delegate { });
                 infoDialog.Show();
             };
+
+            // Set the text background color
+            view.SetBackgroundColor(currentColor);
+
+            // Toggle the current color
+            ToggleCurrentColor();
             return view;
         }
 
-        private string Description(Event calEvent)
+        private void ToggleCurrentColor()
         {
-            string format = "Name: {0}\nDescription: {1}\nFrom: {2}\nTo: {3}";
-            object[] args = { calEvent.Name, calEvent.Description, calEvent.StartTime, calEvent.EndTime };
-            return String.Format(format, args);
+            if (currentColor == Red)
+            {
+                currentColor = Blue;
+            }
+            else
+            {
+                currentColor = Red;
+            }
         }
     }
 }
