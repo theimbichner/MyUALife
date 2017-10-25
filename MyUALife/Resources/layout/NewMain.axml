@@ -31,6 +31,41 @@
                 android:id="@+id/calendarButton" />
         </LinearLayout>
     </LinearLayout>
+<!-- Contains the deadlines/events toggle -->
+    <RadioGroup
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/switch_border"
+        android:checkedButton="@+id/eventsRadioButton"
+        android:id="@+id/radioGroup1">
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="2dp"
+            android:text="Events"
+            android:button="@null"
+            android:gravity="center"
+            android:background="@drawable/switch_background"
+            android:id="@+id/eventsRadioButton" />
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginRight="2dp"
+            android:text="Deadlines"
+            android:button="@null"
+            android:gravity="center"
+            android:background="@drawable/switch_background"
+            android:id="@+id/deadlinesRadioButton" />
+    </RadioGroup>
 <!-- The events display -->
     <ScrollView
         android:minWidth="25px"

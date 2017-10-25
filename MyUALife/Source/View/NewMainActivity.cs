@@ -109,10 +109,14 @@ namespace MyUALife
             mainTextLayout.RemoveAllViews();
 
             // Add a new text view for every event
-            currentColor = Blue;
+            currentColor = Red;
             foreach (Event e in loadedEvents)
             {
                 mainTextLayout.AddView(GenerateTextView(e));
+
+                // Toggle the color for the next button
+                // Results in an alternating red-blue pattern
+                ToggleCurrentColor();
             }
         }
 
@@ -126,6 +130,12 @@ namespace MyUALife
             // Create the text view and set its text
             TextView view = new TextView(this);
             view.Text = calEvent.ToString();
+
+            // Give the text view a 5dp padding on the left and right
+            float dpPadding = 5f;
+            float density = this.Resources.DisplayMetrics.Density;
+            int pxPadding = (int) (dpPadding * density + 0.5f);
+            view.SetPadding(view.PaddingLeft + pxPadding, view.PaddingTop, view.PaddingRight + pxPadding, view.PaddingBottom);
 
             // Register the event handler to edit the event
             view.LongClick += (sender, e) =>
@@ -146,12 +156,12 @@ namespace MyUALife
 
             // Set the text background color
             view.SetBackgroundColor(currentColor);
-
-            // Toggle the current color
-            ToggleCurrentColor();
             return view;
         }
 
+        /*
+         * Toggles the color of the next generated button between blue and red.
+         */
         private void ToggleCurrentColor()
         {
             if (currentColor == Red)
