@@ -43,8 +43,8 @@ public class Event
 
     public override string ToString()
     {
-        string format = "Name: {0}\nDescription: {1}\nFrom: {2}\nTo: {3}";
-        object[] args = { Name, Description, StartTime, EndTime };
+        string format = "Name: {0}\nDescription: {1}\nFrom: {2}\nTo: {3}\nType: {4}";
+        object[] args = { Name, Description, StartTime, EndTime, Type.name };
         return String.Format(format, args);
     }
 }

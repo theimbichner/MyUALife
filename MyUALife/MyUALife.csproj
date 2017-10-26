@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Source\Model\Category.cs" />
     <Compile Include="Source\Model\EventType.cs" />
+    <Compile Include="Source\View\ViewUtil.cs" />
     <Compile Include="Source\View\EventViewActivity.cs" />
     <Compile Include="Source\Model\Calendar.cs" />
     <Compile Include="Source\View\DayViewActivity.cs" />

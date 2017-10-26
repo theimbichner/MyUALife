@@ -12,18 +12,27 @@ namespace MyUALife
         {
             Calendar = new Calendar();
 
-            var type = Category.recreation;
-
-            DateTime now = DateTime.Now;
-            Calendar.AddEvent(new Event("First Event", "", type, now, now));
-            Calendar.AddEvent(new Event("Second Event", "", type, now, now));
-            Calendar.AddEvent(new Event("Third Event", "", type, now, now));
-
+            DateTime time = DateTime.Now;
             DateTime midnightMorning = DateTime.Today;
-            Calendar.AddEvent(new Event("Last Midnight", "", type, midnightMorning, midnightMorning));
-
             DateTime midnightNight = DateTime.Today.AddDays(1);
-            Calendar.AddEvent(new Event("Midnight Tonight", "", type, midnightNight, midnightNight));
+
+            String classDesc       = "Software Engineering";
+            String appointmentDesc = "This is an appointment with a professor.";
+            String hwDesc          = "This is homework for CS436";
+            String studyDesc       = "This is study time.";
+            String recDesc         = "This is a recreational event.";
+            String freeDesc        = "This is free time. This category hould not appear in user added events.";
+            String lastNightDesc   = "This was midnight last night. This should appear as part of yesterday.";
+            String tonightDesc     = "This is midnight tonight. This should appear as part of today.";
+
+            Calendar.AddEvent(new Event("CS436 Class",       classDesc,       Category.classTime,   time, time));
+            Calendar.AddEvent(new Event("Office Hours",      appointmentDesc, Category.appointment, time, time));
+            Calendar.AddEvent(new Event("Build Android App", hwDesc,          Category.homework,    time, time));
+            Calendar.AddEvent(new Event("Study",             studyDesc,       Category.studyTime,   time, time));
+            Calendar.AddEvent(new Event("Play Videogames",   recDesc,         Category.recreation,  time, time));
+            Calendar.AddEvent(new Event("???",               freeDesc,        Category.freeTime,    time, time));
+            Calendar.AddEvent(new Event("Last Midnight",     lastNightDesc,   Category.freeTime,    midnightMorning, midnightMorning));
+            Calendar.AddEvent(new Event("Midnight Tonight",  tonightDesc,     Category.freeTime,    midnightNight, midnightNight));
         }
     }
 }
