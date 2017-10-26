@@ -4,6 +4,8 @@ using Android.OS;
 using Android.Provider;
 using Android.Content;
 using Android.Graphics;
+using Android.Graphics.Drawables;
+using Android.Graphics.Drawables.Shapes;
 using System;
 using System.Collections.Generic;
 
@@ -12,8 +14,9 @@ namespace MyUALife
     [Activity(Label = "MyUALife", MainLauncher = true)]
     public class NewMainActivity : Activity
     {
-        private readonly static Color Red = Color.ParseColor("#cc0033");
-        private readonly static Color Blue = Color.ParseColor("#003366");
+        private Color darkBlue;
+        private Color lightBlue;
+        private Color white;
 
         private DateTime loadedDate;
         private List<Event> loadedEvents;
@@ -41,6 +44,11 @@ namespace MyUALife
             createEventButton = FindViewById<Button>(Resource.Id.createEventButton);
             createDeadlineButton = FindViewById<Button>(Resource.Id.createDeadlineButton);
             mainTextLayout = FindViewById<LinearLayout>(Resource.Id.mainTextLayout);
+
+            // Get colors by id
+            darkBlue = Resources.GetColor(Resource.Color.indigo700, Theme);
+            lightBlue = Resources.GetColor(Resource.Color.indigo500, Theme);
+            white = Resources.GetColor(Resource.Color.white, Theme);
 
             // Setup the filter button to filter events
             filterButton.Click += (sender, e) =>
@@ -109,7 +117,7 @@ namespace MyUALife
             mainTextLayout.RemoveAllViews();
 
             // Add a new text view for every event
-            currentColor = Red;
+            currentColor = darkBlue;
             foreach (Event e in loadedEvents)
             {
                 mainTextLayout.AddView(GenerateTextView(e));
@@ -131,11 +139,44 @@ namespace MyUALife
             TextView view = new TextView(this);
             view.Text = calEvent.ToString();
 
-            // Give the text view a 5dp padding on the left and right
-            float dpPadding = 5f;
             float density = this.Resources.DisplayMetrics.Density;
+
+            // Add 6dp of padding on the left and right
+            float dpPadding = 6f;
             int pxPadding = (int) (dpPadding * density + 0.5f);
             view.SetPadding(view.PaddingLeft + pxPadding, view.PaddingTop, view.PaddingRight + pxPadding, view.PaddingBottom);
+
+            // Add a 2dp margin below
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MatchParent, LinearLayout.LayoutParams.WrapContent);
+            float dpMarginBottom = 2f;
+            int pxMarginBottom = (int) (dpMarginBottom * density + 0.5f);
+            layoutParams.BottomMargin = pxMarginBottom;
+
+            // Add 3dp margins to the left/right
+            float dpMarginLR = 3f;
+            int pxMarginLR = (int)(dpMarginLR * density + 0.5f);
+            layoutParams.LeftMargin = pxMarginLR;
+            layoutParams.RightMargin = pxMarginLR;
+
+            view.LayoutParameters = layoutParams;
+
+            // Set the background to a rounded rectangle
+            float dpRadius = 4f;
+            float pxRadius = dpRadius * density;
+            float[] radii = new float[8];
+            for (int i = 0; i < 8; i++)
+            {
+                radii[i] = pxRadius;
+            }
+            Shape s = new RoundRectShape(radii, null, null);
+            ShapeDrawable sd = new ShapeDrawable(s);
+
+            // Set the color
+            sd.Paint.Color = currentColor;
+            view.Background = sd;
+
+            // Set the text to white
+            view.SetTextColor(white);
 
             // Register the event handler to edit the event
             view.LongClick += (sender, e) =>
@@ -153,9 +194,6 @@ namespace MyUALife
                 infoDialog.SetNegativeButton("Cancel", delegate { });
                 infoDialog.Show();
             };
-
-            // Set the text background color
-            view.SetBackgroundColor(currentColor);
             return view;
         }
 
@@ -164,13 +202,13 @@ namespace MyUALife
          */
         private void ToggleCurrentColor()
         {
-            if (currentColor == Red)
+            if (currentColor == darkBlue)
             {
-                currentColor = Blue;
+                currentColor = lightBlue;
             }
             else
             {
-                currentColor = Red;
+                currentColor = darkBlue;
             }
         }
     }
