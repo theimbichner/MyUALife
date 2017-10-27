@@ -34,8 +34,37 @@ namespace MyUALife
         public TextView GenerateTextView(Event calendarEvent)
         {
             // Create the text view and set its text
-            TextView view = new TextView(ContextWrapper);
+            TextView view = GenerateBaseTextView();
             view.Text = calendarEvent.ToString();
+
+            // Set the background color
+            ShapeDrawable sd = (ShapeDrawable)view.Background;
+            sd.Paint.Color = Color.ParseColor(calendarEvent.Type.colorString);
+            return view;
+        }
+
+        /*
+         * Returns a new TextView that displays data about the given deadline.
+         */
+        public TextView GenerateTextView(Deadline deadline)
+        {
+            // Create TextView and set its text
+            TextView view = GenerateBaseTextView();
+            view.Text = deadline.ToString();
+
+            // Set the background color
+            ShapeDrawable sd = (ShapeDrawable)view.Background;
+            sd.Paint.Color = Color.ParseColor("#8BC34B");
+            return view;
+        }
+
+        /*
+         * Returns a basic rectangular TextView for displaying events or deadlines.
+         */
+        public TextView GenerateBaseTextView()
+        {
+            // Create the text view
+            TextView view = new TextView(ContextWrapper);
 
             // Add 6dp of padding on the left and right
             int padding = DPToNearestPX(6f);
@@ -63,9 +92,6 @@ namespace MyUALife
             Shape s = new RoundRectShape(radii, null, null);
             ShapeDrawable sd = new ShapeDrawable(s);
             view.Background = sd;
-
-            // Set the background color
-            sd.Paint.Color = Color.ParseColor(calendarEvent.Type.colorString);
 
             // Set the text to white
             view.SetTextColor(Color.White);
@@ -105,6 +131,22 @@ namespace MyUALife
                     infoDialog.Show();
                 };
 
+                layout.AddView(view);
+            }
+        }
+
+        /*
+         * Fills the supplied layout with TextViews representing the deadlines in
+         * deadlines. Views are added in the order that the deadlines appear in the
+         * list.
+         */
+        public void LoadDeadlinesToLayout(LinearLayout layout, List<Deadline> deadlines)
+        {
+            layout.RemoveAllViews();
+            foreach (Deadline d in deadlines)
+            {
+                TextView view = GenerateTextView(d);
+                // TODO: long click?
                 layout.AddView(view);
             }
         }

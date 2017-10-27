@@ -23,6 +23,8 @@ namespace MyUALife
         // GUI components
         private Button filterButton;
         private Button calendarButton;
+        private RadioButton eventsTab;
+        private RadioButton deadlinesTab;
         private Button happeningsButton;
         private Button createEventButton;
         private Button createDeadlineButton;
@@ -43,6 +45,9 @@ namespace MyUALife
             createDeadlineButton = FindViewById<Button>(Resource.Id.createDeadlineButton);
             mainTextLayout = FindViewById<LinearLayout>(Resource.Id.mainTextLayout);
 
+            eventsTab = FindViewById<RadioButton>(Resource.Id.eventsRadioButton);
+            deadlinesTab = FindViewById<RadioButton>(Resource.Id.deadlinesRadioButton);
+
             // Setup the filter button to filter events
             filterButton.Click += (sender, e) =>
             {
@@ -58,6 +63,18 @@ namespace MyUALife
                 ContentUris.AppendId(builder, millis);
                 Intent intent = new Intent(Intent.ActionView).SetData(builder.Build());
                 StartActivity(intent);
+            };
+
+            // Setup the events tab to display the events list
+            eventsTab.Click += (sender, e) =>
+            {
+                LoadEvents();
+            };
+
+            // Setup the deadlines tab to display the deadlines list
+            deadlinesTab.Click += (sender, e) =>
+            {
+                LoadDeadlines();
             };
 
             // Setup the happenings button to display a list of happenings
@@ -123,6 +140,21 @@ namespace MyUALife
             // Clear the layout and add a text view for every event
             ViewUtil util = new ViewUtil(this);
             util.LoadEventsToLayout(mainTextLayout, loadedEvents);
+        }
+
+        /*
+         * Loads every deadline scheduled after the current day into the main text
+         * view.
+         */
+        private void LoadDeadlines()
+        {
+            loadedDate = DateTime.Today;
+
+            DateTime start = loadedDate.AddMilliseconds(1);
+            List<Deadline> deadlines = Model.Calendar.GetDeadlinesAfterTime(start);
+
+            ViewUtil util = new ViewUtil(this);
+            util.LoadDeadlinesToLayout(mainTextLayout, deadlines);
         }
 
         /*

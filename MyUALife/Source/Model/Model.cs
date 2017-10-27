@@ -33,6 +33,8 @@ namespace MyUALife
             Calendar.AddEvent(new Event("???",               freeDesc,        Category.freeTime,    time, time));
             Calendar.AddEvent(new Event("Last Midnight",     lastNightDesc,   Category.freeTime,    midnightMorning, midnightMorning));
             Calendar.AddEvent(new Event("Midnight Tonight",  tonightDesc,     Category.freeTime,    midnightNight, midnightNight));
+
+            Calendar.AddDeadline(new Deadline("Deadline", "It's a deadline!!!!!!!!!!", time));
         }
     }
 }
