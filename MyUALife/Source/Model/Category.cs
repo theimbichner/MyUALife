@@ -9,9 +9,10 @@ public class Category
     public static EventType studyTime   = new EventType("StudyTime", 3, true, "#2196F3");
     public static EventType recreation  = new EventType("Recreation", 4, true, "#673AB7");
     public static EventType freeTime    = new EventType("Free Time", 5, true, "#E91E63");
+    public static EventType other       = new EventType("Other", 4, true, "#999999");
 
     public static List<EventType> creatableTypes = new List<EventType>(new EventType[] { classTime,
-        studyTime, homework, appointment, recreation });
+        studyTime, homework, appointment, recreation, other });
 
     public static EventType GetTypeByName(String name)
     {

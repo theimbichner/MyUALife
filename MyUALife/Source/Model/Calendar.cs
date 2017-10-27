@@ -4,15 +4,18 @@ using System.Collections.Generic;
 public class Calendar
 {
     List<Event> events = new List<Event>();
+    List<Deadline> deadlines = new List<Deadline>();
+    List<Event> happenings = new List<Event>();
 
     public Calendar()
     {
 
     }
 
-    public Calendar(List<Event> events)
+    public Calendar(List<Event> events, List<Deadline> deadlines)
     {
         this.events = events;
+        this.deadlines = deadlines;
     }
 
     public void AddEvent(Event e)
@@ -23,6 +26,44 @@ public class Calendar
     public bool RemoveEvent(Event e)
     {
         return events.Remove(e);
+    }
+
+	public void AddDeadline(Deadline d) {
+		deadlines.Add(d);
+	}
+
+	public bool RemoveDeadline(Deadline d) {
+		return deadlines.Remove(d);
+	}
+
+    public void AddHappening(Event e)
+    {
+        happenings.Add(e);
+    }
+
+    public bool RemoveHappening(Event e)
+    {
+        return happenings.Remove(e);
+    }
+
+    public List<Event> FilterEventsByType(List<Event> events, EventType type)
+    {
+        List<Event> output = new List<Event>();
+        foreach (Event e in events)
+        {
+            if (e.Type.Equals(type)) output.Add(e);
+        }
+        return output;
+    }
+
+    public List<Event> FilterEventsByTypes(List<Event> events, List<EventType> types)
+    {
+        List<Event> output = new List<Event>();
+        foreach (Event e in events)
+        {
+            if (types.Contains(e.Type)) output.Add(e);
+        }
+        return output;
     }
 
     public List<Event> GetEventsInRange(DateTime start, DateTime end)
@@ -37,6 +78,14 @@ public class Calendar
         }
         return output;
     }
+
+	public List<Deadline> GetDeadlinesAfterTime(DateTime time) {
+		List<Deadline> output = new List<Deadline>();
+		foreach (Deadline d in deadlines) {
+			if (d.Time > time) output.Add(d);
+		}
+		return output;
+	}
 
 	public List<Event> GetFreeTimeBlocksInRange(DateTime start, DateTime end)
 	{
