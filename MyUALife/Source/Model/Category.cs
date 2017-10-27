@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 public class Category
 {
@@ -9,6 +10,18 @@ public class Category
     public static EventType recreation  = new EventType("Recreation", 4, true, "#673AB7");
     public static EventType freeTime    = new EventType("Free Time", 5, true, "#E91E63");
 
-    public List<EventType> creatableTypes = new List<EventType>(new EventType[] { classTime,
+    public static List<EventType> creatableTypes = new List<EventType>(new EventType[] { classTime,
         studyTime, homework, appointment, recreation });
+
+    public static EventType GetTypeByName(String name)
+    {
+        foreach (EventType t in creatableTypes)
+        {
+            if (t.name == name)
+            {
+                return t;
+            }
+        }
+        return freeTime;
+    }
 }

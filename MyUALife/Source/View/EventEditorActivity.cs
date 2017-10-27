@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Widget;
 using Android.Content;
 using System;
+using System.Collections.Generic;
 
 namespace MyUALife
 {
@@ -21,6 +22,7 @@ namespace MyUALife
         private Button changeStartButton;
         private Button changeEndButton;
         private Button saveButton;
+        private Spinner typeSpinner;
 
         // The times selected with DatePickerFragment.
         private DateTime[] eventTimes = {DateTime.Now, DateTime.Now};
@@ -64,6 +66,7 @@ namespace MyUALife
             changeStartButton = FindViewById<Button>(Resource.Id.changeStartButton);
             changeEndButton = FindViewById<Button>(Resource.Id.changeEndButton);
             saveButton = FindViewById<Button>(Resource.Id.saveButton);
+            typeSpinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
 
             // Setup the text fields to turn on the save button when edited
             nameText.TextChanged += (sender, e) => TurnOnSaveButton();
@@ -83,6 +86,18 @@ namespace MyUALife
             // Disable the save changes button by default
             saveButton.Enabled = false;
 
+            // Configure the spinner to display the correct list of EventTypes
+            List<String> names = new List<String>();
+            foreach (EventType t in Category.creatableTypes)
+            {
+                names.Add(t.name);
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, Android.Resource.Layout.SimpleSpinnerDropDownItem, names);
+            typeSpinner.Adapter = adapter;
+
+            // Setup the spinner to turn on the save button
+            typeSpinner.ItemSelected += (sender, e) => TurnOnSaveButton();
+
             // Get the event stored in Intent, if any
             Event input = new EventSerializer(Intent).ReadEvent(EventSerializer.InputEvent);
             if (input != null)
@@ -92,6 +107,7 @@ namespace MyUALife
                 descriptionText.Text = input.Description;
                 StartTime = input.StartTime;
                 EndTime = input.EndTime;
+                typeSpinner.SetSelection(adapter.GetPosition(input.Type.name));
                 SaveChanges();
             }
 
@@ -106,7 +122,8 @@ namespace MyUALife
          */
         private void SaveChanges()
         {
-            Event resultEvent = new Event(nameText.Text, descriptionText.Text, Category.recreation, StartTime, EndTime);
+            String typeName = typeSpinner.SelectedItem.ToString();
+            Event resultEvent = new Event(nameText.Text, descriptionText.Text, Category.GetTypeByName(typeName), StartTime, EndTime);
             Intent data = new Intent();
             new EventSerializer(data).WriteEvent(EventSerializer.ResultEvent, resultEvent);
             SetResult(Result.Ok, data);
@@ -167,6 +184,7 @@ namespace MyUALife
                 EventEditorActivity eventEditor = (EventEditorActivity) Activity;
                 eventEditor.eventTimes[timeIndex] = date.AddHours(hour).AddMinutes(minute);
                 eventEditor.UpdateTimeLabels();
+                eventEditor.TurnOnSaveButton();
             }
         }
 
@@ -188,7 +206,6 @@ namespace MyUALife
         {
             DatePickerFragment dateTimePicker = new DatePickerFragment(timeIndex);
             dateTimePicker.Show(FragmentManager, "pickStartDateTime");
-            TurnOnSaveButton();
         }
 
         /*
@@ -197,6 +214,10 @@ namespace MyUALife
          */
         private void TurnOnSaveButton()
         {
+            if (nameText.Text == "")
+            {
+                return;
+            }
             saveButton.Enabled = true;
         }
     }
