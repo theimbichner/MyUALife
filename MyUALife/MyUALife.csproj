@@ -56,8 +56,10 @@
   <ItemGroup>
     <Compile Include="Source\Model\Category.cs" />
     <Compile Include="Source\Model\Deadline.cs" />
+    <Compile Include="Source\Model\DeadlineSerializer.cs" />
     <Compile Include="Source\Model\EventSerializer.cs" />
     <Compile Include="Source\Model\EventType.cs" />
+    <Compile Include="Source\View\DeadlineEditorActivity.cs" />
     <Compile Include="Source\View\ViewUtil.cs" />
     <Compile Include="Source\View\EventEditorActivity.cs" />
     <Compile Include="Source\Model\Calendar.cs" />
@@ -81,6 +83,9 @@
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\layout\NewMain.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\DeadlineEditor.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
