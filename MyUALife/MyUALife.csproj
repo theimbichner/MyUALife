@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Model\Category.cs" />
+    <Compile Include="Source\Model\Deadline.cs" />
     <Compile Include="Source\Model\EventSerializer.cs" />
     <Compile Include="Source\Model\EventType.cs" />
     <Compile Include="Source\View\ViewUtil.cs" />

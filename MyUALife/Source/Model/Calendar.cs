@@ -5,6 +5,7 @@ public class Calendar
 {
     List<Event> events = new List<Event>();
     List<Deadline> deadlines = new List<Deadline>();
+    List<Event> happenings = new List<Event>();
 
     public Calendar()
     {
@@ -34,6 +35,36 @@ public class Calendar
 	public bool RemoveDeadline(Deadline d) {
 		return deadlines.Remove(d);
 	}
+
+    public void AddHappening(Event e)
+    {
+        happenings.Add(e);
+    }
+
+    public bool RemoveHappening(Event e)
+    {
+        return happenings.Remove(e);
+    }
+
+    public List<Event> FilterEventsByType(List<Event> events, EventType type)
+    {
+        List<Event> output = new List<Event>();
+        foreach (Event e in events)
+        {
+            if (e.Type.Equals(type)) output.Add(e);
+        }
+        return output;
+    }
+
+    public List<Event> FilterEventsByTypes(List<Event> events, List<EventType> types)
+    {
+        List<Event> output = new List<Event>();
+        foreach (Event e in events)
+        {
+            if (types.Contains(e.Type)) output.Add(e);
+        }
+        return output;
+    }
 
     public List<Event> GetEventsInRange(DateTime start, DateTime end)
     {

@@ -15,7 +15,10 @@ public class Deadline {
 	}
 
 	public Deadline(string name, string desc, DateTime time, EventType eventType) {
-
+        Name = name;
+        Description = desc;
+        Time = time;
+        associatedEventType = eventType;
 	}
 
 }
