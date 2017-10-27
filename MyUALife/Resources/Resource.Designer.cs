@@ -44,6 +44,9 @@ namespace MyUALife
 		public partial class Color
 		{
 			
+			// aapt resource value: 0x7f04000b
+			public const int amber500 = 2130968587;
+			
 			// aapt resource value: 0x7f040002
 			public const int black = 2130968578;
 			
@@ -74,8 +77,8 @@ namespace MyUALife
 			// aapt resource value: 0x7f04000a
 			public const int reda100 = 2130968586;
 			
-			// aapt resource value: 0x7f04000b
-			public const int switch_text_color = 2130968587;
+			// aapt resource value: 0x7f04000c
+			public const int switch_text_color = 2130968588;
 			
 			// aapt resource value: 0x7f040001
 			public const int white = 2130968577;
@@ -191,7 +194,7 @@ namespace MyUALife
 			public const int radioGroup1 = 2131165210;
 			
 			// aapt resource value: 0x7f070012
-			public const int saveEditButton = 2131165202;
+			public const int saveButton = 2131165202;
 			
 			// aapt resource value: 0x7f07001c
 			public const int scrollView1 = 2131165212;
@@ -228,7 +231,7 @@ namespace MyUALife
 			public const int DayView = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int EventView = 2130903041;
+			public const int EventEditor = 2130903041;
 			
 			// aapt resource value: 0x7f030002
 			public const int Main = 2130903042;

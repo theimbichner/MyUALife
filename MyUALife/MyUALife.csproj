@@ -55,9 +55,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Model\Category.cs" />
+    <Compile Include="Source\Model\EventSerializer.cs" />
     <Compile Include="Source\Model\EventType.cs" />
     <Compile Include="Source\View\ViewUtil.cs" />
-    <Compile Include="Source\View\EventViewActivity.cs" />
+    <Compile Include="Source\View\EventEditorActivity.cs" />
     <Compile Include="Source\Model\Calendar.cs" />
     <Compile Include="Source\View\DayViewActivity.cs" />
     <Compile Include="Source\Model\Event.cs" />
@@ -72,7 +73,7 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <None Include="GettingStarted.Xamarin" />
-    <AndroidResource Include="Resources\layout\EventView.axml">
+    <AndroidResource Include="Resources\layout\EventEditor.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <None Include="Resources\AboutResources.txt" />

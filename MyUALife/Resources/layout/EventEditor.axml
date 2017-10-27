@@ -97,15 +97,10 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
-<!-- Back button -->
+<!-- Save button -->
     <Button
         android:text="Save Changes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/saveEditButton" />
-    <Button
-        android:text="Back"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/backButton" />
+        android:id="@+id/saveButton" />
 </LinearLayout>

@@ -4,6 +4,7 @@ using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.App;
+using Android.Views;
 using System.Collections.Generic;
 
 namespace MyUALife
@@ -25,24 +26,6 @@ namespace MyUALife
         }
 
         /*
-         * Converts a given length in dp to px.
-         */
-        public float DPToPX(float dp)
-        {
-            float density = ContextWrapper.Resources.DisplayMetrics.Density;
-            return density * dp;
-        }
-
-        /*
-         * Converts a given length in dp to px. Rounds to the nearest int.
-         */
-        public int DPToNearestPX(float dp)
-        {
-            float density = ContextWrapper.Resources.DisplayMetrics.Density;
-            return (int)(dp * density + 0.5f);
-        }
-
-        /*
          * Returns a new TextView that displays data about the given event.
          * When the returned TextView is long clicked, an AlertDialog is opened
          * asking the user if they want to edit the event. The view's
@@ -59,7 +42,7 @@ namespace MyUALife
             view.SetPadding(view.PaddingLeft + padding, view.PaddingTop, view.PaddingRight + padding, view.PaddingBottom);
 
             // Create a LayoutParams to set the margins
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MatchParent, LinearLayout.LayoutParams.WrapContent);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
             view.LayoutParameters = layoutParams;
 
             // Add a 2dp margin below
@@ -89,6 +72,11 @@ namespace MyUALife
             return view;
         }
 
+        /*
+         * Fills the supplied layout with TextViews representing the events in
+         * events. Views are added in the order that the events appear in the
+         * list.
+         */
         public void LoadEventsToLayout(LinearLayout layout, List<Event> events)
         {
             layout.RemoveAllViews();
@@ -96,7 +84,7 @@ namespace MyUALife
             {
                 TextView view = GenerateTextView(e);
 
-                // Register an event handler to or deleteedit the event
+                // Register an event handler to delete or edit the event
                 view.LongClick += (sender, ea) =>
                 {
                     var infoDialog = new AlertDialog.Builder(ContextWrapper);
@@ -106,20 +94,37 @@ namespace MyUALife
                         layout.RemoveView(view);
                         Model.Calendar.RemoveEvent(e);
                     });
-                    infoDialog.SetNeutralButton("Edit", delegate
+                    if (ContextWrapper is NewMainActivity)
                     {
-                        // Inform the user that this feature is not implemented
-                        var notYetImplementedDialog = new AlertDialog.Builder(ContextWrapper);
-                        notYetImplementedDialog.SetMessage("Not yet implemented");
-                        notYetImplementedDialog.SetPositiveButton("Ok", delegate { });
-                        notYetImplementedDialog.Show();
-                    });
+                        infoDialog.SetNeutralButton("Edit", delegate
+                        {
+                            ((NewMainActivity) ContextWrapper).StartEditEventActivity(e);
+                        });
+                    }
                     infoDialog.SetNegativeButton("Cancel", delegate { });
                     infoDialog.Show();
                 };
 
                 layout.AddView(view);
             }
+        }
+
+        /*
+         * Converts a given length in dp to px.
+         */
+        public float DPToPX(float dp)
+        {
+            float density = ContextWrapper.Resources.DisplayMetrics.Density;
+            return density * dp;
+        }
+
+        /*
+         * Converts a given length in dp to px. Rounds to the nearest int.
+         */
+        public int DPToNearestPX(float dp)
+        {
+            float density = ContextWrapper.Resources.DisplayMetrics.Density;
+            return (int)(dp * density + 0.5f);
         }
     }
 }

@@ -3,6 +3,7 @@ using Android.Widget;
 using Android.OS;
 using Android.Provider;
 using Android.Content;
+using Android.Runtime;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +12,11 @@ namespace MyUALife
     [Activity(Label = "MyUALife", MainLauncher = true)]
     public class NewMainActivity : Activity
     {
+        // Request codes for the EventEditorActivity
+        private const int AddEventRequest = 1;
+        private const int EditEventRequest = 2;
+
+        // The date whose events are currently displayed
         private DateTime loadedDate;
         private List<Event> loadedEvents;
 
@@ -63,8 +69,7 @@ namespace MyUALife
             // Setup the create event button to open the create event screen
             createEventButton.Click += (sender, e) =>
             {
-                Intent intent = new Intent(this, typeof(EventViewActivity));
-                StartActivity(intent);
+                StartAddEventActivity();
             };
 
             // Setup the deadline button to open the create deadline screen
@@ -80,6 +85,21 @@ namespace MyUALife
 
             // Load the events scheduled for today
             LoadEvents();
+        }
+
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (resultCode == Result.Ok)
+            {
+                // Add the resulting event to the calendar
+                Event resultEvent = new EventSerializer(data).ReadEvent(EventSerializer.ResultEvent);
+                Model.Calendar.AddEvent(resultEvent);
+            }
+            else
+            {
+                // The user selected to add an event, but backed out without saving
+            }
         }
 
         /*
@@ -104,6 +124,28 @@ namespace MyUALife
             ViewUtil util = new ViewUtil(this);
             util.LoadEventsToLayout(mainTextLayout, loadedEvents);
         }
+
+        /*
+         * Starts the EventEditorActivity. No event is passed to the editor, so
+         * the returned event will be wholly new.
+         */
+        public void StartAddEventActivity()
+        {
+            Intent intent = new Intent(this, typeof(EventEditorActivity));
+            StartActivityForResult(intent, AddEventRequest);
+        }
+
+        /*
+         * Starts the editor with the given event's info as the starting value
+         * of the editors components. The returned value will replace the given
+         * event in the calendar.
+         */
+        public void StartEditEventActivity(Event calendarEvent)
+        {
+            Intent intent = new Intent(this, typeof(EventEditorActivity));
+            new EventSerializer(intent).WriteEvent(EventSerializer.InputEvent, calendarEvent);
+            Model.Calendar.RemoveEvent(calendarEvent);
+            StartActivityForResult(intent, EditEventRequest);
+        }
     }
 }
-

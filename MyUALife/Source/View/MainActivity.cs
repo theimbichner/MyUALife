@@ -48,7 +48,7 @@ namespace MyUALife
             // Setup the add event button to open the new event view when clicked
             addEventButton.Click += (sender, e) =>
             {
-                Intent intent = new Intent(this, typeof(EventViewActivity));
+                Intent intent = new Intent(this, typeof(EventEditorActivity));
                 StartActivity(intent);
             };
 
