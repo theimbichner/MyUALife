@@ -6,7 +6,7 @@ public class Deadline {
 	public string Name { get; set; }
 	public string Description { get; set; }
 
-	EventType associatedEventType = Category.other;
+	public EventType associatedEventType = Category.other;
 
 	public Deadline(string name, string desc, DateTime time) {
 		Name = name;
