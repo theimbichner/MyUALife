@@ -123,6 +123,7 @@ namespace MyUALife
         private void SaveChanges()
         {
             String typeName = typeSpinner.SelectedItem.ToString();
+            // TODO: check if EndTime < StartTime. if so, don't save the event & open an error message.
             Event resultEvent = new Event(nameText.Text, descriptionText.Text, Category.GetTypeByName(typeName), StartTime, EndTime);
             Intent data = new Intent();
             new EventSerializer(data).WriteEvent(EventSerializer.ResultEvent, resultEvent);
