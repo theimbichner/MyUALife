@@ -23,6 +23,28 @@ namespace Tests {
 		}
 
 		[TestMethod()]
+		public void GetDeadlinesAfterTimeTest() {
+			Calendar c = new Calendar();
+			DateTime start = new DateTime(2009, 4, 13, 0, 0, 0);
+
+			Deadline d1 = new Deadline("d", "", new DateTime(2009, 4, 13, 4, 13, 0));
+			c.AddDeadline(d1);
+			Assert.AreEqual(c.GetDeadlinesAfterTime(start).Count, 1);
+
+			Deadline d2 = new Deadline("d", "", new DateTime(2009, 4, 13, 4, 13, 0));
+			c.AddDeadline(d2);
+			Assert.AreEqual(c.GetDeadlinesAfterTime(start).Count, 2);
+
+			Deadline d3 = new Deadline("d", "", new DateTime(2009, 4, 13, 6, 12, 0));
+			c.AddDeadline(d3);
+			Assert.AreEqual(c.GetDeadlinesAfterTime(start).Count, 3);
+
+			Deadline d4 = new Deadline("d", "", new DateTime(2009, 4, 12, 6, 12, 0));
+			c.AddDeadline(d4);
+			Assert.AreEqual(c.GetDeadlinesAfterTime(start).Count, 3);
+		}
+
+		[TestMethod()]
 		public void GetFreeTimeBlocksInRangeTest() {
 
 			DateTime start = new DateTime(2009, 4, 13, 0, 0, 0);
@@ -57,10 +79,6 @@ namespace Tests {
 				new DateTime(2009, 4, 13, 5, 0, 0),
 				new DateTime(2009, 4, 13, 6, 0, 0)
 			);
-
-		}
-
-		public void AddTwoEventBlocks(DateTime e1Start, DateTime e1End, DateTime e2Start, DateTime e2End) {
 
 		}
 
