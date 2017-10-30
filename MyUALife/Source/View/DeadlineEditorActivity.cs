@@ -7,49 +7,20 @@ using System.Collections.Generic;
 
 namespace MyUALife
 {
-    [Activity(Label = "Create Event")]
-    public class EventEditorActivity : Activity
+    [Activity(Label = "Create Deadline")]
+    public class DeadlineEditorActivity : Activity
     {
-        // Indices for the eventTimes array
-        private const int StartTimeIndex = 0;
-        private const int EndTimeIndex = 1;
 
         // GUI components
         private EditText nameText;
         private EditText descriptionText;
-        private TextView startTimeLabel;
-        private TextView endTimeLabel;
-        private Button changeStartButton;
-        private Button changeEndButton;
+        private TextView timeLabel;
+        private Button changeTimeButton;
         private Button saveButton;
         private Spinner typeSpinner;
 
         // The times selected with DatePickerFragment.
-        private DateTime[] eventTimes = {DateTime.Now, DateTime.Now};
-        private DateTime StartTime
-        {
-            get
-            {
-                return eventTimes[StartTimeIndex];
-            }
-
-            set
-            {
-                eventTimes[StartTimeIndex] = value;
-            }
-        }
-        private DateTime EndTime
-        {
-            get
-            {
-                return eventTimes[EndTimeIndex];
-            }
-
-            set
-            {
-                eventTimes[EndTimeIndex] = value;
-            }
-        }
+        private DateTime deadlineTime = DateTime.Now;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -61,10 +32,8 @@ namespace MyUALife
             // Get components from id
             nameText = FindViewById<EditText>(Resource.Id.nameText);
             descriptionText = FindViewById<EditText>(Resource.Id.descriptionText);
-            startTimeLabel = FindViewById<TextView>(Resource.Id.startTimeLabel);
-            endTimeLabel = FindViewById<TextView>(Resource.Id.endTimeLabel);
-            changeStartButton = FindViewById<Button>(Resource.Id.changeStartButton);
-            changeEndButton = FindViewById<Button>(Resource.Id.changeEndButton);
+            timeLabel = FindViewById<TextView>(Resource.Id.timeLabel);
+            changeTimeButton = FindViewById<Button>(Resource.Id.changeTimeButton);
             saveButton = FindViewById<Button>(Resource.Id.saveButton);
             typeSpinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
 
@@ -77,8 +46,7 @@ namespace MyUALife
             descriptionText.SetMaxLines(1000);
 
             // Setup the time buttons to display a time picker dialog
-            changeStartButton.Click += (sender, e) => PollDateTime(StartTimeIndex);
-            changeEndButton.Click += (sender, e) => PollDateTime(EndTimeIndex);
+            changeTimeButton.Click += (sender, e) => PollDateTime();
 
             // Setup the save changes button to save the current data when pressed
             saveButton.Click += (sender, e) => SaveChanges();
@@ -98,16 +66,15 @@ namespace MyUALife
             // Setup the spinner to turn on the save button
             typeSpinner.ItemSelected += (sender, e) => TurnOnSaveButton();
 
-            // Get the event stored in Intent, if any
-            Event input = new EventSerializer(Intent).ReadEvent(EventSerializer.InputEvent);
+            // Get the DEADLINE stored in Intent, if any
+            Deadline input = new DeadlineSerializer(Intent).ReadDeadline(DeadlineSerializer.InputDeadline);
             if (input != null)
             {
                 // Store data from input in the components
                 nameText.Text = input.Name;
                 descriptionText.Text = input.Description;
-                StartTime = input.StartTime;
-                EndTime = input.EndTime;
-                typeSpinner.SetSelection(adapter.GetPosition(input.Type.name));
+                deadlineTime = input.Time;
+                typeSpinner.SetSelection(adapter.GetPosition(input.associatedEventType.name));
                 SaveChanges();
             }
 
@@ -123,9 +90,9 @@ namespace MyUALife
         private void SaveChanges()
         {
             String typeName = typeSpinner.SelectedItem.ToString();
-            Event resultEvent = new Event(nameText.Text, descriptionText.Text, Category.GetTypeByName(typeName), StartTime, EndTime);
+            Deadline result = new Deadline(nameText.Text, descriptionText.Text, deadlineTime, Category.GetTypeByName(typeName));
             Intent data = new Intent();
-            new EventSerializer(data).WriteEvent(EventSerializer.ResultEvent, resultEvent);
+            new DeadlineSerializer(data).WriteDeadline(DeadlineSerializer.ResultDeadline, result);
             SetResult(Result.Ok, data);
             saveButton.Enabled = false;
         }
@@ -136,11 +103,9 @@ namespace MyUALife
          */
         private class DatePickerFragment : DialogFragment, DatePickerDialog.IOnDateSetListener
         {
-            private readonly int timeIndex;
 
-            public DatePickerFragment(int timeIndex)
+            public DatePickerFragment()
             {
-                this.timeIndex = timeIndex;
             }
 
             public override Dialog OnCreateDialog(Bundle savedInstanceState)
@@ -152,7 +117,7 @@ namespace MyUALife
             public void OnDateSet(DatePicker view, int year, int month, int day)
             {
                 DateTime date = new DateTime(year, month + 1, day);
-                TimePickerFragment timePicker = new TimePickerFragment(date, timeIndex);
+                TimePickerFragment timePicker = new TimePickerFragment(date);
                 timePicker.Show(FragmentManager, "pickStartTime");
             }
         }
@@ -164,12 +129,10 @@ namespace MyUALife
          */
         private class TimePickerFragment : DialogFragment, TimePickerDialog.IOnTimeSetListener
         {
-            private readonly int timeIndex;
             private readonly DateTime date;
 
-            public TimePickerFragment(DateTime date, int timeIndex)
+            public TimePickerFragment(DateTime date)
             {
-                this.timeIndex = timeIndex;
                 this.date = date;
             }
 
@@ -181,10 +144,10 @@ namespace MyUALife
 
             public void OnTimeSet(TimePicker view, int hour, int minute)
             {
-                EventEditorActivity eventEditor = (EventEditorActivity) Activity;
-                eventEditor.eventTimes[timeIndex] = date.AddHours(hour).AddMinutes(minute);
-                eventEditor.UpdateTimeLabels();
-                eventEditor.TurnOnSaveButton();
+                DeadlineEditorActivity deadlineEditor = (DeadlineEditorActivity)Activity;
+                deadlineEditor.deadlineTime = date.AddHours(hour).AddMinutes(minute);
+                deadlineEditor.UpdateTimeLabels();
+                deadlineEditor.TurnOnSaveButton();
             }
         }
 
@@ -194,17 +157,16 @@ namespace MyUALife
          */
         private void UpdateTimeLabels()
         {
-            startTimeLabel.Text = StartTime.ToString("g");
-            endTimeLabel.Text = EndTime.ToString("g");
+            timeLabel.Text = deadlineTime.ToString("g");
         }
 
         /*
          * Opens a dialog asking the user for a time and stores the result in
          * the appropriate entry in eventTimes.
          */
-        private void PollDateTime(int timeIndex)
+        private void PollDateTime()
         {
-            DatePickerFragment dateTimePicker = new DatePickerFragment(timeIndex);
+            DatePickerFragment dateTimePicker = new DatePickerFragment();
             dateTimePicker.Show(FragmentManager, "pickStartDateTime");
         }
 

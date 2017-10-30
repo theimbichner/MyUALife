@@ -6,7 +6,7 @@ public class Deadline {
 	public string Name { get; set; }
 	public string Description { get; set; }
 
-	EventType associatedEventType = Category.other;
+	public EventType associatedEventType = Category.other;
 
 	public Deadline(string name, string desc, DateTime time) {
 		Name = name;
@@ -20,5 +20,12 @@ public class Deadline {
         Time = time;
         associatedEventType = eventType;
 	}
+
+    public override string ToString()
+    {
+        string format = "Name: {0}\nDescription: {1}\nTime: {2}";
+        object[] args = { Name, Description, Time };
+        return string.Format(format, args);
+    }
 
 }
