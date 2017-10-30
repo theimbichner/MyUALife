@@ -35,8 +35,8 @@ namespace Tests
             List<Event> temp = new List<Event>();
             temp = theCalendar.GetEventsInRange(basis.AddMinutes(70), basis.AddMinutes(75));
             Assert.IsFalse(temp.Contains(event1));
-            Assert.IsTrue(temp.Contains(event2));
-            Assert.IsTrue(temp.Contains(event3));
+            Assert.IsFalse(temp.Contains(event2));
+            Assert.IsFalse(temp.Contains(event3));
             Assert.IsFalse(temp.Contains(event4));
             Assert.IsFalse(temp.Contains(event5));
             Assert.IsFalse(temp.Contains(event6));
