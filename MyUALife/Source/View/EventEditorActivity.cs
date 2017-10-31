@@ -23,6 +23,7 @@ namespace MyUALife
         private Button changeEndButton;
         private Button saveButton;
         private Spinner typeSpinner;
+        private LinearLayout freeTimeLayout;
 
         // The times selected with DatePickerFragment.
         private DateTime[] eventTimes = {DateTime.Now, DateTime.Now};
@@ -67,6 +68,7 @@ namespace MyUALife
             changeEndButton = FindViewById<Button>(Resource.Id.changeEndButton);
             saveButton = FindViewById<Button>(Resource.Id.saveButton);
             typeSpinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
+            freeTimeLayout = FindViewById<LinearLayout>(Resource.Id.freeTimeLayout);
 
             // Setup the text fields to turn on the save button when edited
             nameText.TextChanged += (sender, e) => TurnOnSaveButton();
@@ -113,6 +115,35 @@ namespace MyUALife
 
             // Initialize the start/end time labels with the correct times
             UpdateTimeLabels();
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+            LoadFreeTimeEvents();
+        }
+
+        /*
+         * Loads every event scheduled for the current day into the main text
+         * view.
+         */
+        private void LoadFreeTimeEvents()
+        {
+            // Load events from today
+            DateTime loadedDate = DateTime.Today;
+
+            // Create a range of DateTimes
+            // We want to count midnight as belonging to the previous day.
+            // Hence, we start our range just after midnight
+            DateTime start = loadedDate.AddMilliseconds(1);
+            DateTime end = loadedDate.AddDays(1);
+
+            // Get the events in range from the calendar
+            var loadedEvents = Model.Calendar.GetFreeTimeBlocksInRange(start, end);
+
+            // Clear the layout and add a text view for every event
+            ViewUtil util = new ViewUtil(this);
+            util.LoadFreeTimeToLayout(freeTimeLayout, loadedEvents);
         }
 
         /*

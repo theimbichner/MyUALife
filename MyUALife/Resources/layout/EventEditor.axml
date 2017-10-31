@@ -126,8 +126,8 @@
 <!-- The free time menu -->
     <LinearLayout
         android:id="@+id/freeTimeLayout"
+        android:orientation="vertical"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:layout_gravity="end">
-    </LinearLayout>
+        android:layout_gravity="end" />
 </android.support.v4.widget.DrawerLayout>

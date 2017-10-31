@@ -5,6 +5,7 @@ using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.App;
 using Android.Views;
+using System;
 using System.Collections.Generic;
 
 namespace MyUALife
@@ -26,42 +27,11 @@ namespace MyUALife
         }
 
         /*
-         * Returns a new TextView that displays data about the given event.
-         * When the returned TextView is long clicked, an AlertDialog is opened
-         * asking the user if they want to edit the event. The view's
-         * background is a rounded rectangle with the given color.
+         * Creates a TextView as part of this ViewUtil's context that contains
+         * the specified text. The background of the TextView will be a rounded
+         * rectangle of the specified color.
          */
-        public TextView GenerateTextView(Event calendarEvent)
-        {
-            // Create the text view and set its text
-            TextView view = GenerateBaseTextView();
-            view.Text = calendarEvent.ToString();
-
-            // Set the background color
-            ShapeDrawable sd = (ShapeDrawable)view.Background;
-            sd.Paint.Color = Color.ParseColor(calendarEvent.Type.colorString);
-            return view;
-        }
-
-        /*
-         * Returns a new TextView that displays data about the given deadline.
-         */
-        public TextView GenerateTextView(Deadline deadline)
-        {
-            // Create TextView and set its text
-            TextView view = GenerateBaseTextView();
-            view.Text = deadline.ToString();
-
-            // Set the background color
-            ShapeDrawable sd = (ShapeDrawable)view.Background;
-            sd.Paint.Color = Color.ParseColor("#8BC34B");
-            return view;
-        }
-
-        /*
-         * Returns a basic rectangular TextView for displaying events or deadlines.
-         */
-        public TextView GenerateBaseTextView()
+        public TextView GenerateTextView(String text, String colorString)
         {
             // Create the text view
             TextView view = new TextView(ContextWrapper);
@@ -91,7 +61,11 @@ namespace MyUALife
             }
             Shape s = new RoundRectShape(radii, null, null);
             ShapeDrawable sd = new ShapeDrawable(s);
+            sd.Paint.Color = Color.ParseColor(colorString);
             view.Background = sd;
+
+            // Set the text
+            view.Text = text;
 
             // Set the text to white
             view.SetTextColor(Color.White);
@@ -101,14 +75,15 @@ namespace MyUALife
         /*
          * Fills the supplied layout with TextViews representing the events in
          * events. Views are added in the order that the events appear in the
-         * list.
+         * list. When the views are long clicked, an Alertdialog is opened
+         * asking the user if they want to edit or delete the event.
          */
         public void LoadEventsToLayout(LinearLayout layout, List<Event> events)
         {
             layout.RemoveAllViews();
             foreach (Event e in events)
             {
-                TextView view = GenerateTextView(e);
+                TextView view = GenerateTextView(e.ToString(), e.Type.colorString);
 
                 // Register an event handler to delete or edit the event
                 view.LongClick += (sender, ea) =>
@@ -145,8 +120,25 @@ namespace MyUALife
             layout.RemoveAllViews();
             foreach (Deadline d in deadlines)
             {
-                TextView view = GenerateTextView(d);
+                TextView view = GenerateTextView(d.ToString(), "#F44336");
                 // TODO: long click?
+                layout.AddView(view);
+            }
+        }
+
+        /*
+         * Fills the supplied layout with TextViews that are designed to
+         * represent a block of free time. Views are added in the order that
+         * the free time events appear in events.
+         */
+        public void LoadFreeTimeToLayout(LinearLayout layout, List<Event> events)
+        {
+            layout.RemoveAllViews();
+            foreach (Event e in events)
+            {
+                String format = "{0} - {1}";
+                String text = String.Format(format, e.StartTime, e.EndTime);
+                TextView view = GenerateTextView(text, e.Type.colorString);
                 layout.AddView(view);
             }
         }
