@@ -124,10 +124,24 @@
             android:id="@+id/saveButton" />
     </LinearLayout>
 <!-- The free time menu -->
-    <LinearLayout
-        android:id="@+id/freeTimeLayout"
-        android:orientation="vertical"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end" />
+  <LinearLayout
+      android:id="@+id/linearLayout5"
+      android:orientation="vertical"
+      android:background="@color/white"
+      android:layout_width="240dp"
+      android:layout_height="match_parent"
+      android:layout_gravity="end">
+      <TextView
+          android:text="Free Time"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:id="@+id/textView6" />
+      <LinearLayout
+          android:id="@+id/freeTimeLayout"
+          android:orientation="vertical"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
+  </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

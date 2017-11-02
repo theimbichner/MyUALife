@@ -2,6 +2,7 @@
 using Android.OS;
 using Android.Widget;
 using Android.Content;
+using Android.Support.V4.Widget;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +12,7 @@ namespace MyUALife
     public class EventEditorActivity : Activity
     {
         // GUI components
+        private DrawerLayout drawerLayout;
         private EditText nameText;
         private EditText descriptionText;
         private TextView startTimeLabel;
@@ -25,6 +27,9 @@ namespace MyUALife
         private DateTimeFetcher StartTime;
         private DateTimeFetcher EndTime;
 
+        // True iff the save button should be enabled
+        private bool saveButtonEnabled;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -33,6 +38,7 @@ namespace MyUALife
             SetContentView(Resource.Layout.EventEditor);
 
             // Get components from id
+            drawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawerLayout);
             nameText = FindViewById<EditText>(Resource.Id.nameText);
             descriptionText = FindViewById<EditText>(Resource.Id.descriptionText);
             startTimeLabel = FindViewById<TextView>(Resource.Id.startTimeLabel);
@@ -42,6 +48,26 @@ namespace MyUALife
             saveButton = FindViewById<Button>(Resource.Id.saveButton);
             typeSpinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
             freeTimeLayout = FindViewById<LinearLayout>(Resource.Id.freeTimeLayout);
+
+            drawerLayout.DrawerOpened += (sender, e) =>
+            {
+                nameText.Enabled = false;
+                descriptionText.Enabled = false;
+                changeStartButton.Enabled = false;
+                changeEndButton.Enabled = false;
+                saveButton.Enabled = false;
+                typeSpinner.Enabled = false;
+            };
+
+            drawerLayout.DrawerClosed += (sender, e) =>
+            {
+                nameText.Enabled = true;
+                descriptionText.Enabled = true;
+                changeStartButton.Enabled = true;
+                changeEndButton.Enabled = true;
+                saveButton.Enabled = saveButtonEnabled;
+                typeSpinner.Enabled = true;
+            };
 
             // Setup the text fields to turn on the save button when edited
             nameText.TextChanged += (sender, e) => TurnOnSaveButton();
@@ -61,6 +87,7 @@ namespace MyUALife
             saveButton.Click += (sender, e) => SaveChanges();
 
             // Disable the save changes button by default
+            saveButtonEnabled = false;
             saveButton.Enabled = false;
 
             // Configure the spinner to display the correct list of EventTypes
@@ -133,6 +160,7 @@ namespace MyUALife
             Intent data = new Intent();
             new EventSerializer(data).WriteEvent(EventSerializer.ResultEvent, resultEvent);
             SetResult(Result.Ok, data);
+            saveButtonEnabled = false;
             saveButton.Enabled = false;
         }
 
@@ -156,6 +184,7 @@ namespace MyUALife
             {
                 return;
             }
+            saveButtonEnabled = true;
             saveButton.Enabled = true;
         }
 

@@ -44,10 +44,10 @@ namespace MyUALife
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
             view.LayoutParameters = layoutParams;
 
-            // Add a 2dp margin below
+            // Add a 3dp margin below
             layoutParams.BottomMargin = DPToNearestPX(3f);
 
-            // Add 3dp margins to the left/right
+            // Add 5dp margins to the left/right
             int margin = DPToNearestPX(5f);
             layoutParams.LeftMargin = margin;
             layoutParams.RightMargin = margin;
