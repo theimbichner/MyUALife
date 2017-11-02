@@ -10,7 +10,6 @@ namespace MyUALife
     [Activity(Label = "Create Deadline")]
     public class DeadlineEditorActivity : Activity
     {
-
         // GUI components
         private EditText nameText;
         private EditText descriptionText;
@@ -20,14 +19,14 @@ namespace MyUALife
         private Spinner typeSpinner;
 
         // The times selected with DatePickerFragment.
-        private DateTime deadlineTime = DateTime.Now;
+        private DateTimeFetcher deadlineTime;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             // Set view from layout resource
-            SetContentView(Resource.Layout.EventEditor);
+            SetContentView(Resource.Layout.DeadlineEditor);
 
             // Get components from id
             nameText = FindViewById<EditText>(Resource.Id.nameText);
@@ -46,7 +45,8 @@ namespace MyUALife
             descriptionText.SetMaxLines(1000);
 
             // Setup the time buttons to display a time picker dialog
-            changeTimeButton.Click += (sender, e) => PollDateTime();
+            deadlineTime = new DateTimeFetcher(this, DateTime.Now, OnTimeChanged);
+            changeTimeButton.Click += (sender, e) => deadlineTime.PollDateTime();
 
             // Setup the save changes button to save the current data when pressed
             saveButton.Click += (sender, e) => SaveChanges();
@@ -73,7 +73,7 @@ namespace MyUALife
                 // Store data from input in the components
                 nameText.Text = input.Name;
                 descriptionText.Text = input.Description;
-                deadlineTime = input.Time;
+                deadlineTime.Time = input.Time;
                 typeSpinner.SetSelection(adapter.GetPosition(input.associatedEventType.name));
                 SaveChanges();
             }
@@ -90,65 +90,11 @@ namespace MyUALife
         private void SaveChanges()
         {
             String typeName = typeSpinner.SelectedItem.ToString();
-            Deadline result = new Deadline(nameText.Text, descriptionText.Text, deadlineTime, Category.GetTypeByName(typeName));
+            Deadline result = new Deadline(nameText.Text, descriptionText.Text, deadlineTime.Time, Category.GetTypeByName(typeName));
             Intent data = new Intent();
             new DeadlineSerializer(data).WriteDeadline(DeadlineSerializer.ResultDeadline, result);
             SetResult(Result.Ok, data);
             saveButton.Enabled = false;
-        }
-
-        /*
-         * A DialogFragment that shows the user a DatePickerDialog and passes
-         * the picked date along to a TimePickerFragment.
-         */
-        private class DatePickerFragment : DialogFragment, DatePickerDialog.IOnDateSetListener
-        {
-
-            public DatePickerFragment()
-            {
-            }
-
-            public override Dialog OnCreateDialog(Bundle savedInstanceState)
-            {
-                DateTime date = DateTime.Today;
-                return new DatePickerDialog(Activity, this, date.Year, date.Month - 1, date.Day);
-            }
-
-            public void OnDateSet(DatePicker view, int year, int month, int day)
-            {
-                DateTime date = new DateTime(year, month + 1, day);
-                TimePickerFragment timePicker = new TimePickerFragment(date);
-                timePicker.Show(FragmentManager, "pickStartTime");
-            }
-        }
-
-        /*
-         * A DialogFragment that takes a date, gets a time from the user via a
-         * TimePickerDialog, and creates a DateTime from this information. This
-         * DateTime is then stored in eventTimes.
-         */
-        private class TimePickerFragment : DialogFragment, TimePickerDialog.IOnTimeSetListener
-        {
-            private readonly DateTime date;
-
-            public TimePickerFragment(DateTime date)
-            {
-                this.date = date;
-            }
-
-            public override Dialog OnCreateDialog(Bundle savedInstanceState)
-            {
-                DateTime time = DateTime.Now;
-                return new TimePickerDialog(Activity, this, time.Hour, time.Minute, false);
-            }
-
-            public void OnTimeSet(TimePicker view, int hour, int minute)
-            {
-                DeadlineEditorActivity deadlineEditor = (DeadlineEditorActivity)Activity;
-                deadlineEditor.deadlineTime = date.AddHours(hour).AddMinutes(minute);
-                deadlineEditor.UpdateTimeLabels();
-                deadlineEditor.TurnOnSaveButton();
-            }
         }
 
         /*
@@ -157,17 +103,7 @@ namespace MyUALife
          */
         private void UpdateTimeLabels()
         {
-            timeLabel.Text = deadlineTime.ToString("g");
-        }
-
-        /*
-         * Opens a dialog asking the user for a time and stores the result in
-         * the appropriate entry in eventTimes.
-         */
-        private void PollDateTime()
-        {
-            DatePickerFragment dateTimePicker = new DatePickerFragment();
-            dateTimePicker.Show(FragmentManager, "pickStartDateTime");
+            timeLabel.Text = deadlineTime.Time.ToString("g");
         }
 
         /*
@@ -181,6 +117,16 @@ namespace MyUALife
                 return;
             }
             saveButton.Enabled = true;
+        }
+
+        /*
+         * This method should be called whenever the user uses the time changer
+         * button to set the end time for the deadline
+         */
+        private void OnTimeChanged()
+        {
+            UpdateTimeLabels();
+            TurnOnSaveButton();
         }
     }
 }

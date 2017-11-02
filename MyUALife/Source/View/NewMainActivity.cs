@@ -16,8 +16,8 @@ namespace MyUALife
         private const int AddEventRequest = 1;
         private const int EditEventRequest = 2;
 
-		// Request codes for the DeadlineEditorActivity
-		private const int AddDeadlineRequest = 1;
+        // Request codes for the DeadlineEditorActivity
+        private const int AddDeadlineRequest = 1;
 
         // The date whose events are currently displayed
         private DateTime loadedDate;
@@ -95,7 +95,7 @@ namespace MyUALife
             // Setup the deadline button to open the create deadline screen
             createDeadlineButton.Click += (sender, e) =>
             {
-					StartAddDeadlineActivity();
+                StartAddDeadlineActivity();
             };
         }
 
@@ -170,10 +170,15 @@ namespace MyUALife
             StartActivityForResult(intent, AddEventRequest);
         }
 
-		public void StartAddDeadlineActivity() {
-			Intent intent = new Intent(this, typeof(DeadlineEditorActivity));
-			StartActivityForResult(intent, AddDeadlineRequest);
-		}
+        /*
+         * Starts the DeadlineEditorActivity. No deadline is passed to the
+         * editor, so the returned event will be wholly new.
+         */
+        public void StartAddDeadlineActivity()
+        {
+            Intent intent = new Intent(this, typeof(DeadlineEditorActivity));
+            StartActivityForResult(intent, AddDeadlineRequest);
+        }
 
         /*
          * Starts the editor with the given event's info as the starting value
