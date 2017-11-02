@@ -19,19 +19,18 @@ namespace MyUALife
         // Request codes for the DeadlineEditorActivity
         private const int AddDeadlineRequest = 1;
 
-        // The date whose events are currently displayed
-        private DateTime loadedDate;
-        private List<Event> loadedEvents;
+        // The opened tab -- true: events tab, false: deadlines tab
+        private bool eventsTabOpen = true;
 
         // GUI components
         private Button filterButton;
         private Button calendarButton;
-        private RadioButton eventsTab;
-        private RadioButton deadlinesTab;
         private Button happeningsButton;
         private Button createEventButton;
         private Button createDeadlineButton;
         private LinearLayout mainTextLayout;
+        private RadioButton eventsTab;
+        private RadioButton deadlinesTab;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -47,7 +46,6 @@ namespace MyUALife
             createEventButton = FindViewById<Button>(Resource.Id.createEventButton);
             createDeadlineButton = FindViewById<Button>(Resource.Id.createDeadlineButton);
             mainTextLayout = FindViewById<LinearLayout>(Resource.Id.mainTextLayout);
-
             eventsTab = FindViewById<RadioButton>(Resource.Id.eventsRadioButton);
             deadlinesTab = FindViewById<RadioButton>(Resource.Id.deadlinesRadioButton);
 
@@ -68,18 +66,6 @@ namespace MyUALife
                 StartActivity(intent);
             };
 
-            // Setup the events tab to display the events list
-            eventsTab.Click += (sender, e) =>
-            {
-                LoadEvents();
-            };
-
-            // Setup the deadlines tab to display the deadlines list
-            deadlinesTab.Click += (sender, e) =>
-            {
-                LoadDeadlines();
-            };
-
             // Setup the happenings button to display a list of happenings
             happeningsButton.Click += (sender, e) =>
             {
@@ -97,6 +83,20 @@ namespace MyUALife
             {
                 StartAddDeadlineActivity();
             };
+
+            // Setup the events tab to display the events list
+            eventsTab.Click += (sender, e) =>
+            {
+                LoadEvents();
+                eventsTabOpen = true;
+            };
+
+            // Setup the deadlines tab to display the deadlines list
+            deadlinesTab.Click += (sender, e) =>
+            {
+                LoadDeadlines();
+                eventsTabOpen = false;
+            };
         }
 
         protected override void OnStart()
@@ -104,7 +104,14 @@ namespace MyUALife
             base.OnStart();
 
             // Load the events scheduled for today
-            LoadEvents();
+            if (eventsTabOpen)
+            {
+                LoadEvents();
+            }
+            else
+            {
+                LoadDeadlines();
+            }
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
@@ -129,7 +136,7 @@ namespace MyUALife
         private void LoadEvents()
         {
             // Load events from today
-            loadedDate = DateTime.Today;
+            DateTime loadedDate = DateTime.Today;
 
             // Create a range of DateTimes
             // We want to count midnight as belonging to the previous day.
@@ -138,7 +145,7 @@ namespace MyUALife
             DateTime end = loadedDate.AddDays(1);
 
             // Get the events in range from the calendar
-            loadedEvents = Model.Calendar.GetEventsInRange(start, end);
+            var loadedEvents = Model.Calendar.GetEventsInRange(start, end);
 
             // Clear the layout and add a text view for every event
             ViewUtil util = new ViewUtil(this);
@@ -151,7 +158,7 @@ namespace MyUALife
          */
         private void LoadDeadlines()
         {
-            loadedDate = DateTime.Today;
+            DateTime loadedDate = DateTime.Today;
 
             DateTime start = loadedDate.AddMilliseconds(1);
             List<Deadline> deadlines = Model.Calendar.GetDeadlinesAfterTime(start);
