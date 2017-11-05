@@ -67,16 +67,16 @@
     <Compile Include="Source\View\ViewUtil.cs" />
     <Compile Include="Source\View\EventEditorActivity.cs" />
     <Compile Include="Source\Model\Calendar.cs" />
-    <Compile Include="Source\View\DayViewActivity.cs" />
+    <Compile Include="Deprecated\DayViewActivity.cs" />
     <Compile Include="Source\Model\Event.cs" />
-    <Compile Include="Source\View\MainActivity.cs" />
+    <Compile Include="Deprecated\MainActivity.cs" />
     <Compile Include="Source\Model\Model.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\View\NewMainActivity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\DayView.axml">
+    <AndroidResource Include="Deprecated\DayView.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <None Include="GettingStarted.Xamarin" />
@@ -95,7 +95,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\Main.axml">
+    <AndroidResource Include="Deprecated\Main.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\values\Strings.xml" />
