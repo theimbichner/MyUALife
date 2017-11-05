@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class Deadline {
+public class Deadline : IComparable<Deadline> {
 
 	public DateTime Time { get; set; }
 	public string Name { get; set; }
@@ -28,4 +28,8 @@ public class Deadline {
         return string.Format(format, args);
     }
 
+    public int CompareTo(Deadline d)
+    {
+        return Time.CompareTo(d.Time);
+    }
 }

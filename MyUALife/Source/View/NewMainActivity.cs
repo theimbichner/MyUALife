@@ -162,6 +162,9 @@ namespace MyUALife
             // Get the events in range from the calendar
             var loadedEvents = Model.Calendar.GetEventsInRange(start, end);
 
+            // Sort the events
+            loadedEvents.Sort();
+
             // Clear the layout and add a text view for every event
             ViewUtil util = new ViewUtil(this);
             util.LoadEventsToLayout(mainTextLayout, loadedEvents);
@@ -177,6 +180,7 @@ namespace MyUALife
 
             DateTime start = loadedDate.AddMilliseconds(1);
             List<Deadline> deadlines = Model.Calendar.GetDeadlinesAfterTime(start);
+            deadlines.Sort();
 
             ViewUtil util = new ViewUtil(this);
             util.LoadDeadlinesToLayout(mainTextLayout, deadlines);
