@@ -27,8 +27,35 @@ namespace MyUALife
         private DateTimeFetcher StartTime;
         private DateTimeFetcher EndTime;
 
-        // True iff the save button should be enabled
-        private bool saveButtonEnabled;
+        // True if the user has made changes since they last saved
+        private bool hasUnsavedChanges = false;
+        private bool HasUnsavedChanges
+        {
+            get
+            {
+                return hasUnsavedChanges;
+            }
+            set
+            {
+                hasUnsavedChanges = value;
+                UpdateEnableStates();
+            }
+        }
+
+        // True when the drawer is open
+        private bool drawerOpen = false;
+        private bool DrawerOpen
+        {
+            get
+            {
+                return drawerOpen;
+            }
+            set
+            {
+                drawerOpen = value;
+                UpdateEnableStates();
+            }
+        }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -49,29 +76,13 @@ namespace MyUALife
             typeSpinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
             freeTimeLayout = FindViewById<LinearLayout>(Resource.Id.freeTimeLayout);
 
-            drawerLayout.DrawerOpened += (sender, e) =>
-            {
-                nameText.Enabled = false;
-                descriptionText.Enabled = false;
-                changeStartButton.Enabled = false;
-                changeEndButton.Enabled = false;
-                saveButton.Enabled = false;
-                typeSpinner.Enabled = false;
-            };
-
-            drawerLayout.DrawerClosed += (sender, e) =>
-            {
-                nameText.Enabled = true;
-                descriptionText.Enabled = true;
-                changeStartButton.Enabled = true;
-                changeEndButton.Enabled = true;
-                saveButton.Enabled = saveButtonEnabled;
-                typeSpinner.Enabled = true;
-            };
+            // Setup the DrawerLayout to keep track of its open/closed state
+            drawerLayout.DrawerOpened += (sender, e) => DrawerOpen = true;
+            drawerLayout.DrawerClosed += (sender, e) => DrawerOpen = false;
 
             // Setup the text fields to turn on the save button when edited
-            nameText.TextChanged += (sender, e) => TurnOnSaveButton();
-            descriptionText.TextChanged += (sender, e) => TurnOnSaveButton();
+            nameText.TextChanged += (sender, e) => HasUnsavedChanges = true;
+            descriptionText.TextChanged += (sender, e) => HasUnsavedChanges = true;
 
             // Configure the description text to display correctly
             descriptionText.SetHorizontallyScrolling(false);
@@ -86,10 +97,6 @@ namespace MyUALife
             // Setup the save changes button to save the current data when pressed
             saveButton.Click += (sender, e) => SaveChanges();
 
-            // Disable the save changes button by default
-            saveButtonEnabled = false;
-            saveButton.Enabled = false;
-
             // Configure the spinner to display the correct list of EventTypes
             List<String> names = new List<String>();
             foreach (EventType t in Category.creatableTypes)
@@ -100,7 +107,7 @@ namespace MyUALife
             typeSpinner.Adapter = adapter;
 
             // Setup the spinner to turn on the save button
-            typeSpinner.ItemSelected += (sender, e) => TurnOnSaveButton();
+            typeSpinner.ItemSelected += (sender, e) => HasUnsavedChanges = true;
 
             // Get the event stored in Intent, if any
             Event input = new EventSerializer(Intent).ReadEvent(EventSerializer.InputEvent);
@@ -114,15 +121,20 @@ namespace MyUALife
                 typeSpinner.SetSelection(adapter.GetPosition(input.Type.name));
                 SaveChanges();
             }
-
-            // Initialize the start/end time labels with the correct times
-            UpdateTimeLabels();
         }
 
         protected override void OnStart()
         {
             base.OnStart();
+
+            // Update the list of free time events in the pull out drawer
             LoadFreeTimeEvents();
+
+            // Initialize the start/end time labels with the correct times
+            UpdateTimeLabels();
+
+            // Ensure that all components have the correct enabled state
+            UpdateEnableStates();
         }
 
         /*
@@ -136,16 +148,26 @@ namespace MyUALife
 
             // Create a range of DateTimes
             // We want to count midnight as belonging to the previous day.
-            // Hence, we start our range just after midnight
             DateTime start = loadedDate.AddMilliseconds(1);
             DateTime end = loadedDate.AddDays(1);
 
             // Get the events in range from the calendar
             var loadedEvents = Model.Calendar.GetFreeTimeBlocksInRange(start, end);
 
-            // Clear the layout and add a text view for every event
+            // Fill the free time display with a list of free times.
             ViewUtil util = new ViewUtil(this);
-            util.LoadFreeTimeToLayout(freeTimeLayout, loadedEvents);
+            ViewUtil.ToStr<Event> label = e => String.Format("{0} - {1}", e.StartTime, e.EndTime);
+            ViewUtil.ToStr<Event> color = e => e.Type.colorString;
+            ViewUtil.SetupCallback<Event> setup = (view, layout, freeTime) =>
+            {
+                view.Click += (sender, e) =>
+                {
+                    StartTime.Time = freeTime.StartTime;
+                    EndTime.Time = freeTime.EndTime;
+                    UpdateTimeLabels();
+                };
+            };
+            util.LoadListToLayout(freeTimeLayout, loadedEvents, label, color, setup);
         }
 
         /*
@@ -160,8 +182,7 @@ namespace MyUALife
             Intent data = new Intent();
             new EventSerializer(data).WriteEvent(EventSerializer.ResultEvent, resultEvent);
             SetResult(Result.Ok, data);
-            saveButtonEnabled = false;
-            saveButton.Enabled = false;
+            HasUnsavedChanges = false;
         }
 
         /*
@@ -175,20 +196,6 @@ namespace MyUALife
         }
 
         /*
-         * Enables the save changes button. Anything that causes a change in
-         * the data stored in the GUI components should call this method.
-         */
-        private void TurnOnSaveButton()
-        {
-            if (nameText.Text == "")
-            {
-                return;
-            }
-            saveButtonEnabled = true;
-            saveButton.Enabled = true;
-        }
-
-        /*
          * This method should be called whenever the user uses the time changer
          * buttons to set the start or end time for an event.
          */
@@ -199,7 +206,22 @@ namespace MyUALife
                 EndTime.Time = StartTime.Time;
             }
             UpdateTimeLabels();
-            TurnOnSaveButton();
+            HasUnsavedChanges = true;
+        }
+
+        /*
+         * Determines whether each component of this view should be enabled or
+         * disabled and updates them appropriately.
+         */
+        private void UpdateEnableStates()
+        {
+            saveButton.Enabled = HasUnsavedChanges && nameText.Text != "" && !DrawerOpen;
+
+            nameText.Enabled = !DrawerOpen;
+            descriptionText.Enabled = !DrawerOpen;
+            changeStartButton.Enabled = !DrawerOpen;
+            changeEndButton.Enabled = !DrawerOpen;
+            typeSpinner.Enabled = !DrawerOpen;
         }
     }
 }

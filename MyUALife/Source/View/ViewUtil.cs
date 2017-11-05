@@ -12,6 +12,13 @@ namespace MyUALife
 {
     class ViewUtil
     {
+        // Function for converting a generic object into a string
+        public delegate String ToStr<T>(T t);
+
+        // Function to perform setup operations on a textView
+        public delegate void SetupCallback<T>(TextView textView, LinearLayout layout, T target);
+
+        // The ContextWrapper that this util supports
         public ContextWrapper ContextWrapper
         {
             get;
@@ -24,6 +31,25 @@ namespace MyUALife
         public ViewUtil(ContextWrapper cw)
         {
             ContextWrapper = cw;
+        }
+
+        /*
+         * Fills the supplied layout with TextViews representing the objects in
+         * objs. Views are added in the order that objects appear in the list.
+         * The text displayed in the TextView is given by label(obj). The
+         * background of the TextView is a rounded rectangle with the color
+         * represented by color(obj). Each TextView is setup with setup before
+         * it is added to the layout.
+         */
+        public void LoadListToLayout<T>(LinearLayout layout, List<T> objs, ToStr<T> label, ToStr<T> color, SetupCallback<T> setup)
+        {
+            layout.RemoveAllViews();
+            foreach (T t in objs)
+            {
+                TextView view = GenerateTextView(label(t), color(t));
+                setup?.Invoke(view, layout, t);
+                layout.AddView(view);
+            }
         }
 
         /*
@@ -70,77 +96,6 @@ namespace MyUALife
             // Set the text to white
             view.SetTextColor(Color.White);
             return view;
-        }
-
-        /*
-         * Fills the supplied layout with TextViews representing the events in
-         * events. Views are added in the order that the events appear in the
-         * list. When the views are long clicked, an Alertdialog is opened
-         * asking the user if they want to edit or delete the event.
-         */
-        public void LoadEventsToLayout(LinearLayout layout, List<Event> events)
-        {
-            layout.RemoveAllViews();
-            foreach (Event e in events)
-            {
-                TextView view = GenerateTextView(e.ToString(), e.Type.colorString);
-
-                // Register an event handler to delete or edit the event
-                view.LongClick += (sender, ea) =>
-                {
-                    var infoDialog = new AlertDialog.Builder(ContextWrapper);
-                    infoDialog.SetMessage("Delete or edit this event?");
-                    infoDialog.SetPositiveButton("Delete", delegate
-                    {
-                        layout.RemoveView(view);
-                        Model.Calendar.RemoveEvent(e);
-                    });
-                    if (ContextWrapper is MainActivity)
-                    {
-                        infoDialog.SetNeutralButton("Edit", delegate
-                        {
-                            ((MainActivity) ContextWrapper).StartEditEventActivity(e);
-                        });
-                    }
-                    infoDialog.SetNegativeButton("Cancel", delegate { });
-                    infoDialog.Show();
-                };
-
-                layout.AddView(view);
-            }
-        }
-
-        /*
-         * Fills the supplied layout with TextViews representing the deadlines in
-         * deadlines. Views are added in the order that the deadlines appear in the
-         * list.
-         */
-        public void LoadDeadlinesToLayout(LinearLayout layout, List<Deadline> deadlines)
-        {
-            layout.RemoveAllViews();
-            foreach (Deadline d in deadlines)
-            {
-                TextView view = GenerateTextView(d.ToString(), "#F44336");
-                // TODO: long click?
-                layout.AddView(view);
-            }
-        }
-
-        /*
-         * Fills the supplied layout with TextViews that are designed to
-         * represent a block of free time. Views are added in the order that
-         * the free time events appear in events.
-         */
-        public void LoadFreeTimeToLayout(LinearLayout layout, List<Event> events)
-        {
-            layout.RemoveAllViews();
-            foreach (Event e in events)
-            {
-                String format = "{0} - {1}";
-                String text = String.Format(format, e.StartTime, e.EndTime);
-                TextView view = GenerateTextView(text, e.Type.colorString);
-                layout.AddView(view);
-            }
         }
 
         /*

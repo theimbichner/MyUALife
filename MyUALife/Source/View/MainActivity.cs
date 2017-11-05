@@ -155,7 +155,6 @@ namespace MyUALife
 
             // Create a range of DateTimes
             // We want to count midnight as belonging to the previous day.
-            // Hence, we start our range just after midnight
             DateTime start = loadedDate.AddMilliseconds(1);
             DateTime end = loadedDate.AddDays(1);
 
@@ -165,9 +164,31 @@ namespace MyUALife
             // Sort the events
             loadedEvents.Sort();
 
-            // Clear the layout and add a text view for every event
+            // Fill the main display with a list of events
             ViewUtil util = new ViewUtil(this);
-            util.LoadEventsToLayout(mainTextLayout, loadedEvents);
+            ViewUtil.ToStr<Event> label = e => e.ToString();
+            ViewUtil.ToStr<Event> color = e => e.Type.colorString;
+            ViewUtil.SetupCallback<Event> setup = (view, layout, e) =>
+            {
+                // Register an event handler to delete or edit the event
+                view.LongClick += (sender, ea) =>
+                {
+                    var infoDialog = new AlertDialog.Builder(this);
+                    infoDialog.SetMessage("Delete or edit this event?");
+                    infoDialog.SetPositiveButton("Delete", delegate
+                    {
+                        layout.RemoveView(view);
+                        Model.Calendar.RemoveEvent(e);
+                    });
+                    infoDialog.SetNeutralButton("Edit", delegate
+                    {
+                        this.StartEditEventActivity(e);
+                    });
+                    infoDialog.SetNegativeButton("Cancel", delegate { });
+                    infoDialog.Show();
+                };
+            };
+            util.LoadListToLayout(mainTextLayout, loadedEvents, label, color, setup);
         }
 
         /*
@@ -176,14 +197,18 @@ namespace MyUALife
          */
         private void LoadDeadlines()
         {
-            DateTime loadedDate = DateTime.Today;
-
-            DateTime start = loadedDate.AddMilliseconds(1);
+            // Load deadlines that have not already passed
+            DateTime start = DateTime.Now;
             List<Deadline> deadlines = Model.Calendar.GetDeadlinesAfterTime(start);
+
+            // Sort the deadlines
             deadlines.Sort();
 
+            // Fill the main display with the list of deadlines
             ViewUtil util = new ViewUtil(this);
-            util.LoadDeadlinesToLayout(mainTextLayout, deadlines);
+            ViewUtil.ToStr<Deadline> label = d => d.ToString();
+            ViewUtil.ToStr<Deadline> color = d => "#F44336";
+            util.LoadListToLayout(mainTextLayout, deadlines, label, color, null);
         }
 
         /*
