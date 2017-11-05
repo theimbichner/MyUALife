@@ -17,7 +17,7 @@ namespace MyUALife
         private const int EditEventRequest = 2;
 
         // Request codes for the DeadlineEditorActivity
-        private const int AddDeadlineRequest = 1;
+        private const int AddDeadlineRequest = 3;
 
         // The opened tab -- true: events tab, false: deadlines tab
         private bool eventsTabOpen = true;
@@ -117,15 +117,30 @@ namespace MyUALife
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            if (resultCode == Result.Ok)
+
+            if (resultCode != Result.Ok)
+            {
+                // If the activity terminated abnormally, do not attempt to add anything
+                return;
+            }
+
+            if (requestCode == AddEventRequest || requestCode == EditEventRequest)
             {
                 // Add the resulting event to the calendar
                 Event resultEvent = new EventSerializer(data).ReadEvent(EventSerializer.ResultEvent);
-                Model.Calendar.AddEvent(resultEvent);
+                if (resultEvent != null)
+                {
+                    Model.Calendar.AddEvent(resultEvent);
+                }
             }
-            else
+            else if (requestCode == AddDeadlineRequest)
             {
-                // The user selected to add an event, but backed out without saving
+                // Add the resulting deadline to the calendar
+                Deadline resultDeadline = new DeadlineSerializer(data).ReadDeadline(DeadlineSerializer.ResultDeadline);
+                if (resultDeadline != null)
+                {
+                    Model.Calendar.AddDeadline(resultDeadline);
+                }
             }
         }
 
