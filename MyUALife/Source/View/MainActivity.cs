@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace MyUALife
 {
     [Activity(Label = "MyUALife", MainLauncher = true)]
-    public class NewMainActivity : Activity
+    public class MainActivity : Activity
     {
         // Request codes for the EventEditorActivity
         private const int AddEventRequest = 1;
@@ -37,7 +37,7 @@ namespace MyUALife
             base.OnCreate(savedInstanceState);
 
             // Set view from layout resource
-            SetContentView(Resource.Layout.NewMain);
+            SetContentView(Resource.Layout.Main);
 
             // Get components by id
             filterButton = FindViewById<Button>(Resource.Id.filterButton);

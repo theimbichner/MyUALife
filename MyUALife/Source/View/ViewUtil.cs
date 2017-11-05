@@ -95,11 +95,11 @@ namespace MyUALife
                         layout.RemoveView(view);
                         Model.Calendar.RemoveEvent(e);
                     });
-                    if (ContextWrapper is NewMainActivity)
+                    if (ContextWrapper is MainActivity)
                     {
                         infoDialog.SetNeutralButton("Edit", delegate
                         {
-                            ((NewMainActivity) ContextWrapper).StartEditEventActivity(e);
+                            ((MainActivity) ContextWrapper).StartEditEventActivity(e);
                         });
                     }
                     infoDialog.SetNegativeButton("Cancel", delegate { });
