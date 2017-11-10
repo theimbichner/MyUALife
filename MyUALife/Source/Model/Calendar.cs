@@ -66,6 +66,16 @@ public class Calendar
         return output;
     }
 
+    public List<Event> GetEventsOnDate(DateTime date)
+    {
+        // Create a range of DateTimes
+        // We want to count midnight as belonging to the previous day.
+        DateTime start = date.AddMilliseconds(1);
+        DateTime end = date.AddDays(1);
+
+        return GetEventsInRange(start, end);
+    }
+
     public List<Event> GetEventsInRange(DateTime start, DateTime end)
     {
         List<Event> output = new List<Event>();

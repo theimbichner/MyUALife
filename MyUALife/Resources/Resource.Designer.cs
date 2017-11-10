@@ -152,7 +152,7 @@ namespace MyUALife
 			public const int eventsRadioButton = 2131165210;
 			
 			// aapt resource value: 0x7f070018
-			public const int filterButton = 2131165208;
+			public const int filterSpinner = 2131165208;
 			
 			// aapt resource value: 0x7f070017
 			public const int freeTimeLayout = 2131165207;

@@ -4,7 +4,6 @@ using Android.Widget;
 using Android.Content;
 using Android.Support.V4.Widget;
 using System;
-using System.Collections.Generic;
 
 namespace MyUALife
 {
@@ -20,12 +19,14 @@ namespace MyUALife
         private Button changeStartButton;
         private Button changeEndButton;
         private Button saveButton;
-        private Spinner typeSpinner;
         private LinearLayout freeTimeLayout;
 
         // The times selected with DatePickerFragment.
-        private DateTimeFetcher StartTime;
-        private DateTimeFetcher EndTime;
+        private DateTimeFetcher startTime;
+        private DateTimeFetcher endTime;
+
+        // Helper for the type spinner
+        private SpinnerHelper<EventType> typeSpinner;
 
         // True if the user has made changes since they last saved
         private bool hasUnsavedChanges = false;
@@ -73,7 +74,6 @@ namespace MyUALife
             changeStartButton = FindViewById<Button>(Resource.Id.changeStartButton);
             changeEndButton = FindViewById<Button>(Resource.Id.changeEndButton);
             saveButton = FindViewById<Button>(Resource.Id.saveButton);
-            typeSpinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
             freeTimeLayout = FindViewById<LinearLayout>(Resource.Id.freeTimeLayout);
 
             // Setup the DrawerLayout to keep track of its open/closed state
@@ -89,25 +89,20 @@ namespace MyUALife
             descriptionText.SetMaxLines(1000);
 
             // Setup the time buttons to display a time picker dialog
-            StartTime = new DateTimeFetcher(this, DateTime.Now, OnTimeChange);
-            EndTime = new DateTimeFetcher(this, DateTime.Now, OnTimeChange);
-            changeStartButton.Click += (sender, e) => StartTime.PollDateTime();
-            changeEndButton.Click += (sender, e) => EndTime.PollDateTime();
+            startTime = new DateTimeFetcher(this, DateTime.Now, OnTimeChange);
+            endTime = new DateTimeFetcher(this, DateTime.Now, OnTimeChange);
+            changeStartButton.Click += (sender, e) => startTime.PollDateTime();
+            changeEndButton.Click += (sender, e) => endTime.PollDateTime();
 
             // Setup the save changes button to save the current data when pressed
             saveButton.Click += (sender, e) => SaveChanges();
 
             // Configure the spinner to display the correct list of EventTypes
-            List<String> names = new List<String>();
-            foreach (EventType t in Category.creatableTypes)
-            {
-                names.Add(t.name);
-            }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, Android.Resource.Layout.SimpleSpinnerDropDownItem, names);
-            typeSpinner.Adapter = adapter;
+            Spinner spinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
+            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.creatableTypes, t => t.name);
 
             // Setup the spinner to turn on the save button
-            typeSpinner.ItemSelected += (sender, e) => HasUnsavedChanges = true;
+            typeSpinner.Spinner.ItemSelected += (sender, e) => HasUnsavedChanges = true;
 
             // Get the event stored in Intent, if any
             Event input = new EventSerializer(Intent).ReadEvent(EventSerializer.InputEvent);
@@ -116,9 +111,9 @@ namespace MyUALife
                 // Store data from input in the components
                 nameText.Text = input.Name;
                 descriptionText.Text = input.Description;
-                StartTime.Time = input.StartTime;
-                EndTime.Time = input.EndTime;
-                typeSpinner.SetSelection(adapter.GetPosition(input.Type.name));
+                startTime.Time = input.StartTime;
+                endTime.Time = input.EndTime;
+                typeSpinner.SelectedItem = input.Type;
                 SaveChanges();
             }
         }
@@ -156,14 +151,14 @@ namespace MyUALife
 
             // Fill the free time display with a list of free times.
             ViewUtil util = new ViewUtil(this);
-            ViewUtil.ToStr<Event> label = e => String.Format("{0} - {1}", e.StartTime, e.EndTime);
-            ViewUtil.ToStr<Event> color = e => e.Type.colorString;
+            ToStr<Event> label = e => String.Format("{0} - {1}", e.StartTime, e.EndTime);
+            ToStr<Event> color = e => e.Type.colorString;
             ViewUtil.SetupCallback<Event> setup = (view, layout, freeTime) =>
             {
                 view.Click += (sender, e) =>
                 {
-                    StartTime.Time = freeTime.StartTime;
-                    EndTime.Time = freeTime.EndTime;
+                    startTime.Time = freeTime.StartTime;
+                    endTime.Time = freeTime.EndTime;
                     UpdateTimeLabels();
                 };
             };
@@ -177,8 +172,8 @@ namespace MyUALife
          */
         private void SaveChanges()
         {
-            String typeName = typeSpinner.SelectedItem.ToString();
-            Event resultEvent = new Event(nameText.Text, descriptionText.Text, Category.GetTypeByName(typeName), StartTime.Time, EndTime.Time);
+            EventType type = typeSpinner.SelectedItem;
+            Event resultEvent = new Event(nameText.Text, descriptionText.Text, type, startTime.Time, endTime.Time);
             Intent data = new Intent();
             new EventSerializer(data).WriteEvent(EventSerializer.ResultEvent, resultEvent);
             SetResult(Result.Ok, data);
@@ -191,8 +186,8 @@ namespace MyUALife
          */
         private void UpdateTimeLabels()
         {
-            startTimeLabel.Text = StartTime.Time.ToString("g");
-            endTimeLabel.Text = EndTime.Time.ToString("g");
+            startTimeLabel.Text = startTime.Time.ToString("g");
+            endTimeLabel.Text = endTime.Time.ToString("g");
         }
 
         /*
@@ -201,9 +196,9 @@ namespace MyUALife
          */
         private void OnTimeChange()
         {
-            if (EndTime.Time < StartTime.Time)
+            if (endTime.Time < startTime.Time)
             {
-                EndTime.Time = StartTime.Time;
+                endTime.Time = startTime.Time;
             }
             UpdateTimeLabels();
             HasUnsavedChanges = true;
@@ -221,7 +216,7 @@ namespace MyUALife
             descriptionText.Enabled = !DrawerOpen;
             changeStartButton.Enabled = !DrawerOpen;
             changeEndButton.Enabled = !DrawerOpen;
-            typeSpinner.Enabled = !DrawerOpen;
+            typeSpinner.Spinner.Enabled = !DrawerOpen;
         }
     }
 }
