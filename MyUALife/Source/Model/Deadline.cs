@@ -1,5 +1,5 @@
 ﻿using System;
-
+[Serializable()]
 public class Deadline : IComparable<Deadline> {
 
 	public DateTime Time { get; set; }

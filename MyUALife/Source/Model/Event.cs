@@ -1,5 +1,5 @@
 ﻿using System;
-
+[Serializable()]
 public class Event : IComparable<Event>
 {
     public DateTime StartTime

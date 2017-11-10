@@ -1,5 +1,5 @@
 ﻿using System;
-
+[Serializable()]
 public struct EventType
 {
     public readonly String name;

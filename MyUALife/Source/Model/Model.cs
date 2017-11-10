@@ -1,8 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 namespace MyUALife
 {
     public class Model
     {
+        private const String fileName = "calendar_save_state.bin";
+
         public static Calendar Calendar
         {
             get;
@@ -10,7 +14,17 @@ namespace MyUALife
 
         static Model()
         {
-            Calendar = new Calendar();
+            if (File.Exists(fileName))
+            {
+                Stream fileStream = File.OpenRead(fileName);
+                BinaryFormatter deserializer = new BinaryFormatter();
+                Calendar = (Calendar)deserializer.Deserialize(fileStream);
+                fileStream.Close();
+            }
+            else
+            {
+                Calendar = new Calendar();
+            }
 
             DateTime time = DateTime.Now;
             DateTime midnightMorning = DateTime.Today;

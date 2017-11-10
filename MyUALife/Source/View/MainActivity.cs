@@ -6,6 +6,9 @@ using Android.Content;
 using Android.Runtime;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using Java.IO;
 
 namespace MyUALife
 {
@@ -31,6 +34,8 @@ namespace MyUALife
         private LinearLayout mainTextLayout;
         private RadioButton eventsTab;
         private RadioButton deadlinesTab;
+
+        private const String fileName = "calendar_save_state.bin";
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -242,6 +247,28 @@ namespace MyUALife
             new EventSerializer(intent).WriteEvent(EventSerializer.InputEvent, calendarEvent);
             Model.Calendar.RemoveEvent(calendarEvent);
             StartActivityForResult(intent, EditEventRequest);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+            Stream fos = OpenFileOutput(fileName, FileCreationMode.Private);
+            BinaryFormatter serializer = new BinaryFormatter();
+            serializer.Serialize(fos, Model.Calendar);
+            fos.Close();
+            /*
+            try
+            {
+                Stream fileStream = File.Create("calendar_save_state.bin");
+                BinaryFormatter serializer = new BinaryFormatter();
+                serializer.Serialize(fileStream, Model.Calendar);
+                fileStream.Close();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            */
         }
     }
 }

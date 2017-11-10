@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+[Serializable()]
 public class Calendar
 {
     List<Event> events = new List<Event>();
