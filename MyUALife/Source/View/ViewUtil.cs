@@ -3,18 +3,17 @@ using Android.Widget;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
-using Android.App;
 using Android.Views;
 using System;
 using System.Collections.Generic;
 
 namespace MyUALife
 {
+    // Function for converting a generic object into a string
+    public delegate String ToStr<T>(T t);
+
     class ViewUtil
     {
-        // Function for converting a generic object into a string
-        public delegate String ToStr<T>(T t);
-
         // Function to perform setup operations on a textView
         public delegate void SetupCallback<T>(TextView textView, LinearLayout layout, T target);
 

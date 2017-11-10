@@ -18,15 +18,16 @@ namespace MyUALife
         // Request codes for the EventEditorActivity
         private const int AddEventRequest = 1;
         private const int EditEventRequest = 2;
+        private const int DeadlineToEventRequest = 3;
 
         // Request codes for the DeadlineEditorActivity
-        private const int AddDeadlineRequest = 3;
+        private const int AddDeadlineRequest = 4;
+        private const int EditDeadlineRequest = 5;
 
         // The opened tab -- true: events tab, false: deadlines tab
         private bool eventsTabOpen = true;
 
         // GUI components
-        private Button filterButton;
         private Button calendarButton;
         private Button happeningsButton;
         private Button createEventButton;
@@ -37,6 +38,9 @@ namespace MyUALife
 
         private const String fileName = "calendar_save_state.bin";
 
+        // Helper to setup the filter spinnerf
+        SpinnerHelper<String> filterSpinner;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -45,7 +49,6 @@ namespace MyUALife
             SetContentView(Resource.Layout.Main);
 
             // Get components by id
-            filterButton = FindViewById<Button>(Resource.Id.filterButton);
             calendarButton = FindViewById<Button>(Resource.Id.calendarButton);
             happeningsButton = FindViewById<Button>(Resource.Id.happeningsButton);
             createEventButton = FindViewById<Button>(Resource.Id.createEventButton);
@@ -55,10 +58,9 @@ namespace MyUALife
             deadlinesTab = FindViewById<RadioButton>(Resource.Id.deadlinesRadioButton);
 
             // Setup the filter button to filter events
-            filterButton.Click += (sender, e) =>
-            {
-
-            };
+            Spinner spinner = FindViewById<Spinner>(Resource.Id.filterSpinner);
+            List<String> options = new List<String> { "All events", "Class only", "Recreation only" };
+            filterSpinner = new SpinnerHelper<String>(spinner, options, s => s);
 
             // Setup the calendar button to open the android calendar
             calendarButton.Click += (sender, e) =>
@@ -138,7 +140,25 @@ namespace MyUALife
                     Model.Calendar.AddEvent(resultEvent);
                 }
             }
-            else if (requestCode == AddDeadlineRequest)
+            else if (requestCode == DeadlineToEventRequest)
+            {
+                // Add the resulting event to the calendar
+                Event resultEvent = new EventSerializer(data).ReadEvent(EventSerializer.ResultEvent);
+                if (resultEvent != null)
+                {
+                    Model.Calendar.AddEvent(resultEvent);
+                }
+                // If no event came in, return the deadline to the calendar
+                else
+                {
+                    Deadline resultDeadline = new DeadlineSerializer(data).ReadDeadline(DeadlineSerializer.ResultDeadline);
+                    if (resultDeadline != null)
+                    {
+                        Model.Calendar.AddDeadline(resultDeadline);
+                    }
+                }
+            }
+            else if (requestCode == AddDeadlineRequest || requestCode == EditDeadlineRequest)
             {
                 // Add the resulting deadline to the calendar
                 Deadline resultDeadline = new DeadlineSerializer(data).ReadDeadline(DeadlineSerializer.ResultDeadline);
@@ -155,41 +175,43 @@ namespace MyUALife
          */
         private void LoadEvents()
         {
-            // Load events from today
-            DateTime loadedDate = DateTime.Today;
-
-            // Create a range of DateTimes
-            // We want to count midnight as belonging to the previous day.
-            DateTime start = loadedDate.AddMilliseconds(1);
-            DateTime end = loadedDate.AddDays(1);
-
             // Get the events in range from the calendar
-            var loadedEvents = Model.Calendar.GetEventsInRange(start, end);
+            var loadedEvents = Model.Calendar.GetEventsOnDate(DateTime.Today);
 
             // Sort the events
             loadedEvents.Sort();
 
             // Fill the main display with a list of events
             ViewUtil util = new ViewUtil(this);
-            ViewUtil.ToStr<Event> label = e => e.ToString();
-            ViewUtil.ToStr<Event> color = e => e.Type.colorString;
-            ViewUtil.SetupCallback<Event> setup = (view, layout, e) =>
+            ToStr<Event> label = e => e.ToString();
+            ToStr<Event> color = e => e.Type.colorString;
+            ViewUtil.SetupCallback<Event> setup = (view, layout, calEvent) =>
             {
                 // Register an event handler to delete or edit the event
                 view.LongClick += (sender, ea) =>
                 {
                     var infoDialog = new AlertDialog.Builder(this);
-                    infoDialog.SetMessage("Delete or edit this event?");
-                    infoDialog.SetPositiveButton("Delete", delegate
+
+                    if (calEvent.Type.editable)
                     {
-                        layout.RemoveView(view);
-                        Model.Calendar.RemoveEvent(e);
-                    });
-                    infoDialog.SetNeutralButton("Edit", delegate
+                        infoDialog.SetMessage("Delete or edit this event?");
+                        infoDialog.SetPositiveButton("Delete", delegate
+                        {
+                            layout.RemoveView(view);
+                            Model.Calendar.RemoveEvent(calEvent);
+                        });
+                        infoDialog.SetNeutralButton("Edit", delegate
+                        {
+                            StartEditEventActivity(calEvent);
+                        });
+                        infoDialog.SetNegativeButton("Cancel", delegate { });
+                    }
+                    else
                     {
-                        this.StartEditEventActivity(e);
-                    });
-                    infoDialog.SetNegativeButton("Cancel", delegate { });
+                        infoDialog.SetMessage("This event cannot be edited.");
+                        infoDialog.SetPositiveButton("Ok", delegate { });
+                    }
+
                     infoDialog.Show();
                 };
             };
@@ -211,9 +233,52 @@ namespace MyUALife
 
             // Fill the main display with the list of deadlines
             ViewUtil util = new ViewUtil(this);
-            ViewUtil.ToStr<Deadline> label = d => d.ToString();
-            ViewUtil.ToStr<Deadline> color = d => "#F44336";
-            util.LoadListToLayout(mainTextLayout, deadlines, label, color, null);
+            ToStr<Deadline> label = d => d.ToString();
+            ToStr<Deadline> color = d => "#F44336";
+            ViewUtil.SetupCallback<Deadline> setup = (view, layout, deadline) =>
+            {
+                // Register an event handler to delete or edit the deadline
+                view.LongClick += (sender, ea) =>
+                {
+                    var infoDialog = new AlertDialog.Builder(this);
+
+                    if (deadline.associatedEventType.editable)
+                    {
+                        infoDialog.SetMessage("Delete or edit this deadline?");
+                        infoDialog.SetPositiveButton("Delete", delegate
+                        {
+                            layout.RemoveView(view);
+                            Model.Calendar.RemoveDeadline(deadline);
+                        });
+                        infoDialog.SetNeutralButton("Edit", delegate
+                        {
+                            StartEditDeadlineActivity(deadline);
+                        });
+                        infoDialog.SetNegativeButton("Cancel", delegate { });
+                    }
+                    else
+                    {
+                        infoDialog.SetMessage("This deadline cannot be edited.");
+                        infoDialog.SetPositiveButton("Ok", delegate { });
+                    }
+
+                    infoDialog.Show();
+                };
+
+                // Register an event handler to create an event from the deadline
+                view.Click += (sender, ea) =>
+                {
+                    var infoDialog = new AlertDialog.Builder(this);
+                    infoDialog.SetMessage("Create an event from this deadline?");
+                    infoDialog.SetPositiveButton("Ok", delegate
+                    {
+                        StartDeadlineToEventActivity(deadline);
+                    });
+                    infoDialog.SetNegativeButton("Cancel", delegate { });
+                    infoDialog.Show();
+                };
+            };
+            util.LoadListToLayout(mainTextLayout, deadlines, label, color, setup);
         }
 
         /*
@@ -237,9 +302,9 @@ namespace MyUALife
         }
 
         /*
-         * Starts the editor with the given event's info as the starting value
-         * of the editors components. The returned value will replace the given
-         * event in the calendar.
+         * Starts the editor with the given event's info as the starting values
+         * of the editor's components. The returned value will replace the
+         * given event in the calendar.
          */
         public void StartEditEventActivity(Event calendarEvent)
         {
@@ -269,6 +334,34 @@ namespace MyUALife
                 Console.WriteLine(e.Message);
             }
             */
+        }
+
+        /*
+         * Starts the editor with the given deadline's info as the starting
+         * values of the editor's components. The returned value will replace
+         * the given deadline in the calendar.
+         */
+        public void StartEditDeadlineActivity(Deadline deadline)
+        {
+            Intent intent = new Intent(this, typeof(DeadlineEditorActivity));
+            new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
+            Model.Calendar.RemoveDeadline(deadline);
+            StartActivityForResult(intent, EditDeadlineRequest);
+        }
+
+        /*
+         * Starts the event editor with the given deadline's info as the
+         * starting values of the editor's components. The editor is expected
+         * to return either a new event, or the same deadline. If there is a
+         * new event, then the deadline will be removed from the calendar.
+         * Otherwise, the deadline remains in the calendar.
+         */
+        public void StartDeadlineToEventActivity(Deadline deadline)
+        {
+            Intent intent = new Intent(this, typeof(EventEditorActivity));
+            new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
+            Model.Calendar.RemoveDeadline(deadline);
+            StartActivityForResult(intent, DeadlineToEventRequest);
         }
     }
 }

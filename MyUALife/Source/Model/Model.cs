@@ -35,9 +35,9 @@ namespace MyUALife
             String hwDesc          = "This is homework for CS436";
             String studyDesc       = "This is study time.";
             String recDesc         = "This is a recreational event.";
-            String freeDesc        = "This is free time. This category should not appear in user added events.";
-            String lastNightDesc   = "This was midnight last night. This should appear as part of yesterday.";
-            String tonightDesc     = "This is midnight tonight. This should appear as part of today.";
+            // String freeDesc        = "This is free time. This category should not appear in user added events.";
+            // String lastNightDesc   = "This was midnight last night. This should appear as part of yesterday.";
+            // String tonightDesc     = "This is midnight tonight. This should appear as part of today.";
 
             Calendar.AddEvent(new Event("CS436 Class",       classDesc,       Category.classTime,   Time(12, 30), Time(13, 45) ));
             Calendar.AddEvent(new Event("Office Hours",      appointmentDesc, Category.appointment, Time(14, 30), Time(15,  0) ));

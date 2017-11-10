@@ -3,7 +3,6 @@ using Android.OS;
 using Android.Widget;
 using Android.Content;
 using System;
-using System.Collections.Generic;
 
 namespace MyUALife
 {
@@ -16,10 +15,12 @@ namespace MyUALife
         private TextView timeLabel;
         private Button changeTimeButton;
         private Button saveButton;
-        private Spinner typeSpinner;
 
         // The times selected with DatePickerFragment.
         private DateTimeFetcher deadlineTime;
+
+        // Helper for the type spinner
+        private SpinnerHelper<EventType> typeSpinner;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -34,7 +35,6 @@ namespace MyUALife
             timeLabel = FindViewById<TextView>(Resource.Id.timeLabel);
             changeTimeButton = FindViewById<Button>(Resource.Id.changeTimeButton);
             saveButton = FindViewById<Button>(Resource.Id.saveButton);
-            typeSpinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
 
             // Setup the text fields to turn on the save button when edited
             nameText.TextChanged += (sender, e) => TurnOnSaveButton();
@@ -55,18 +55,13 @@ namespace MyUALife
             saveButton.Enabled = false;
 
             // Configure the spinner to display the correct list of EventTypes
-            List<String> names = new List<String>();
-            foreach (EventType t in Category.creatableTypes)
-            {
-                names.Add(t.name);
-            }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, Android.Resource.Layout.SimpleSpinnerDropDownItem, names);
-            typeSpinner.Adapter = adapter;
+            Spinner spinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
+            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.creatableTypes, t => t.name);
 
             // Setup the spinner to turn on the save button
-            typeSpinner.ItemSelected += (sender, e) => TurnOnSaveButton();
+            typeSpinner.Spinner.ItemSelected += (sender, e) => TurnOnSaveButton();
 
-            // Get the DEADLINE stored in Intent, if any
+            // Get the deadline stored in Intent, if any
             Deadline input = new DeadlineSerializer(Intent).ReadDeadline(DeadlineSerializer.InputDeadline);
             if (input != null)
             {
@@ -74,9 +69,14 @@ namespace MyUALife
                 nameText.Text = input.Name;
                 descriptionText.Text = input.Description;
                 deadlineTime.Time = input.Time;
-                typeSpinner.SetSelection(adapter.GetPosition(input.associatedEventType.name));
+                typeSpinner.SelectedItem = input.associatedEventType;
                 SaveChanges();
             }
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
 
             // Initialize the start/end time labels with the correct times
             UpdateTimeLabels();
@@ -89,8 +89,8 @@ namespace MyUALife
          */
         private void SaveChanges()
         {
-            String typeName = typeSpinner.SelectedItem.ToString();
-            Deadline result = new Deadline(nameText.Text, descriptionText.Text, deadlineTime.Time, Category.GetTypeByName(typeName));
+            EventType type = typeSpinner.SelectedItem;
+            Deadline result = new Deadline(nameText.Text, descriptionText.Text, deadlineTime.Time, type);
             Intent data = new Intent();
             new DeadlineSerializer(data).WriteDeadline(DeadlineSerializer.ResultDeadline, result);
             SetResult(Result.Ok, data);
