@@ -116,6 +116,21 @@ namespace MyUALife
                 typeSpinner.SelectedItem = input.Type;
                 SaveChanges();
             }
+            else
+            {
+                Deadline deadline = new DeadlineSerializer(Intent).ReadDeadline(DeadlineSerializer.InputDeadline);
+                if (deadline != null)
+                {
+                    nameText.Text = deadline.Name;
+                    descriptionText.Text = deadline.Description;
+                    endTime.Time = deadline.Time;
+                    typeSpinner.SelectedItem = deadline.associatedEventType;
+
+                    Intent returnData = new Intent();
+                    new DeadlineSerializer(returnData).WriteDeadline(DeadlineSerializer.ResultDeadline, deadline);
+                    SetResult(Result.Ok, returnData);
+                }
+            }
         }
 
         protected override void OnStart()
@@ -168,16 +183,24 @@ namespace MyUALife
         /*
          * Transfers the data entered into the GUI elements into the fields of
          * the current Event. If there is no current Event, this method creates
-         * one and stores it in the Calendar.
+         * one and stores it in the Calendar. Any additional data that needs to
+         * be returned to the caller can be stored in the input intent.
          */
-        private void SaveChanges()
+        private void SaveChanges(Intent data)
         {
             EventType type = typeSpinner.SelectedItem;
             Event resultEvent = new Event(nameText.Text, descriptionText.Text, type, startTime.Time, endTime.Time);
-            Intent data = new Intent();
             new EventSerializer(data).WriteEvent(EventSerializer.ResultEvent, resultEvent);
             SetResult(Result.Ok, data);
             HasUnsavedChanges = false;
+        }
+
+        /*
+         * Saves changes with no additional data.
+         */
+        private void SaveChanges()
+        {
+            SaveChanges(new Intent());
         }
 
         /*

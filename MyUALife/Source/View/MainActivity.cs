@@ -15,10 +15,11 @@ namespace MyUALife
         // Request codes for the EventEditorActivity
         private const int AddEventRequest = 1;
         private const int EditEventRequest = 2;
+        private const int DeadlineToEventRequest = 3;
 
         // Request codes for the DeadlineEditorActivity
-        private const int AddDeadlineRequest = 3;
-        private const int EditDeadlineRequest = 4;
+        private const int AddDeadlineRequest = 4;
+        private const int EditDeadlineRequest = 5;
 
         // The opened tab -- true: events tab, false: deadlines tab
         private bool eventsTabOpen = true;
@@ -134,6 +135,24 @@ namespace MyUALife
                     Model.Calendar.AddEvent(resultEvent);
                 }
             }
+            else if (requestCode == DeadlineToEventRequest)
+            {
+                // Add the resulting event to the calendar
+                Event resultEvent = new EventSerializer(data).ReadEvent(EventSerializer.ResultEvent);
+                if (resultEvent != null)
+                {
+                    Model.Calendar.AddEvent(resultEvent);
+                }
+                // If no event came in, return the deadline to the calendar
+                else
+                {
+                    Deadline resultDeadline = new DeadlineSerializer(data).ReadDeadline(DeadlineSerializer.ResultDeadline);
+                    if (resultDeadline != null)
+                    {
+                        Model.Calendar.AddDeadline(resultDeadline);
+                    }
+                }
+            }
             else if (requestCode == AddDeadlineRequest || requestCode == EditDeadlineRequest)
             {
                 // Add the resulting deadline to the calendar
@@ -240,6 +259,19 @@ namespace MyUALife
 
                     infoDialog.Show();
                 };
+
+                // Register an event handler to create an event from the deadline
+                view.Click += (sender, ea) =>
+                {
+                    var infoDialog = new AlertDialog.Builder(this);
+                    infoDialog.SetMessage("Create an event from this deadline?");
+                    infoDialog.SetPositiveButton("Ok", delegate
+                    {
+                        StartDeadlineToEventActivity(deadline);
+                    });
+                    infoDialog.SetNegativeButton("Cancel", delegate { });
+                    infoDialog.Show();
+                };
             };
             util.LoadListToLayout(mainTextLayout, deadlines, label, color, setup);
         }
@@ -288,6 +320,21 @@ namespace MyUALife
             new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
             Model.Calendar.RemoveDeadline(deadline);
             StartActivityForResult(intent, EditDeadlineRequest);
+        }
+
+        /*
+         * Starts the event editor with the given deadline's info as the
+         * starting values of the editor's components. The editor is expected
+         * to return either a new event, or the same deadline. If there is a
+         * new event, then the deadline will be removed from the calendar.
+         * Otherwise, the deadline remains in the calendar.
+         */
+        public void StartDeadlineToEventActivity(Deadline deadline)
+        {
+            Intent intent = new Intent(this, typeof(EventEditorActivity));
+            new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
+            Model.Calendar.RemoveDeadline(deadline);
+            StartActivityForResult(intent, DeadlineToEventRequest);
         }
     }
 }
