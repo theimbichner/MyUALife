@@ -62,10 +62,10 @@
     <Compile Include="Source\Model\DeadlineSerializer.cs" />
     <Compile Include="Source\Model\EventSerializer.cs" />
     <Compile Include="Source\Model\EventType.cs" />
-    <Compile Include="Source\View\DateTimeFetcher.cs" />
+    <Compile Include="Source\View\Utility\DateTimeFetcher.cs" />
     <Compile Include="Source\View\DeadlineEditorActivity.cs" />
-    <Compile Include="Source\View\SpinnerHelper.cs" />
-    <Compile Include="Source\View\ViewUtil.cs" />
+    <Compile Include="Source\View\Utility\SpinnerHelper.cs" />
+    <Compile Include="Source\View\Utility\ViewUtil.cs" />
     <Compile Include="Source\View\EventEditorActivity.cs" />
     <Compile Include="Source\Model\Calendar.cs" />
     <None Include="Deprecated\DayViewActivity.cs.deprecated" />
