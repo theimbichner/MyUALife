@@ -14,6 +14,11 @@ public class Event : IComparable<Event>
      */
     public Event(String name, String desc, EventType type, DateTime start, DateTime end)
     {
+        if (start >= end)
+        {
+            throw new ArgumentException();
+        }
+
         Name = name;
         Description = desc;
         Type = type;

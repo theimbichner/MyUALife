@@ -219,9 +219,9 @@ namespace MyUALife
          */
         private void OnTimeChange()
         {
-            if (endTime.Time < startTime.Time)
+            if (endTime.Time < startTime.Time.AddMinutes(1))
             {
-                endTime.Time = startTime.Time;
+                endTime.Time = startTime.Time.AddMinutes(1);
             }
             UpdateTimeLabels();
             HasUnsavedChanges = true;

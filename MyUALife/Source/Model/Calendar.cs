@@ -1,176 +1,195 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[Serializable()]
-public class Calendar
+namespace MyUALife
 {
-    List<Event> events = new List<Event>();
-    List<Deadline> deadlines = new List<Deadline>();
-    List<Event> happenings = new List<Event>();
-
-    public Calendar() {}
-
-    public Calendar(List<Event> events, List<Deadline> deadlines)
+    [Serializable()]
+    public class Calendar
     {
-        this.events = events;
-        this.deadlines = deadlines;
-    }
+        private readonly List<Event> events = new List<Event>();
+        private readonly List<Deadline> deadlines = new List<Deadline>();
+        private readonly List<Event> happenings = new List<Event>();
+        private readonly List<EventRecurrence> recurringEvents = new List<EventRecurrence>();
 
-    public static List<Event> FilterEventsByType(List<Event> events, EventType type)
-    {
-        List<Event> output = new List<Event>();
-        foreach (Event e in events)
+        public Calendar() { }
+
+        public Calendar(List<Event> events, List<Deadline> deadlines)
         {
-            if (e.Type.Equals(type))
-            {
-                output.Add(e);
-            }
+            this.events = events;
+            this.deadlines = deadlines;
         }
-        return output;
-    }
 
-    public static List<Event> FilterEventsByTypes(List<Event> events, List<EventType> types)
-    {
-        List<Event> output = new List<Event>();
-        foreach (Event e in events)
+        public static List<Event> FilterEventsByType(List<Event> events, EventType type)
         {
-            if (types.Contains(e.Type))
+            List<Event> output = new List<Event>();
+            foreach (Event e in events)
             {
-                output.Add(e);
-            }
-        }
-        return output;
-    }
-
-    public void AddEvent(Event e)
-    {
-        events.Add(e);
-    }
-
-    public bool RemoveEvent(Event e)
-    {
-        return events.Remove(e);
-    }
-
-    public void AddDeadline(Deadline d)
-    {
-        deadlines.Add(d);
-    }
-
-    public bool RemoveDeadline(Deadline d)
-    {
-        return deadlines.Remove(d);
-    }
-
-    public void AddHappening(Event e)
-    {
-        happenings.Add(e);
-    }
-
-    public bool RemoveHappening(Event e)
-    {
-        return happenings.Remove(e);
-    }
-
-    public List<Event> GetEventsOnDate(DateTime date)
-    {
-        // Create a range of DateTimes
-        // We want to count midnight as belonging to the previous day.
-        DateTime start = date.AddMilliseconds(1);
-        DateTime end = date.AddDays(1);
-
-        return GetEventsInRange(start, end);
-    }
-
-    public List<Event> GetEventsInRange(DateTime start, DateTime end)
-    {
-        List<Event> output = new List<Event>();
-        foreach(Event e in events)
-        {
-            if (e.StartTime <= end && e.EndTime >= start)
-            {
-                output.Add(e);
-            }
-        }
-        return output;
-    }
-
-    public List<Deadline> GetDeadlinesAfterTime(DateTime time)
-    {
-        List<Deadline> output = new List<Deadline>();
-        foreach (Deadline d in deadlines)
-        {
-            if (d.Time > time)
-            {
-                output.Add(d);
-            }
-        }
-        return output;
-    }
-
-    public List<Event> GetFreeTimeBlocksInRange(DateTime start, DateTime end)
-    {
-        List<Event> freeBlocks = new List<Event>();
-        List<Event> eventsInRange = GetEventsInRange(start, end);
-        DateTime currentTime = start;
-
-        while (currentTime < end)
-        {
-
-            bool freeTimeAvailableHere = true;
-            
-            // search for any events occupying current time
-            foreach (Event e in eventsInRange)
-            {
-                if (e.StartTime <= currentTime && e.EndTime > currentTime)
+                if (e.Type.Equals(type))
                 {
-                    // if found, skip to the end of the event and check again
-                    currentTime = e.EndTime;
-                    freeTimeAvailableHere = false;
+                    output.Add(e);
                 }
             }
+            return output;
+        }
 
-            if (freeTimeAvailableHere)
+        public static List<Event> FilterEventsByTypes(List<Event> events, List<EventType> types)
+        {
+            List<Event> output = new List<Event>();
+            foreach (Event e in events)
             {
-                // no events here, so:
-                // find next event (earliest starting after currentTime)
-                Event nextEvent = null;
+                if (types.Contains(e.Type))
+                {
+                    output.Add(e);
+                }
+            }
+            return output;
+        }
+
+        public void AddEvent(Event e)
+        {
+            events.Add(e);
+        }
+
+        public bool RemoveEvent(Event e)
+        {
+            return events.Remove(e);
+        }
+
+        public void AddRecurringEvent(EventRecurrence er)
+        {
+            recurringEvents.Add(er);
+        }
+
+        public bool CancelRecurringEvent(EventRecurrence er)
+        {
+            return recurringEvents.Remove(er);
+        }
+
+        public void AddDeadline(Deadline d)
+        {
+            deadlines.Add(d);
+        }
+
+        public bool RemoveDeadline(Deadline d)
+        {
+            return deadlines.Remove(d);
+        }
+
+        public void AddHappening(Event e)
+        {
+            happenings.Add(e);
+        }
+
+        public bool RemoveHappening(Event e)
+        {
+            return happenings.Remove(e);
+        }
+
+        public List<Event> GetEventsOnDate(DateTime date)
+        {
+            // Create a range of DateTimes
+            // We want to count midnight as belonging to the previous day.
+            DateTime start = date.AddMilliseconds(1);
+            DateTime end = date.AddDays(1);
+
+            return GetEventsInRange(start, end);
+        }
+
+        public List<Event> GetEventsInRange(DateTime start, DateTime end)
+        {
+            foreach (EventRecurrence re in recurringEvents)
+            {
+                re.Update(this, end);
+            }
+
+            List<Event> output = new List<Event>();
+            foreach (Event e in events)
+            {
+                if (e.StartTime <= end && e.EndTime >= start)
+                {
+                    output.Add(e);
+                }
+            }
+            return output;
+        }
+
+        public List<Deadline> GetDeadlinesAfterTime(DateTime time)
+        {
+            List<Deadline> output = new List<Deadline>();
+            foreach (Deadline d in deadlines)
+            {
+                if (d.Time > time)
+                {
+                    output.Add(d);
+                }
+            }
+            return output;
+        }
+
+        public List<Event> GetFreeTimeBlocksInRange(DateTime start, DateTime end)
+        {
+            List<Event> freeBlocks = new List<Event>();
+            List<Event> eventsInRange = GetEventsInRange(start, end);
+            DateTime currentTime = start;
+
+            while (currentTime < end)
+            {
+
+                bool freeTimeAvailableHere = true;
+
+                // search for any events occupying current time
                 foreach (Event e in eventsInRange)
                 {
-                    if (e.StartTime > currentTime)
+                    if (e.StartTime <= currentTime && e.EndTime > currentTime)
                     {
-                        if (nextEvent == null || e.StartTime < nextEvent.StartTime)
-                        {
-                            nextEvent = e;
-                        }
+                        // if found, skip to the end of the event and check again
+                        currentTime = e.EndTime;
+                        freeTimeAvailableHere = false;
                     }
                 }
 
-                // create the free time block and add it to freeBlocks:
-                // if no events start after currentTime, end time = end
-                if (nextEvent == null)
+                if (freeTimeAvailableHere)
                 {
-                    if ((end - currentTime).Duration().TotalMinutes > 0)
+                    // no events here, so:
+                    // find next event (earliest starting after currentTime)
+                    Event nextEvent = null;
+                    foreach (Event e in eventsInRange)
                     {
-                        freeBlocks.Add(new Event("Free", "", Category.freeTime, currentTime, end));
+                        if (e.StartTime > currentTime)
+                        {
+                            if (nextEvent == null || e.StartTime < nextEvent.StartTime)
+                            {
+                                nextEvent = e;
+                            }
+                        }
                     }
-                    currentTime = end;
-                }
-                // otherwise, end time = nextEvent.StartTime
-                else
-                {
-                    if ((nextEvent.StartTime - currentTime).Duration().TotalMinutes > 0)
+
+                    // create the free time block and add it to freeBlocks:
+                    // if no events start after currentTime, end time = end
+                    if (nextEvent == null)
                     {
-                        freeBlocks.Add(new Event("Free", "", Category.freeTime, currentTime, nextEvent.StartTime));
+                        if ((end - currentTime).Duration().TotalMinutes > 0)
+                        {
+                            freeBlocks.Add(new Event("Free", "", Category.freeTime, currentTime, end));
+                        }
+                        currentTime = end;
                     }
-                    currentTime = nextEvent.EndTime;
+                    // otherwise, end time = nextEvent.StartTime
+                    else
+                    {
+                        if ((nextEvent.StartTime - currentTime).Duration().TotalMinutes > 0)
+                        {
+                            freeBlocks.Add(new Event("Free", "", Category.freeTime, currentTime, nextEvent.StartTime));
+                        }
+                        currentTime = nextEvent.EndTime;
+                    }
+
                 }
 
             }
 
+            return freeBlocks;
         }
 
-        return freeBlocks;
     }
-
 }
