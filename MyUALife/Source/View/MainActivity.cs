@@ -219,7 +219,7 @@ namespace MyUALife
             var loadedEvents = Model.Calendar.GetEventsOnDate(DateTime.Today);
 
             // Apply the filter
-            loadedEvents = Model.Calendar.FilterEventsByTypes(loadedEvents, Filter.AllowedTypes);
+            loadedEvents = Calendar.FilterEventsByTypes(loadedEvents, Filter.AllowedTypes);
 
             // Sort the events
             loadedEvents.Sort();

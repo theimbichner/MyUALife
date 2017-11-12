@@ -1,37 +1,17 @@
 ﻿using System;
+
 [Serializable()]
 public class Event : IComparable<Event>
 {
-    public DateTime StartTime
-    {
-        get;
-        set;
-    }
+    public DateTime StartTime { get; set; }
+    public DateTime EndTime   { get; set; }
+    public String Name        { get; set; }
+    public String Description { get; set; }
+    public EventType Type     { get; set; }
 
-    public DateTime EndTime
-    {
-        get;
-        set;
-    }
-
-    public String Name
-    {
-        get;
-        set;
-    }
-
-    public String Description
-    {
-        get;
-        set;
-    }
-
-    public EventType Type
-    {
-        get;
-        set;
-    }
-
+    /*
+     * Constructs a new event with the given propeties.
+     */
     public Event(String name, String desc, EventType type, DateTime start, DateTime end)
     {
         Name = name;
@@ -41,10 +21,24 @@ public class Event : IComparable<Event>
         EndTime = end;
     }
 
+    /*
+     * Returns a new event whose properties are identical to this one. However,
+     * the new event begins and ends shiftAmount time in the future.
+     */
+    public Event Shift(TimeSpan shift)
+    {
+        return new Event(Name, Description, Type, StartTime + shift, EndTime + shift);
+    }
+
     public override String ToString()
     {
-        string format = "Name: {0}\nDescription: {1}\nFrom: {2}\nTo: {3}\nType: {4}";
-        object[] args = {Name, Description, StartTime, EndTime, Type.name};
+        String desc = "";
+        if (Description != "")
+        {
+            desc = "Description: " + Description + "\n";
+        }
+        String format = "Name: {0}\n{1}From: {2}\nTo: {3}\nType: {4}";
+        Object[] args = {Name, desc, StartTime, EndTime, Type.name};
         return String.Format(format, args);
     }
 
