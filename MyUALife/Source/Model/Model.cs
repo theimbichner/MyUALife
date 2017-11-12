@@ -14,18 +14,18 @@ namespace MyUALife
 
         static Model()
         {
-            if (File.Exists(fileName))
+            try
             {
                 Stream fileStream = File.OpenRead(fileName);
                 BinaryFormatter deserializer = new BinaryFormatter();
                 Calendar = (Calendar)deserializer.Deserialize(fileStream);
                 fileStream.Close();
             }
-            else
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 Calendar = new Calendar();
             }
-
             DateTime time = DateTime.Now;
             DateTime midnightMorning = DateTime.Today;
             DateTime midnightNight = DateTime.Today.AddDays(1);
