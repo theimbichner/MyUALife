@@ -62,6 +62,7 @@
     <Compile Include="Source\Model\DeadlineSerializer.cs" />
     <Compile Include="Source\Model\EventSerializer.cs" />
     <Compile Include="Source\Model\EventType.cs" />
+    <Compile Include="Source\Model\FilterSet.cs" />
     <Compile Include="Source\View\Utility\DateTimeFetcher.cs" />
     <Compile Include="Source\View\DeadlineEditorActivity.cs" />
     <Compile Include="Source\View\Utility\SpinnerHelper.cs" />

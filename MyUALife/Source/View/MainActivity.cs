@@ -24,6 +24,9 @@ namespace MyUALife
         private const int AddDeadlineRequest = 4;
         private const int EditDeadlineRequest = 5;
 
+        // The filename for the saved calendar
+        private const String fileName = "calendar_save_state.bin";
+
         // The opened tab -- true: events tab, false: deadlines tab
         private bool eventsTabOpen = true;
 
@@ -36,10 +39,17 @@ namespace MyUALife
         private RadioButton eventsTab;
         private RadioButton deadlinesTab;
 
-        private const String fileName = "calendar_save_state.bin";
+        // Helper to setup the filter spinner
+        SpinnerHelper<FilterSet> filterSpinner;
 
-        // Helper to setup the filter spinnerf
-        SpinnerHelper<String> filterSpinner;
+        // The currently selected filter for events and deadlines
+        private FilterSet Filter
+        {
+            get
+            {
+                return filterSpinner.SelectedItem;
+            }
+        }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -59,8 +69,8 @@ namespace MyUALife
 
             // Setup the filter button to filter events
             Spinner spinner = FindViewById<Spinner>(Resource.Id.filterSpinner);
-            List<String> options = new List<String> { "All events", "Class only", "Recreation only" };
-            filterSpinner = new SpinnerHelper<String>(spinner, options, s => s);
+            filterSpinner = new SpinnerHelper<FilterSet>(spinner, FilterSet.FilterSets, f => f.Name);
+            filterSpinner.Spinner.ItemSelected += (sender, e) => UpdateCenterLayout();
 
             // Setup the calendar button to open the android calendar
             calendarButton.Click += (sender, e) =>
@@ -111,14 +121,29 @@ namespace MyUALife
             base.OnStart();
 
             // Load the events scheduled for today
-            if (eventsTabOpen)
+            UpdateCenterLayout();
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+            Stream fos = OpenFileOutput(fileName, FileCreationMode.Private);
+            BinaryFormatter serializer = new BinaryFormatter();
+            serializer.Serialize(fos, Model.Calendar);
+            fos.Close();
+            /*
+            try
             {
-                LoadEvents();
+                Stream fileStream = File.Create("calendar_save_state.bin");
+                BinaryFormatter serializer = new BinaryFormatter();
+                serializer.Serialize(fileStream, Model.Calendar);
+                fileStream.Close();
             }
-            else
+            catch (UnauthorizedAccessException e)
             {
-                LoadDeadlines();
+                Console.WriteLine(e.Message);
             }
+            */
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
@@ -170,6 +195,21 @@ namespace MyUALife
         }
 
         /*
+         * Loads the current events or deadlines into the mainTextLayout
+         */
+        private void UpdateCenterLayout()
+        {
+            if (eventsTabOpen)
+            {
+                LoadEvents();
+            }
+            else
+            {
+                LoadDeadlines();
+            }
+        }
+
+        /*
          * Loads every event scheduled for the current day into the main text
          * view.
          */
@@ -177,6 +217,9 @@ namespace MyUALife
         {
             // Get the events in range from the calendar
             var loadedEvents = Model.Calendar.GetEventsOnDate(DateTime.Today);
+
+            // Apply the filter
+            loadedEvents = Model.Calendar.FilterEventsByTypes(loadedEvents, Filter.AllowedTypes);
 
             // Sort the events
             loadedEvents.Sort();
@@ -312,28 +355,6 @@ namespace MyUALife
             new EventSerializer(intent).WriteEvent(EventSerializer.InputEvent, calendarEvent);
             Model.Calendar.RemoveEvent(calendarEvent);
             StartActivityForResult(intent, EditEventRequest);
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-            Stream fos = OpenFileOutput(fileName, FileCreationMode.Private);
-            BinaryFormatter serializer = new BinaryFormatter();
-            serializer.Serialize(fos, Model.Calendar);
-            fos.Close();
-            /*
-            try
-            {
-                Stream fileStream = File.Create("calendar_save_state.bin");
-                BinaryFormatter serializer = new BinaryFormatter();
-                serializer.Serialize(fileStream, Model.Calendar);
-                fileStream.Close();
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            */
         }
 
         /*
