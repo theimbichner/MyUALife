@@ -7,8 +7,8 @@ using Android.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using Java.IO;
 
 namespace MyUALife
 {
@@ -23,9 +23,6 @@ namespace MyUALife
         // Request codes for the DeadlineEditorActivity
         private const int AddDeadlineRequest = 4;
         private const int EditDeadlineRequest = 5;
-
-        // The filename for the saved calendar
-        private const String fileName = "calendar_save_state.bin";
 
         // The opened tab -- true: events tab, false: deadlines tab
         private bool eventsTabOpen = true;
@@ -43,13 +40,15 @@ namespace MyUALife
         SpinnerHelper<FilterSet> filterSpinner;
 
         // The currently selected filter for events and deadlines
-        private FilterSet Filter
+        private FilterSet CurrentFilter
         {
             get
             {
                 return filterSpinner.SelectedItem;
             }
         }
+
+        private Calendar calendar;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -90,30 +89,20 @@ namespace MyUALife
             };
 
             // Setup the create event button to open the create event screen
-            createEventButton.Click += (sender, e) =>
-            {
-                StartAddEventActivity();
-            };
+            createEventButton.Click += (sender, e) => StartAddEventActivity();
 
             // Setup the deadline button to open the create deadline screen
-            createDeadlineButton.Click += (sender, e) =>
-            {
-                StartAddDeadlineActivity();
-            };
+            createDeadlineButton.Click += (sender, e) => StartAddDeadlineActivity();
 
             // Setup the events tab to display the events list
-            eventsTab.Click += (sender, e) =>
-            {
-                LoadEvents();
-                eventsTabOpen = true;
-            };
+            eventsTab.Click += (sender, e) => LoadEvents();
 
             // Setup the deadlines tab to display the deadlines list
-            deadlinesTab.Click += (sender, e) =>
-            {
-                LoadDeadlines();
-                eventsTabOpen = false;
-            };
+            deadlinesTab.Click += (sender, e) => LoadDeadlines();
+
+            // Initialize the calendar from saved file
+            calendar = new Calendar();
+            InitCalendar();
         }
 
         protected override void OnStart()
@@ -122,28 +111,6 @@ namespace MyUALife
 
             // Load the events scheduled for today
             UpdateCenterLayout();
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-            Stream fos = OpenFileOutput(fileName, FileCreationMode.Private);
-            BinaryFormatter serializer = new BinaryFormatter();
-            serializer.Serialize(fos, Model.Calendar);
-            fos.Close();
-            /*
-            try
-            {
-                Stream fileStream = File.Create("calendar_save_state.bin");
-                BinaryFormatter serializer = new BinaryFormatter();
-                serializer.Serialize(fileStream, Model.Calendar);
-                fileStream.Close();
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            */
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
@@ -162,7 +129,7 @@ namespace MyUALife
                 Event resultEvent = new EventSerializer(data).ReadEvent(EventSerializer.ResultEvent);
                 if (resultEvent != null)
                 {
-                    Model.Calendar.AddEvent(resultEvent);
+                    calendar.AddEvent(resultEvent);
                 }
             }
             else if (requestCode == DeadlineToEventRequest)
@@ -171,7 +138,7 @@ namespace MyUALife
                 Event resultEvent = new EventSerializer(data).ReadEvent(EventSerializer.ResultEvent);
                 if (resultEvent != null)
                 {
-                    Model.Calendar.AddEvent(resultEvent);
+                    calendar.AddEvent(resultEvent);
                 }
                 // If no event came in, return the deadline to the calendar
                 else
@@ -179,7 +146,7 @@ namespace MyUALife
                     Deadline resultDeadline = new DeadlineSerializer(data).ReadDeadline(DeadlineSerializer.ResultDeadline);
                     if (resultDeadline != null)
                     {
-                        Model.Calendar.AddDeadline(resultDeadline);
+                        calendar.AddDeadline(resultDeadline);
                     }
                 }
             }
@@ -189,7 +156,7 @@ namespace MyUALife
                 Deadline resultDeadline = new DeadlineSerializer(data).ReadDeadline(DeadlineSerializer.ResultDeadline);
                 if (resultDeadline != null)
                 {
-                    Model.Calendar.AddDeadline(resultDeadline);
+                    calendar.AddDeadline(resultDeadline);
                 }
             }
         }
@@ -216,10 +183,10 @@ namespace MyUALife
         private void LoadEvents()
         {
             // Get the events in range from the calendar
-            var loadedEvents = Model.Calendar.GetEventsOnDate(DateTime.Today);
+            var loadedEvents = calendar.GetEventsOnDate(DateTime.Today);
 
             // Apply the filter
-            loadedEvents = Calendar.FilterEventsByTypes(loadedEvents, Filter.AllowedTypes);
+            loadedEvents = Calendar.FilterEventsByTypes(loadedEvents, CurrentFilter.AllowedTypes);
 
             // Sort the events
             loadedEvents.Sort();
@@ -227,7 +194,7 @@ namespace MyUALife
             // Fill the main display with a list of events
             ViewUtil util = new ViewUtil(this);
             ToStr<Event> label = e => e.ToString();
-            ToStr<Event> color = e => e.Type.colorString;
+            ToStr<Event> color = e => e.Type.ColorString;
             ViewUtil.SetupCallback<Event> setup = (view, layout, calEvent) =>
             {
                 // Register an event handler to delete or edit the event
@@ -235,13 +202,13 @@ namespace MyUALife
                 {
                     var infoDialog = new AlertDialog.Builder(this);
 
-                    if (calEvent.Type.editable)
+                    if (calEvent.Type.IsEditable)
                     {
                         infoDialog.SetMessage("Delete or edit this event?");
                         infoDialog.SetPositiveButton("Delete", delegate
                         {
                             layout.RemoveView(view);
-                            Model.Calendar.RemoveEvent(calEvent);
+                            calendar.RemoveEvent(calEvent);
                         });
                         infoDialog.SetNeutralButton("Edit", delegate
                         {
@@ -259,6 +226,9 @@ namespace MyUALife
                 };
             };
             util.LoadListToLayout(mainTextLayout, loadedEvents, label, color, setup);
+
+            // Indicate that the events tab is now open
+            eventsTabOpen = true;
         }
 
         /*
@@ -269,7 +239,7 @@ namespace MyUALife
         {
             // Load deadlines that have not already passed
             DateTime start = DateTime.Now;
-            List<Deadline> deadlines = Model.Calendar.GetDeadlinesAfterTime(start);
+            List<Deadline> deadlines = calendar.GetDeadlinesAfterTime(start);
 
             // Sort the deadlines
             deadlines.Sort();
@@ -285,13 +255,13 @@ namespace MyUALife
                 {
                     var infoDialog = new AlertDialog.Builder(this);
 
-                    if (deadline.associatedEventType.editable)
+                    if (deadline.Type.IsEditable)
                     {
                         infoDialog.SetMessage("Delete or edit this deadline?");
                         infoDialog.SetPositiveButton("Delete", delegate
                         {
                             layout.RemoveView(view);
-                            Model.Calendar.RemoveDeadline(deadline);
+                            calendar.RemoveDeadline(deadline);
                         });
                         infoDialog.SetNeutralButton("Edit", delegate
                         {
@@ -322,15 +292,95 @@ namespace MyUALife
                 };
             };
             util.LoadListToLayout(mainTextLayout, deadlines, label, color, setup);
+
+            // Indicate that the deadliens tab is now open
+            eventsTabOpen = false;
+        }
+
+        private void SendFreeTime(Intent intent)
+        {
+            List<Event> freeTimeEvents = calendar.GetFreeTimeOnDate(DateTime.Today);
+            EventSerializer serializer = new EventSerializer(intent);
+            for (int i = 0; i < freeTimeEvents.Count; i++)
+            {
+                String key = "FreeTime" + i;
+                serializer.WriteEvent(key, freeTimeEvents[i]);
+            }
+            intent.PutExtra("FreeTimeCount", freeTimeEvents.Count);
+        }
+
+        private Calendar InitCalendar()
+        {
+            try
+            {
+                Console.WriteLine("Going to create a file.");
+
+                Stream output = OpenFileOutput("test.bin", FileCreationMode.Private);
+                Console.WriteLine("Output stream opened.");
+
+                StreamWriter writer = new StreamWriter(output);
+                Console.WriteLine("Stream writer opened.");
+
+                // XmlSerializer serializer = new XmlSerializer(typeof(Deadline));
+                BinaryFormatter formatter = new BinaryFormatter();
+                Event e = new Event("Name", "Desc", Category.classTime, DateTime.Now, DateTime.Now);
+                formatter.Serialize(output, e);
+                Console.WriteLine("Serialized test event.");
+
+                writer.Close();
+                Console.WriteLine("Finished creating file.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("We caught a serialization exception.");
+                Console.WriteLine(e.Message);
+                // Console.WriteLine(e.InnerException.Message);
+            }
+
+            try
+            {
+                Console.WriteLine("Starting deserialization.");
+
+                Stream input = OpenFileInput("test.bin");
+                Console.WriteLine("Input stream opened.");
+
+                StreamReader reader = new StreamReader(input);
+                Console.WriteLine("Stream reader opened.");
+
+                // XmlSerializer serializer = new XmlSerializer(typeof(Deadline));
+                BinaryFormatter formatter = new BinaryFormatter();
+
+                Event ret = (Event) formatter.Deserialize(input);
+                if (ret == null)
+                {
+                    Console.WriteLine("Returned event was null.");
+                }
+                else
+                {
+                    Console.WriteLine("Event was found.");
+                    Console.WriteLine(ret);
+                }
+
+                reader.Close();
+                Console.WriteLine("Finished deserialization.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("We caught a deserialization exception.");
+                Console.WriteLine(e.Message);
+                // Console.WriteLine(e.InnerException.Message);
+            }
+            return null;
         }
 
         /*
          * Starts the EventEditorActivity. No event is passed to the editor, so
          * the returned event will be wholly new.
          */
-        public void StartAddEventActivity()
+        private void StartAddEventActivity()
         {
             Intent intent = new Intent(this, typeof(EventEditorActivity));
+            SendFreeTime(intent);
             StartActivityForResult(intent, AddEventRequest);
         }
 
@@ -338,7 +388,7 @@ namespace MyUALife
          * Starts the DeadlineEditorActivity. No deadline is passed to the
          * editor, so the returned event will be wholly new.
          */
-        public void StartAddDeadlineActivity()
+        private void StartAddDeadlineActivity()
         {
             Intent intent = new Intent(this, typeof(DeadlineEditorActivity));
             StartActivityForResult(intent, AddDeadlineRequest);
@@ -349,11 +399,12 @@ namespace MyUALife
          * of the editor's components. The returned value will replace the
          * given event in the calendar.
          */
-        public void StartEditEventActivity(Event calendarEvent)
+        private void StartEditEventActivity(Event calendarEvent)
         {
             Intent intent = new Intent(this, typeof(EventEditorActivity));
+            SendFreeTime(intent);
             new EventSerializer(intent).WriteEvent(EventSerializer.InputEvent, calendarEvent);
-            Model.Calendar.RemoveEvent(calendarEvent);
+            calendar.RemoveEvent(calendarEvent);
             StartActivityForResult(intent, EditEventRequest);
         }
 
@@ -362,11 +413,11 @@ namespace MyUALife
          * values of the editor's components. The returned value will replace
          * the given deadline in the calendar.
          */
-        public void StartEditDeadlineActivity(Deadline deadline)
+        private void StartEditDeadlineActivity(Deadline deadline)
         {
             Intent intent = new Intent(this, typeof(DeadlineEditorActivity));
             new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
-            Model.Calendar.RemoveDeadline(deadline);
+            calendar.RemoveDeadline(deadline);
             StartActivityForResult(intent, EditDeadlineRequest);
         }
 
@@ -377,11 +428,12 @@ namespace MyUALife
          * new event, then the deadline will be removed from the calendar.
          * Otherwise, the deadline remains in the calendar.
          */
-        public void StartDeadlineToEventActivity(Deadline deadline)
+        private void StartDeadlineToEventActivity(Deadline deadline)
         {
             Intent intent = new Intent(this, typeof(EventEditorActivity));
+            SendFreeTime(intent);
             new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
-            Model.Calendar.RemoveDeadline(deadline);
+            calendar.RemoveDeadline(deadline);
             StartActivityForResult(intent, DeadlineToEventRequest);
         }
     }

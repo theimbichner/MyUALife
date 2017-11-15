@@ -4,6 +4,7 @@ using Android.Widget;
 using Android.Content;
 using Android.Support.V4.Widget;
 using System;
+using System.Collections.Generic;
 
 namespace MyUALife
 {
@@ -99,7 +100,7 @@ namespace MyUALife
 
             // Configure the spinner to display the correct list of EventTypes
             Spinner spinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
-            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.creatableTypes, t => t.name);
+            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.creatableTypes, t => t.Name);
 
             // Setup the spinner to turn on the save button
             typeSpinner.Spinner.ItemSelected += (sender, e) => HasUnsavedChanges = true;
@@ -124,50 +125,31 @@ namespace MyUALife
                     nameText.Text = deadline.Name;
                     descriptionText.Text = deadline.Description;
                     endTime.Time = deadline.Time;
-                    typeSpinner.SelectedItem = deadline.associatedEventType;
+                    typeSpinner.SelectedItem = deadline.Type;
 
                     Intent returnData = new Intent();
                     new DeadlineSerializer(returnData).WriteDeadline(DeadlineSerializer.ResultDeadline, deadline);
                     SetResult(Result.Ok, returnData);
                 }
             }
-        }
 
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            // Update the list of free time events in the pull out drawer
-            LoadFreeTimeEvents();
-
-            // Initialize the start/end time labels with the correct times
-            UpdateTimeLabels();
-
-            // Ensure that all components have the correct enabled state
-            UpdateEnableStates();
-        }
-
-        /*
-         * Asks the calendar for event representations of the user's free time
-         * and loads the list into the pull-out LinearLayout.
-         */
-        private void LoadFreeTimeEvents()
-        {
-            // Load events from today
-            DateTime loadedDate = DateTime.Today;
-
-            // Create a range of DateTimes
-            // We want to count midnight as belonging to the previous day.
-            DateTime start = loadedDate.AddMilliseconds(1);
-            DateTime end = loadedDate.AddDays(1);
-
-            // Get the events in range from the calendar
-            var loadedEvents = Model.Calendar.GetFreeTimeBlocksInRange(start, end);
+            // Load the free time blocks from the intent
+            EventSerializer deserializer = new EventSerializer(Intent);
+            List<Event> freeTimeEvents = new List<Event>();
+            int count = Intent.GetIntExtra("FreeTimeCount", 0);
+            for (int i = 0; i < count; i++)
+            {
+                Event freeTime = deserializer.ReadEvent("FreeTime" + i);
+                if (freeTime != null)
+                {
+                    freeTimeEvents.Add(freeTime);
+                }
+            }
 
             // Fill the free time display with a list of free times.
             ViewUtil util = new ViewUtil(this);
             ToStr<Event> label = e => String.Format("{0} - {1}", e.StartTime, e.EndTime);
-            ToStr<Event> color = e => e.Type.colorString;
+            ToStr<Event> color = e => e.Type.ColorString;
             ViewUtil.SetupCallback<Event> setup = (view, layout, freeTime) =>
             {
                 view.Click += (sender, e) =>
@@ -177,7 +159,18 @@ namespace MyUALife
                     UpdateTimeLabels();
                 };
             };
-            util.LoadListToLayout(freeTimeLayout, loadedEvents, label, color, setup);
+            util.LoadListToLayout(freeTimeLayout, freeTimeEvents, label, color, setup);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            // Initialize the start/end time labels with the correct times
+            UpdateTimeLabels();
+
+            // Ensure that all components have the correct enabled state
+            UpdateEnableStates();
         }
 
         /*

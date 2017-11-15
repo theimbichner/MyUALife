@@ -56,7 +56,7 @@ namespace MyUALife
 
             // Configure the spinner to display the correct list of EventTypes
             Spinner spinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
-            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.creatableTypes, t => t.name);
+            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.creatableTypes, t => t.Name);
 
             // Setup the spinner to turn on the save button
             typeSpinner.Spinner.ItemSelected += (sender, e) => TurnOnSaveButton();
@@ -69,7 +69,7 @@ namespace MyUALife
                 nameText.Text = input.Name;
                 descriptionText.Text = input.Description;
                 deadlineTime.Time = input.Time;
-                typeSpinner.SelectedItem = input.associatedEventType;
+                typeSpinner.SelectedItem = input.Type;
                 SaveChanges();
             }
         }

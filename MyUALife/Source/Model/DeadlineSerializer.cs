@@ -42,10 +42,10 @@ namespace MyUALife
             intent.PutExtra(keyBase + ExtraDeadlineTime, calendarDeadline.Time.ToBinary());
 
             // Write the Deadline type fields
-            intent.PutExtra(keyBase + ExtraDeadlineTypeName, calendarDeadline.associatedEventType.name);
-            intent.PutExtra(keyBase + ExtraDeadlineTypePriority, calendarDeadline.associatedEventType.priority);
-            intent.PutExtra(keyBase + ExtraDeadlineTypeEditable, calendarDeadline.associatedEventType.editable);
-            intent.PutExtra(keyBase + ExtraDeadlineTypeColor, calendarDeadline.associatedEventType.colorString);
+            intent.PutExtra(keyBase + ExtraDeadlineTypeName, calendarDeadline.Type.Name);
+            intent.PutExtra(keyBase + ExtraDeadlineTypePriority, calendarDeadline.Type.Priority);
+            intent.PutExtra(keyBase + ExtraDeadlineTypeEditable, calendarDeadline.Type.IsEditable);
+            intent.PutExtra(keyBase + ExtraDeadlineTypeColor, calendarDeadline.Type.ColorString);
         }
 
         /*

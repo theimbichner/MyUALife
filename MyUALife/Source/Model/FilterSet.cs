@@ -5,12 +5,12 @@ namespace MyUALife
 {
     class FilterSet
     {
-        // The available FilterSet
+        // The available FilterSets
         private readonly static FilterSet allTypes   = new FilterSet("All types", Category.creatableTypes);
         private readonly static FilterSet recreation = new FilterSet("Recreation", Category.recreation);
         private readonly static FilterSet academics  = new FilterSet("Academics", Category.classTime, Category.homework);
 
-        // List containing all FilterSet
+        // List containing all FilterSets
         public static List<FilterSet> FilterSets
         {
             get

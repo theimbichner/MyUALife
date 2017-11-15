@@ -73,7 +73,6 @@
     <None Include="Deprecated\DayViewActivity.cs.deprecated" />
     <Compile Include="Source\Model\Event.cs" />
     <None Include="Deprecated\MainActivity.cs.deprecated" />
-    <Compile Include="Source\Model\Model.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\View\MainActivity.cs" />

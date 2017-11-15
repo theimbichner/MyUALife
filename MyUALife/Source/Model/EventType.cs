@@ -1,17 +1,25 @@
 ﻿using System;
-[Serializable()]
-public struct EventType
-{
-    public readonly String name;
-    public readonly bool editable;
-    public readonly int priority;
-    public readonly String colorString;
 
-    public EventType(String str, int priority, bool ed, String color)
+namespace MyUALife
+{
+    [Serializable()]
+    public struct EventType
     {
-        name = str;
-        this.priority = priority;
-        editable = ed;
-        colorString = color;
+        /*
+         * Constructs an EventType with the given properties.
+         */
+        public EventType(String name, int priority, bool isEditable, String color)
+        {
+            Name = name;
+            Priority = priority;
+            IsEditable = isEditable;
+            ColorString = color;
+        }
+
+        // Simple properties
+        public String Name        { get; }
+        public bool   IsEditable  { get; }
+        public int    Priority    { get; }
+        public String ColorString { get; }
     }
 }

@@ -44,10 +44,10 @@ namespace MyUALife
             intent.PutExtra(keyBase + ExtraEventEndTime, calendarEvent.EndTime.ToBinary());
 
             // Write the event type fields
-            intent.PutExtra(keyBase + ExtraEventTypeName, calendarEvent.Type.name);
-            intent.PutExtra(keyBase + ExtraEventTypePriority, calendarEvent.Type.priority);
-            intent.PutExtra(keyBase + ExtraEventTypeEditable, calendarEvent.Type.editable);
-            intent.PutExtra(keyBase + ExtraEventTypeColor, calendarEvent.Type.colorString);
+            intent.PutExtra(keyBase + ExtraEventTypeName, calendarEvent.Type.Name);
+            intent.PutExtra(keyBase + ExtraEventTypePriority, calendarEvent.Type.Priority);
+            intent.PutExtra(keyBase + ExtraEventTypeEditable, calendarEvent.Type.IsEditable);
+            intent.PutExtra(keyBase + ExtraEventTypeColor, calendarEvent.Type.ColorString);
         }
 
         /*
