@@ -324,7 +324,8 @@ namespace MyUALife
                 // XmlSerializer serializer = new XmlSerializer(typeof(Deadline));
                 BinaryFormatter formatter = new BinaryFormatter();
                 Event e = new Event("Name", "Desc", Category.classTime, DateTime.Now, DateTime.Now);
-                formatter.Serialize(output, e);
+                var gen = new RecurringEventGenerator(e, TimeSpan.FromDays(7));
+                formatter.Serialize(output, gen);
                 Console.WriteLine("Serialized test event.");
 
                 writer.Close();
@@ -350,7 +351,7 @@ namespace MyUALife
                 // XmlSerializer serializer = new XmlSerializer(typeof(Deadline));
                 BinaryFormatter formatter = new BinaryFormatter();
 
-                Event ret = (Event) formatter.Deserialize(input);
+                var ret = (RecurringEventGenerator) formatter.Deserialize(input);
                 if (ret == null)
                 {
                     Console.WriteLine("Returned event was null.");

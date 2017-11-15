@@ -8,7 +8,7 @@ namespace MyUALife
         private readonly List<Event> events = new List<Event>();
         private readonly List<Deadline> deadlines = new List<Deadline>();
         private readonly List<Event> happenings = new List<Event>();
-        private readonly List<EventRecurrence> recurringEvents = new List<EventRecurrence>();
+        private readonly List<RecurringEventGenerator> recurringEvents = new List<RecurringEventGenerator>();
 
         public Calendar() { }
 
@@ -88,12 +88,12 @@ namespace MyUALife
             return events.Remove(e);
         }
 
-        public void AddRecurringEvent(EventRecurrence er)
+        public void AddRecurringEvent(RecurringEventGenerator er)
         {
             recurringEvents.Add(er);
         }
 
-        public bool CancelRecurringEvent(EventRecurrence er)
+        public bool CancelRecurringEvent(RecurringEventGenerator er)
         {
             return recurringEvents.Remove(er);
         }
@@ -130,9 +130,13 @@ namespace MyUALife
 
         public List<Event> GetEventsInRange(DateTime start, DateTime end)
         {
-            foreach (EventRecurrence re in recurringEvents)
+            foreach (RecurringEventGenerator re in recurringEvents)
             {
-                re.Update(this, end);
+                var events = re.GenerateEvents(end);
+                foreach (Event e in events)
+                {
+                    AddEvent(e);
+                }
             }
 
             List<Event> output = new List<Event>();
