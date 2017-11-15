@@ -60,7 +60,7 @@
     <Compile Include="Source\Model\Category.cs" />
     <Compile Include="Source\Model\Deadline.cs" />
     <Compile Include="Source\Model\DeadlineSerializer.cs" />
-    <Compile Include="Source\Model\EventRecurrence.cs" />
+    <Compile Include="Source\Model\RecurringEventGenerator.cs" />
     <Compile Include="Source\Model\EventSerializer.cs" />
     <Compile Include="Source\Model\EventType.cs" />
     <Compile Include="Source\Model\FilterSet.cs" />
