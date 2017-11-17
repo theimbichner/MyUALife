@@ -7,7 +7,6 @@ using Android.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MyUALife
@@ -24,6 +23,9 @@ namespace MyUALife
         private const int AddDeadlineRequest = 4;
         private const int EditDeadlineRequest = 5;
 
+        // The location to save/load the calendar
+        private const String CalendarFileName = "calendar.bin";
+
         // The opened tab -- true: events tab, false: deadlines tab
         private bool eventsTabOpen = true;
 
@@ -37,7 +39,7 @@ namespace MyUALife
         private RadioButton deadlinesTab;
 
         // Helper to setup the filter spinner
-        SpinnerHelper<FilterSet> filterSpinner;
+        private SpinnerHelper<FilterSet> filterSpinner;
 
         // The currently selected filter for events and deadlines
         private FilterSet CurrentFilter
@@ -48,6 +50,7 @@ namespace MyUALife
             }
         }
 
+        // The Calendar that stores all the user info
         private Calendar calendar;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -101,8 +104,7 @@ namespace MyUALife
             deadlinesTab.Click += (sender, e) => LoadDeadlines();
 
             // Initialize the calendar from saved file
-            calendar = new Calendar();
-            InitCalendar();
+            calendar = InitCalendar();
         }
 
         protected override void OnStart()
@@ -159,6 +161,7 @@ namespace MyUALife
                     calendar.AddDeadline(resultDeadline);
                 }
             }
+            SaveCalendar();
         }
 
         /*
@@ -209,6 +212,7 @@ namespace MyUALife
                         {
                             layout.RemoveView(view);
                             calendar.RemoveEvent(calEvent);
+                            SaveCalendar();
                         });
                         infoDialog.SetNeutralButton("Edit", delegate
                         {
@@ -262,6 +266,7 @@ namespace MyUALife
                         {
                             layout.RemoveView(view);
                             calendar.RemoveDeadline(deadline);
+                            SaveCalendar();
                         });
                         infoDialog.SetNeutralButton("Edit", delegate
                         {
@@ -311,67 +316,52 @@ namespace MyUALife
 
         private Calendar InitCalendar()
         {
+            Stream input = null;
+            Calendar ret = null;
             try
             {
-                Console.WriteLine("Going to create a file.");
-
-                Stream output = OpenFileOutput("test.bin", FileCreationMode.Private);
-                Console.WriteLine("Output stream opened.");
-
-                StreamWriter writer = new StreamWriter(output);
-                Console.WriteLine("Stream writer opened.");
-
-                // XmlSerializer serializer = new XmlSerializer(typeof(Deadline));
+                input = OpenFileInput(CalendarFileName);
                 BinaryFormatter formatter = new BinaryFormatter();
-                Event e = new Event("Name", "Desc", Category.classTime, DateTime.Now, DateTime.Now);
-                var gen = new RecurringEventGenerator(e, TimeSpan.FromDays(7));
-                formatter.Serialize(output, gen);
-                Console.WriteLine("Serialized test event.");
-
-                writer.Close();
-                Console.WriteLine("Finished creating file.");
+                ret = (Calendar) formatter.Deserialize(input);
             }
             catch (Exception e)
             {
-                Console.WriteLine("We caught a serialization exception.");
-                Console.WriteLine(e.Message);
-                // Console.WriteLine(e.InnerException.Message);
+                Console.Error.WriteLine(e.Message);
             }
+            finally
+            {
+                if (input != null)
+                {
+                    input.Close();
+                }
+            }
+            if (ret == null)
+            {
+                ret = Calendar.CreateDefaultCalendar();
+            }
+            return ret;
+        }
 
+        private void SaveCalendar()
+        {
+            Stream output = null;
             try
             {
-                Console.WriteLine("Starting deserialization.");
-
-                Stream input = OpenFileInput("test.bin");
-                Console.WriteLine("Input stream opened.");
-
-                StreamReader reader = new StreamReader(input);
-                Console.WriteLine("Stream reader opened.");
-
-                // XmlSerializer serializer = new XmlSerializer(typeof(Deadline));
+                output = OpenFileOutput(CalendarFileName, FileCreationMode.Private);
                 BinaryFormatter formatter = new BinaryFormatter();
-
-                var ret = (RecurringEventGenerator) formatter.Deserialize(input);
-                if (ret == null)
-                {
-                    Console.WriteLine("Returned event was null.");
-                }
-                else
-                {
-                    Console.WriteLine("Event was found.");
-                    Console.WriteLine(ret);
-                }
-
-                reader.Close();
-                Console.WriteLine("Finished deserialization.");
+                formatter.Serialize(output, calendar);
             }
             catch (Exception e)
             {
-                Console.WriteLine("We caught a deserialization exception.");
-                Console.WriteLine(e.Message);
-                // Console.WriteLine(e.InnerException.Message);
+                Console.Error.WriteLine(e.Message);
             }
-            return null;
+            finally
+            {
+                if (output != null)
+                {
+                    output.Close();
+                }
+            }
         }
 
         /*

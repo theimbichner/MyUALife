@@ -3,79 +3,88 @@ using System.Collections.Generic;
 
 namespace MyUALife
 {
+    [Serializable()]
     public class Calendar
     {
+        // The Events stored in the Calendar
         private readonly List<Event> events = new List<Event>();
+
+        // The Deadlines stored in the Calendar
         private readonly List<Deadline> deadlines = new List<Deadline>();
-        private readonly List<Event> happenings = new List<Event>();
+
+        // Generators for all the recurring Events
         private readonly List<RecurringEventGenerator> recurringEvents = new List<RecurringEventGenerator>();
 
+        /*
+         * Default constructor. Creates a calendar with no events or deadlines.
+         */
         public Calendar() { }
 
+        /*
+         * Constructs a Calendar initialized to contain the given events and deadlines.
+         */
         public Calendar(List<Event> events, List<Deadline> deadlines)
         {
-            this.events = events;
-            this.deadlines = deadlines;
+            foreach (Event e in events)
+            {
+                this.events.Add(e);
+            }
+
+            foreach (Deadline d in deadlines)
+            {
+                this.deadlines.Add(d);
+            }
         }
 
-        private static void Init()
+        /*
+         * Creates a Calendar with some sample events and deadlines, for ease
+         * of testing.
+         */
+        public static Calendar CreateDefaultCalendar()
         {
-            Calendar Calendar = new Calendar();
+            String classDesc       = "Software Engineering";
+            String appointmentDesc = "This is an appointment with an advisor.";
+            String hwDesc          = "This is homework for CS436";
+            String studyDesc       = "This is study time.";
+            String recDesc         = "This is a recreational event.";
 
-            DateTime time = DateTime.Now;
-            DateTime midnightMorning = DateTime.Today;
-            DateTime midnightNight = DateTime.Today.AddDays(1);
+            Calendar ret = new Calendar();
 
-            String classDesc = "Software Engineering";
-            String appointmentDesc = "This is an appointment with a professor.";
-            String hwDesc = "This is homework for CS436";
-            String studyDesc = "This is study time.";
-            String recDesc = "This is a recreational event.";
-            // String freeDesc        = "This is free time. This category should not appear in user added events.";
-            // String lastNightDesc   = "This was midnight last night. This should appear as part of yesterday.";
-            // String tonightDesc     = "This is midnight tonight. This should appear as part of today.";
+            ret.AddEvent(new Event("CS436 Class",          classDesc,       Category.classTime,   Time(12, 30), Time(13, 45)));
+            ret.AddEvent(new Event("Advising Appointment", appointmentDesc, Category.appointment, Time(14, 30), Time(15, 0)));
+            ret.AddEvent(new Event("Build Android App",    hwDesc,          Category.homework,    Time(15, 15), Time(17, 0)));
+            ret.AddEvent(new Event("Study",                studyDesc,       Category.studyTime,   Time(10, 0),  Time(12, 15)));
+            ret.AddEvent(new Event("Play Videogames",      recDesc,         Category.recreation,  Time(18, 25), Time(23, 59)));
 
-            Calendar.AddEvent(new Event("CS436 Class", classDesc, Category.classTime, Time(12, 30), Time(13, 45)));
-            Calendar.AddEvent(new Event("Office Hours", appointmentDesc, Category.appointment, Time(14, 30), Time(15, 0)));
-            Calendar.AddEvent(new Event("Build Android App", hwDesc, Category.homework, Time(15, 15), Time(17, 0)));
-            Calendar.AddEvent(new Event("Study", studyDesc, Category.studyTime, Time(10, 0), Time(12, 15)));
-            Calendar.AddEvent(new Event("Play Videogames", recDesc, Category.recreation, Time(18, 25), Time(23, 59)));
-            // Calendar.AddEvent(new Event("???",               freeDesc,        Category.freeTime,    time, time));
-            // Calendar.AddEvent(new Event("Last Midnight",     lastNightDesc,   Category.freeTime,    midnightMorning, midnightMorning));
-            // Calendar.AddEvent(new Event("Midnight Tonight",  tonightDesc,     Category.freeTime,    midnightNight, midnightNight));
+            ret.AddDeadline(new Deadline("Test Deadline", "An example of a deadline.", Time(24, 0)));
 
-            Calendar.AddDeadline(new Deadline("Deadline", "It's a deadline!!!!!!!!!!", midnightNight));
+            return ret;
         }
 
-        static DateTime Time(int hours, int mins)
+        /*
+         * Returns a DateTime representing today at the given time of day.
+         */
+        private static DateTime Time(int hours, int mins)
         {
             return DateTime.Today.AddHours(hours).AddMinutes(mins);
         }
 
+        /*
+         * Given a List of Events, returns a new List containing only the
+         * Events of EventType type.
+         */
         public static List<Event> FilterEventsByType(List<Event> events, EventType type)
         {
-            List<Event> output = new List<Event>();
-            foreach (Event e in events)
-            {
-                if (e.Type.Equals(type))
-                {
-                    output.Add(e);
-                }
-            }
-            return output;
+            return events.FindAll(e => e.Type.Equals(type));
         }
 
+        /*
+         * Given a List of Events, returns a new List containing only the
+         * Events whose EventType is one of the elements of types.
+         */
         public static List<Event> FilterEventsByTypes(List<Event> events, List<EventType> types)
         {
-            List<Event> output = new List<Event>();
-            foreach (Event e in events)
-            {
-                if (types.Contains(e.Type))
-                {
-                    output.Add(e);
-                }
-            }
-            return output;
+            return events.FindAll(e => types.Contains(e.Type));
         }
 
         public void AddEvent(Event e)
@@ -93,11 +102,6 @@ namespace MyUALife
             recurringEvents.Add(er);
         }
 
-        public bool CancelRecurringEvent(RecurringEventGenerator er)
-        {
-            return recurringEvents.Remove(er);
-        }
-
         public void AddDeadline(Deadline d)
         {
             deadlines.Add(d);
@@ -106,16 +110,6 @@ namespace MyUALife
         public bool RemoveDeadline(Deadline d)
         {
             return deadlines.Remove(d);
-        }
-
-        public void AddHappening(Event e)
-        {
-            happenings.Add(e);
-        }
-
-        public bool RemoveHappening(Event e)
-        {
-            return happenings.Remove(e);
         }
 
         public List<Event> GetEventsOnDate(DateTime date)
