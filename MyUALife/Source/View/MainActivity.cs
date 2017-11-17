@@ -12,7 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MyUALife
 {
-    [Activity(Label = "MyUALife", MainLauncher = true)]
+    [Activity(Label = "MyUALife")]
     public class MainActivity : Activity
     {
         // Request codes for the EventEditorActivity
