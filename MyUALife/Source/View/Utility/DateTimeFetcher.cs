@@ -44,8 +44,10 @@ namespace MyUALife
 
             public override Dialog OnCreateDialog(Bundle savedInstanceState)
             {
-                DateTime date = DateTime.Today;
-                return new DatePickerDialog(Activity, this, date.Year, date.Month - 1, date.Day);
+                int year = parent.Time.Year;
+                int month = parent.Time.Month - 1;
+                int day = parent.Time.Day;
+                return new DatePickerDialog(Activity, this, year, month, day);
             }
 
             public void OnDateSet(DatePicker view, int year, int month, int day)
@@ -74,14 +76,15 @@ namespace MyUALife
 
             public override Dialog OnCreateDialog(Bundle savedInstanceState)
             {
-                DateTime time = DateTime.Now;
-                return new TimePickerDialog(Activity, this, time.Hour, time.Minute, false);
+                int hour = parent.Time.Hour;
+                int min = parent.Time.Minute;
+                return new TimePickerDialog(Activity, this, hour, min, false);
             }
 
             public void OnTimeSet(TimePicker view, int hour, int minute)
             {
                 parent.Time = date.AddHours(hour).AddMinutes(minute);
-                parent.callback();
+                parent.callback?.Invoke();
             }
         }
 

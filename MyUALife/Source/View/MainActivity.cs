@@ -330,10 +330,7 @@ namespace MyUALife
             }
             finally
             {
-                if (input != null)
-                {
-                    input.Close();
-                }
+                input?.Close();
             }
             if (ret == null)
             {
@@ -357,10 +354,7 @@ namespace MyUALife
             }
             finally
             {
-                if (output != null)
-                {
-                    output.Close();
-                }
+                output?.Close();
             }
         }
 
