@@ -64,6 +64,7 @@
     <Compile Include="Source\Model\EventSerializer.cs" />
     <Compile Include="Source\Model\EventType.cs" />
     <Compile Include="Source\Model\FilterSet.cs" />
+    <Compile Include="Source\View\TitleScreenActivity.cs" />
     <Compile Include="Source\View\Utility\DateTimeFetcher.cs" />
     <Compile Include="Source\View\DeadlineEditorActivity.cs" />
     <Compile Include="Source\View\Utility\SpinnerHelper.cs" />
@@ -76,6 +77,9 @@
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\View\MainActivity.cs" />
+    <AndroidResource Include="Resources\layout\TitleScreen.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Deprecated\DayView.axml.deprecated">

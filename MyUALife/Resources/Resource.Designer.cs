@@ -190,8 +190,14 @@ namespace MyUALife
 			// aapt resource value: 0x7f07001d
 			public const int scrollView1 = 2131165213;
 			
+			// aapt resource value: 0x7f070022
+			public const int staffLoginButton = 2131165218;
+			
 			// aapt resource value: 0x7f070010
 			public const int startTimeLabel = 2131165200;
+			
+			// aapt resource value: 0x7f070023
+			public const int studentLoginButton = 2131165219;
 			
 			// aapt resource value: 0x7f070000
 			public const int textView1 = 2131165184;
@@ -238,6 +244,9 @@ namespace MyUALife
 			
 			// aapt resource value: 0x7f030002
 			public const int Main = 2130903042;
+			
+			// aapt resource value: 0x7f030003
+			public const int TitleScreen = 2130903043;
 			
 			static Layout()
 			{
