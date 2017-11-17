@@ -15,6 +15,9 @@ namespace MyUALife
         // Generators for all the recurring Events
         private readonly List<RecurringEventGenerator> recurringEvents = new List<RecurringEventGenerator>();
 
+        private int homeworkCount = 0;
+        private int homeworkTime = 0;
+
         /*
          * Default constructor. Creates a calendar with no events or deadlines.
          */
@@ -230,6 +233,21 @@ namespace MyUALife
             }
 
             return freeBlocks;
+        }
+
+        public int getAverageHomeworkTime()
+        {
+            if (homeworkCount == 0)
+            {
+                return -1;
+            }
+            return homeworkTime / homeworkCount;
+        }
+
+        public void recordHomeworkTime(int minutes)
+        {
+            homeworkTime += minutes;
+            homeworkCount++;
         }
 
     }

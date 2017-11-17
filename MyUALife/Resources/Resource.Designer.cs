@@ -130,14 +130,17 @@ namespace MyUALife
 			// aapt resource value: 0x7f07000f
 			public const int contentFrame = 2131165199;
 			
-			// aapt resource value: 0x7f070021
-			public const int createDeadlineButton = 2131165217;
+			// aapt resource value: 0x7f070022
+			public const int createDeadlineButton = 2131165218;
 			
-			// aapt resource value: 0x7f070020
-			public const int createEventButton = 2131165216;
+			// aapt resource value: 0x7f070021
+			public const int createEventButton = 2131165217;
 			
 			// aapt resource value: 0x7f07001c
 			public const int deadlinesRadioButton = 2131165212;
+			
+			// aapt resource value: 0x7f070024
+			public const int descriptionLabel = 2131165220;
 			
 			// aapt resource value: 0x7f070003
 			public const int descriptionText = 2131165187;
@@ -145,8 +148,14 @@ namespace MyUALife
 			// aapt resource value: 0x7f07000e
 			public const int drawerLayout = 2131165198;
 			
+			// aapt resource value: 0x7f070028
+			public const int drawerLayout1 = 2131165224;
+			
 			// aapt resource value: 0x7f070013
 			public const int endTimeLabel = 2131165203;
+			
+			// aapt resource value: 0x7f070025
+			public const int estimateLabel = 2131165221;
 			
 			// aapt resource value: 0x7f07001a
 			public const int eventsRadioButton = 2131165210;
@@ -159,6 +168,9 @@ namespace MyUALife
 			
 			// aapt resource value: 0x7f07001f
 			public const int happeningsButton = 2131165215;
+			
+			// aapt resource value: 0x7f070027
+			public const int ignoreButton = 2131165223;
 			
 			// aapt resource value: 0x7f070009
 			public const int linearLayout1 = 2131165193;
@@ -178,6 +190,9 @@ namespace MyUALife
 			// aapt resource value: 0x7f07001e
 			public const int mainTextLayout = 2131165214;
 			
+			// aapt resource value: 0x7f070023
+			public const int nameLabel = 2131165219;
+			
 			// aapt resource value: 0x7f070001
 			public const int nameText = 2131165185;
 			
@@ -190,14 +205,20 @@ namespace MyUALife
 			// aapt resource value: 0x7f07001d
 			public const int scrollView1 = 2131165213;
 			
-			// aapt resource value: 0x7f070022
-			public const int staffLoginButton = 2131165218;
+			// aapt resource value: 0x7f070029
+			public const int staffLoginButton = 2131165225;
 			
 			// aapt resource value: 0x7f070010
 			public const int startTimeLabel = 2131165200;
 			
-			// aapt resource value: 0x7f070023
-			public const int studentLoginButton = 2131165219;
+			// aapt resource value: 0x7f07002a
+			public const int studentLoginButton = 2131165226;
+			
+			// aapt resource value: 0x7f070026
+			public const int submitButton = 2131165222;
+			
+			// aapt resource value: 0x7f070020
+			public const int surveyButton = 2131165216;
 			
 			// aapt resource value: 0x7f070000
 			public const int textView1 = 2131165184;
@@ -246,7 +267,10 @@ namespace MyUALife
 			public const int Main = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int TitleScreen = 2130903043;
+			public const int Survey = 2130903043;
+			
+			// aapt resource value: 0x7f030004
+			public const int TitleScreen = 2130903044;
 			
 			static Layout()
 			{
