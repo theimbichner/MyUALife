@@ -23,6 +23,9 @@ namespace MyUALife
         private const int AddDeadlineRequest = 4;
         private const int EditDeadlineRequest = 5;
 
+        //Request code for the SurveyActivity
+        private const int SurveyRequest = 6;
+
         // The location to save/load the calendar
         private const String CalendarFileName = "calendar.bin";
 
@@ -34,6 +37,7 @@ namespace MyUALife
         private Button happeningsButton;
         private Button createEventButton;
         private Button createDeadlineButton;
+        private Button surveyButton;
         private LinearLayout mainTextLayout;
         private RadioButton eventsTab;
         private RadioButton deadlinesTab;
@@ -65,6 +69,7 @@ namespace MyUALife
             happeningsButton = FindViewById<Button>(Resource.Id.happeningsButton);
             createEventButton = FindViewById<Button>(Resource.Id.createEventButton);
             createDeadlineButton = FindViewById<Button>(Resource.Id.createDeadlineButton);
+            surveyButton = FindViewById<Button>(Resource.Id.surveyButton);
             mainTextLayout = FindViewById<LinearLayout>(Resource.Id.mainTextLayout);
             eventsTab = FindViewById<RadioButton>(Resource.Id.eventsRadioButton);
             deadlinesTab = FindViewById<RadioButton>(Resource.Id.deadlinesRadioButton);
@@ -90,6 +95,8 @@ namespace MyUALife
             {
 
             };
+
+            surveyButton.Click += (sender, e) => StartSurveyActivity();
 
             // Setup the create event button to open the create event screen
             createEventButton.Click += (sender, e) => StartAddEventActivity();
@@ -377,6 +384,15 @@ namespace MyUALife
         {
             Intent intent = new Intent(this, typeof(DeadlineEditorActivity));
             StartActivityForResult(intent, AddDeadlineRequest);
+        }
+
+        /* 
+         * Starts the SurveyActivity.
+         */
+        private void StartSurveyActivity()
+        {
+            Intent intent = new Intent(this, typeof(SurveyActivity));
+            StartActivityForResult(intent, SurveyRequest);
         }
 
         /*
