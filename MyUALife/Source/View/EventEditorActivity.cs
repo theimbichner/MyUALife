@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Widget;
 using Android.Content;
 using Android.Support.V4.Widget;
+using Android.Views;
 using System;
 using System.Collections.Generic;
 
@@ -15,6 +16,8 @@ namespace MyUALife
         private DrawerLayout drawerLayout;
         private EditText nameText;
         private EditText descriptionText;
+        private CheckBox recurringCheckBox;
+        private CheckBox[] weekdayCheckBoxes = new CheckBox[7];
         private TextView startTimeLabel;
         private TextView endTimeLabel;
         private Button changeStartButton;
@@ -44,21 +47,6 @@ namespace MyUALife
             }
         }
 
-        // True when the drawer is open
-        private bool drawerOpen = false;
-        private bool DrawerOpen
-        {
-            get
-            {
-                return drawerOpen;
-            }
-            set
-            {
-                drawerOpen = value;
-                UpdateEnableStates();
-            }
-        }
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -70,16 +58,20 @@ namespace MyUALife
             drawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawerLayout);
             nameText = FindViewById<EditText>(Resource.Id.nameText);
             descriptionText = FindViewById<EditText>(Resource.Id.descriptionText);
+            recurringCheckBox = FindViewById<CheckBox>(Resource.Id.recurringCheckBox);
+            weekdayCheckBoxes[0] = FindViewById<CheckBox>(Resource.Id.sundayCheckBox);
+            weekdayCheckBoxes[1] = FindViewById<CheckBox>(Resource.Id.mondayCheckBox);
+            weekdayCheckBoxes[2] = FindViewById<CheckBox>(Resource.Id.tuesdayCheckBox);
+            weekdayCheckBoxes[3] = FindViewById<CheckBox>(Resource.Id.wednesdayCheckBox);
+            weekdayCheckBoxes[4] = FindViewById<CheckBox>(Resource.Id.thursdayCheckBox);
+            weekdayCheckBoxes[5] = FindViewById<CheckBox>(Resource.Id.fridayCheckBox);
+            weekdayCheckBoxes[6] = FindViewById<CheckBox>(Resource.Id.saturdayCheckBox);
             startTimeLabel = FindViewById<TextView>(Resource.Id.startTimeLabel);
             endTimeLabel = FindViewById<TextView>(Resource.Id.endTimeLabel);
             changeStartButton = FindViewById<Button>(Resource.Id.changeStartButton);
             changeEndButton = FindViewById<Button>(Resource.Id.changeEndButton);
             saveButton = FindViewById<Button>(Resource.Id.saveButton);
             freeTimeLayout = FindViewById<LinearLayout>(Resource.Id.freeTimeLayout);
-
-            // Setup the DrawerLayout to keep track of its open/closed state
-            drawerLayout.DrawerOpened += (sender, e) => DrawerOpen = true;
-            drawerLayout.DrawerClosed += (sender, e) => DrawerOpen = false;
 
             // Setup the text fields to turn on the save button when edited
             nameText.TextChanged += (sender, e) => HasUnsavedChanges = true;
@@ -89,11 +81,19 @@ namespace MyUALife
             descriptionText.SetHorizontallyScrolling(false);
             descriptionText.SetMaxLines(1000);
 
+            // Setup the recurring checkbox to show hide the other checkboxes
+            recurringCheckBox.Click += (sender, e) =>
+            {
+                UpdateRecurrenceVisisbility();
+                UpdateTimeLabels();
+            };
+
             // Setup the time buttons to display a time picker dialog
-            startTime = new DateTimeFetcher(this, DateTime.Now, OnTimeChange);
-            endTime = new DateTimeFetcher(this, DateTime.Now, OnTimeChange);
-            changeStartButton.Click += (sender, e) => startTime.PollDateTime();
-            changeEndButton.Click += (sender, e) => endTime.PollDateTime();
+            DateTime time = DateTime.Now;
+            startTime = new DateTimeFetcher(this, time, OnTimeChange);
+            endTime = new DateTimeFetcher(this, time.AddMinutes(1), OnTimeChange);
+            changeStartButton.Click += (sender, e) => startTime.PollDateTime(!recurringCheckBox.Checked);
+            changeEndButton.Click += (sender, e) => endTime.PollDateTime(!recurringCheckBox.Checked);
 
             // Setup the save changes button to save the current data when pressed
             saveButton.Click += (sender, e) => SaveChanges();
@@ -157,6 +157,7 @@ namespace MyUALife
                     startTime.Time = freeTime.StartTime;
                     endTime.Time = freeTime.EndTime;
                     UpdateTimeLabels();
+                    drawerLayout.CloseDrawers();
                 };
             };
             util.LoadListToLayout(freeTimeLayout, freeTimeEvents, label, color, setup);
@@ -168,6 +169,9 @@ namespace MyUALife
 
             // Initialize the start/end time labels with the correct times
             UpdateTimeLabels();
+
+            // Update the visibility of recurrence componentes
+            UpdateRecurrenceVisisbility();
 
             // Ensure that all components have the correct enabled state
             UpdateEnableStates();
@@ -202,8 +206,15 @@ namespace MyUALife
          */
         private void UpdateTimeLabels()
         {
-            startTimeLabel.Text = startTime.Time.ToString("g");
-            endTimeLabel.Text = endTime.Time.ToString("g");
+            startTimeLabel.Text = "";
+            endTimeLabel.Text = "";
+            if (!recurringCheckBox.Checked)
+            {
+                startTimeLabel.Text += startTime.Time.ToString("D") + "\n";
+                endTimeLabel.Text += endTime.Time.ToString("D") + "\n";
+            }
+            startTimeLabel.Text += startTime.Time.ToString("t");
+            endTimeLabel.Text += endTime.Time.ToString("t");
         }
 
         /*
@@ -226,13 +237,26 @@ namespace MyUALife
          */
         private void UpdateEnableStates()
         {
-            saveButton.Enabled = HasUnsavedChanges && nameText.Text != "" && !DrawerOpen;
+            saveButton.Enabled = HasUnsavedChanges && nameText.Text != "";
+        }
 
-            nameText.Enabled = !DrawerOpen;
-            descriptionText.Enabled = !DrawerOpen;
-            changeStartButton.Enabled = !DrawerOpen;
-            changeEndButton.Enabled = !DrawerOpen;
-            typeSpinner.Spinner.Enabled = !DrawerOpen;
+        /*
+         * Determines whether the components relating to event recurrence
+         * should be visible or invisible and updates them appropriately.
+         */
+        private void UpdateRecurrenceVisisbility()
+        {
+            ViewStates viewState = ViewStates.Gone;
+            if (recurringCheckBox.Checked)
+            {
+                viewState = ViewStates.Visible;
+            }
+
+            foreach (CheckBox c in weekdayCheckBoxes)
+            {
+                c.Visibility = viewState;
+                c.Checked &= recurringCheckBox.Checked;
+            }
         }
     }
 }

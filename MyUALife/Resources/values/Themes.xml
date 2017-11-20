@@ -3,6 +3,14 @@
     <style name="MyUALifeTheme" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:colorPrimary">@color/indigo500</item>
         <item name="android:colorPrimaryDark">@color/indigo700</item>
-        <item name="android:colorAccent">@color/amber500</item>
+        <item name="android:colorAccent">@color/indigo500</item>
+    </style>
+    <style name="EditorTextStyle">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>"
+    </style>
+    <style name="EditorTextStyleSmall">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>"
     </style>
 </resources>

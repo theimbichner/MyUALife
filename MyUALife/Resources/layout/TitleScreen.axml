@@ -11,12 +11,14 @@
         <Button
             android:text="Staff"
             android:id="@+id/staffLoginButton"
-            android:layout_width="192.5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="match_parent" />
         <Button
             android:text="Student"
             android:id="@+id/studentLoginButton"
-            android:layout_width="192.5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="match_parent" />
     </LinearLayout>
 </LinearLayout>

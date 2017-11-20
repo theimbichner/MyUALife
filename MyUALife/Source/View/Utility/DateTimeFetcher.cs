@@ -92,10 +92,18 @@ namespace MyUALife
          * Opens a dialog asking the user for a time and stores the result as a
          * DateTime once the dialog has closed, if it closes successfully.
          */
-        public void PollDateTime()
+        public void PollDateTime(bool useDate)
         {
-            DatePickerFragment dateTimePicker = new DatePickerFragment(this);
-            dateTimePicker.Show(activity.FragmentManager, "pickStartDateTime");
+            if (useDate)
+            {
+                DatePickerFragment dateTimePicker = new DatePickerFragment(this);
+                dateTimePicker.Show(activity.FragmentManager, "pickStartDateTime");
+            }
+            else
+            {
+                TimePickerFragment timePicker = new TimePickerFragment(this, DateTime.Today);
+                timePicker.Show(activity.FragmentManager, "pickStartTime");
+            }
         }
     }
 }

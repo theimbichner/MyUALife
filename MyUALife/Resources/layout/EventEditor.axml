@@ -5,143 +5,201 @@
     android:layout_height="match_parent">
 <!-- The main view-->
     <LinearLayout
-        android:id="@+id/contentFrame"
+        android:id="@+id/linearLayout1"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:paddingTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <!-- The event name -->
-        <TextView
-            android:text="Name"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+    <!-- Contains everything in the main view but the save changes button. -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView1" />
-        <EditText
-            android:inputType="text"
-            android:imeOptions="actionDone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/nameText" />
-    <!-- The event description -->
-        <TextView
-            android:text="Description"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView2" />
-        <EditText
-            android:inputType="text"
-            android:imeOptions="actionDone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/descriptionText" />
-    <!-- The starting date/time -->
-        <TextView
-            android:text="Start Date and Time"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView3" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:id="@+id/linearLayout2">
-            <TextView
-                android:text="Select a time:"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/startTimeLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/scrollView1">
             <LinearLayout
                 android:orientation="vertical"
-                android:minWidth="25px"
-                android:minHeight="25px"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="right"
-                android:id="@+id/linearLayout3">
-                <Button
-                    android:text="Change"
-                    android:id="@+id/changeStartButton"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout2">
+            <!-- The event name -->
+                <TextView
+                    android:text="Name"
+                    android:textAppearance="@style/EditorTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView1" />
+                <EditText
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/nameText" />
+            <!-- The event description -->
+                <TextView
+                    android:text="Description"
+                    android:textAppearance="@style/EditorTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView2" />
+                <EditText
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/descriptionText" />
+            <!-- Indicates whether the event is recurring -->
+                <CheckBox
+                    android:text="Recurring?"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </LinearLayout>
-    <!-- The ending date/time -->
-        <TextView
-            android:text="End Date and Time"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView4" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:id="@+id/linearLayout1">
-            <TextView
-                android:text="Select a time:"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/endTimeLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-            <LinearLayout
-                android:orientation="vertical"
-                android:minWidth="25px"
-                android:minHeight="25px"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="right"
-                android:id="@+id/linearLayout4">
-                <Button
-                    android:text="Change"
-                    android:id="@+id/changeEndButton"
+                    android:layout_height="match_parent"
+                    android:id="@+id/recurringCheckBox" />
+            <!-- The starting date/time -->
+                <TextView
+                    android:text="Start Date and Time"
+                    android:textAppearance="@style/EditorTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView3" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:id="@+id/linearLayout3">
+                    <TextView
+                        android:text="Select a time:"
+                        android:textAppearance="@style/EditorTextStyleSmall"
+                        android:id="@+id/startTimeLabel"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="right"
+                        android:id="@+id/linearLayout4">
+                        <Button
+                            android:text="Change"
+                            android:id="@+id/changeStartButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+            <!-- The ending date/time -->
+                <TextView
+                    android:text="End Date and Time"
+                    android:textAppearance="@style/EditorTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView4" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:id="@+id/linearLayout5">
+                    <TextView
+                        android:text="Select a time:"
+                        android:textAppearance="@style/EditorTextStyleSmall"
+                        android:id="@+id/endTimeLabel"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="right"
+                        android:id="@+id/linearLayout6">
+                        <Button
+                            android:text="Change"
+                            android:id="@+id/changeEndButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+            <!-- Checkboxes indicating which days to recurr on. -->
+                <CheckBox
+                    android:text="Sunday"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent"
+                    android:id="@+id/sundayCheckBox" />
+                <CheckBox
+                    android:text="Monday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/mondayCheckBox" />
+                <CheckBox
+                    android:text="Tuesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tuesdayCheckBox" />
+                <CheckBox
+                    android:text="Wednesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/wednesdayCheckBox" />
+                <CheckBox
+                    android:text="Thursday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/thursdayCheckBox" />
+                <CheckBox
+                    android:text="Friday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/fridayCheckBox" />
+                <CheckBox
+                    android:text="Saturday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/saturdayCheckBox" />
+            <!-- The type selection spinner -->
+                <TextView
+                    android:text="Event Type"
+                    android:textAppearance="@style/EditorTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView5" />
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/typeSpinner" />
             </LinearLayout>
-        </LinearLayout>
-    <!-- The type selection spinner -->
-        <TextView
-            android:text="Event Type"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView5" />
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/typeSpinner" />
+        </ScrollView>
     <!-- Save button -->
         <Button
             android:text="Save Changes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:id="@+id/saveButton" />
     </LinearLayout>
 <!-- The free time menu -->
-  <LinearLayout
-      android:id="@+id/linearLayout5"
-      android:orientation="vertical"
-      android:background="@color/white"
-      android:layout_width="240dp"
-      android:layout_height="match_parent"
-      android:layout_gravity="end">
-      <TextView
-          android:text="Free Time"
-          android:textAppearance="?android:attr/textAppearanceLarge"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="5dp"
-          android:id="@+id/textView6" />
-      <LinearLayout
-          android:id="@+id/freeTimeLayout"
-          android:orientation="vertical"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"/>
-  </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:orientation="vertical"
+        android:background="?android:windowBackground"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:clickable="true">
+        <TextView
+            android:text="Free Time"
+            android:textAppearance="@style/EditorTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/textView6" />
+        <LinearLayout
+            android:id="@+id/freeTimeLayout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

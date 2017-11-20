@@ -13,8 +13,8 @@ namespace MyUALife
         public static EventType freeTime = new EventType("Free Time", 5, true, "#3F51B5");
         public static EventType other = new EventType("Other", 4, true, "#999999");
 
-        public static List<EventType> creatableTypes = new List<EventType>(new EventType[] { classTime,
-        studyTime, homework, appointment, recreation, other });
+        public static List<EventType> creatableTypes = new List<EventType>(new EventType[] { recreation, classTime,
+        studyTime, homework, appointment, other });
 
         public static EventType GetTypeByName(String name)
         {
