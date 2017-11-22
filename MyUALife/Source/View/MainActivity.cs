@@ -11,7 +11,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MyUALife
 {
-    [Activity(Label = "MyUALife")]
+    [Activity(Label = "Today's Overview")]
     public class MainActivity : Activity
     {
         // Request codes for the EventEditorActivity
@@ -33,8 +33,6 @@ namespace MyUALife
         private bool eventsTabOpen = true;
 
         // GUI components
-        private Button calendarButton;
-        private Button happeningsButton;
         private Button createEventButton;
         private Button createDeadlineButton;
         private Button surveyButton;
@@ -65,8 +63,6 @@ namespace MyUALife
             SetContentView(Resource.Layout.Main);
 
             // Get components by id
-            calendarButton = FindViewById<Button>(Resource.Id.calendarButton);
-            happeningsButton = FindViewById<Button>(Resource.Id.happeningsButton);
             createEventButton = FindViewById<Button>(Resource.Id.createEventButton);
             createDeadlineButton = FindViewById<Button>(Resource.Id.createDeadlineButton);
             surveyButton = FindViewById<Button>(Resource.Id.surveyButton);
@@ -78,23 +74,6 @@ namespace MyUALife
             Spinner spinner = FindViewById<Spinner>(Resource.Id.filterSpinner);
             filterSpinner = new SpinnerHelper<FilterSet>(spinner, FilterSet.FilterSets, f => f.Name);
             filterSpinner.Spinner.ItemSelected += (sender, e) => UpdateCenterLayout();
-
-            // Setup the calendar button to open the android calendar
-            calendarButton.Click += (sender, e) =>
-            {
-                Android.Net.Uri.Builder builder = CalendarContract.ContentUri.BuildUpon();
-                builder.AppendPath("time");
-                long millis = (long)(DateTime.Today - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
-                ContentUris.AppendId(builder, millis);
-                Intent intent = new Intent(Intent.ActionView).SetData(builder.Build());
-                StartActivity(intent);
-            };
-
-            // Setup the happenings button to display a list of happenings
-            happeningsButton.Click += (sender, e) =>
-            {
-
-            };
 
             surveyButton.Click += (sender, e) => StartSurveyActivity();
 
@@ -436,6 +415,12 @@ namespace MyUALife
             new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
             calendar.RemoveDeadline(deadline);
             StartActivityForResult(intent, DeadlineToEventRequest);
+        }
+
+        private void GoToCalendarView()
+        {
+            Intent intent = new Intent(this, typeof(CalendarActivity));
+            StartActivity(intent);
         }
     }
 }

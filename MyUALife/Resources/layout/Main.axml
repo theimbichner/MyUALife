@@ -9,32 +9,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linearLayout1">
-    <!-- The filter spinner -->
-        <Spinner
+        <ImageButton
+            android:src="@drawable/ic_chevron_left_black_24dp"
+            android:layout_weight="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/filterSpinner" />
-    <!-- The calendar button -->
-        <LinearLayout
-            android:orientation="vertical"
-            android:minWidth="25px"
-            android:minHeight="25px"
+            android:id="@+id/backButton" />
+        <TextView
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/linearLayout4"
-            android:gravity="right">
-            <Button
-                android:text="Go to Calendar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/calendarButton" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/textView1" />
+        <ImageButton
+            android:src="@drawable/ic_chevron_right_black_24dp"
+            android:layout_weight="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/forwardButton" />
     </LinearLayout>
 <!-- Contains the deadlines/events toggle -->
     <RadioGroup
-        android:minWidth="25px"
-        android:minHeight="25px"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="30dp"
@@ -73,15 +69,11 @@
     </RadioGroup>
 <!-- The events display -->
     <ScrollView
-        android:minWidth="25px"
-        android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="320dp"
         android:id="@+id/scrollView1">
         <LinearLayout
             android:orientation="vertical"
-            android:minWidth="25px"
-            android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/mainTextLayout" />
@@ -92,20 +84,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linearLayout2">
-    <!-- The "Today's Happenings" button -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/linearLayout5">
-            <Button
-                android:text="Today's Happenings"
-                android:id="@+id/happeningsButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <!-- The filter spinner -->
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/filterSpinner" />
             <Button
                 android:text="Survey"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/surveyButton" />
         </LinearLayout>
