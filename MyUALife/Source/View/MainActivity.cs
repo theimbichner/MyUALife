@@ -321,6 +321,19 @@ namespace MyUALife
             intent.PutExtra("FreeTimeCount", freeTimeEvents.Count);
         }
 
+        private void SendPastEvents(Intent intent)
+        {
+            List<Event> pastEvents = calendar.GetEventsInRange(DateTime.MinValue, DateTime.Today);
+            pastEvents = Calendar.FilterEventsByType(pastEvents, Category.homework);
+            EventSerializer serializer = new EventSerializer(intent);
+            for (int i = 0; i < pastEvents.Count; i++)
+            {
+                String key = "PastEvent" + i;
+                serializer.WriteEvent(key, pastEvents[i]);
+            }
+            intent.PutExtra("PastEventCount", pastEvents.Count);
+        }
+
         private Calendar InitCalendar()
         {
             Stream input = null;
