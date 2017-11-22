@@ -121,167 +121,161 @@ namespace MyUALife
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f070002
-			public const int backButton = 2131165186;
-			
-			// aapt resource value: 0x7f07001b
-			public const int changeEndButton = 2131165211;
-			
-			// aapt resource value: 0x7f070016
-			public const int changeStartButton = 2131165206;
-			
-			// aapt resource value: 0x7f07000e
-			public const int changeTimeButton = 2131165198;
-			
-			// aapt resource value: 0x7f07002d
-			public const int createDeadlineButton = 2131165229;
-			
-			// aapt resource value: 0x7f07002c
-			public const int createEventButton = 2131165228;
-			
-			// aapt resource value: 0x7f070028
-			public const int deadlinesRadioButton = 2131165224;
-			
-			// aapt resource value: 0x7f07002f
-			public const int descriptionLabel = 2131165231;
-			
-			// aapt resource value: 0x7f070009
-			public const int descriptionText = 2131165193;
-			
-			// aapt resource value: 0x7f070013
-			public const int drawerLayout = 2131165203;
-			
-			// aapt resource value: 0x7f070033
-			public const int drawerLayout1 = 2131165235;
-			
-			// aapt resource value: 0x7f070019
-			public const int endTimeLabel = 2131165209;
-			
-			// aapt resource value: 0x7f070030
-			public const int estimateLabel = 2131165232;
-			
-			// aapt resource value: 0x7f070005
-			public const int eventsLayout = 2131165189;
-			
-			// aapt resource value: 0x7f070026
-			public const int eventsRadioButton = 2131165222;
-			
-			// aapt resource value: 0x7f07002a
-			public const int filterSpinner = 2131165226;
-			
-			// aapt resource value: 0x7f070003
-			public const int forwardButton = 2131165187;
-			
-			// aapt resource value: 0x7f070025
-			public const int freeTimeLayout = 2131165221;
-			
-			// aapt resource value: 0x7f070021
-			public const int fridayCheckBox = 2131165217;
-			
-			// aapt resource value: 0x7f070032
-			public const int ignoreButton = 2131165234;
-			
-			// aapt resource value: 0x7f070000
-			public const int labelTextView = 2131165184;
-			
-			// aapt resource value: 0x7f070001
-			public const int linearLayout1 = 2131165185;
-			
-			// aapt resource value: 0x7f07000b
-			public const int linearLayout2 = 2131165195;
-			
-			// aapt resource value: 0x7f07000d
-			public const int linearLayout3 = 2131165197;
-			
-			// aapt resource value: 0x7f07000f
-			public const int linearLayout4 = 2131165199;
-			
-			// aapt resource value: 0x7f070018
-			public const int linearLayout5 = 2131165208;
-			
-			// aapt resource value: 0x7f07001a
-			public const int linearLayout6 = 2131165210;
-			
-			// aapt resource value: 0x7f070023
-			public const int linearLayout7 = 2131165219;
-			
-			// aapt resource value: 0x7f070029
-			public const int mainTextLayout = 2131165225;
-			
-			// aapt resource value: 0x7f07001d
-			public const int mondayCheckBox = 2131165213;
-			
-			// aapt resource value: 0x7f07002e
-			public const int nameLabel = 2131165230;
-			
-			// aapt resource value: 0x7f070007
-			public const int nameText = 2131165191;
-			
-			// aapt resource value: 0x7f070027
-			public const int radioGroup1 = 2131165223;
-			
-			// aapt resource value: 0x7f070014
-			public const int recurringCheckBox = 2131165204;
-			
 			// aapt resource value: 0x7f070022
-			public const int saturdayCheckBox = 2131165218;
-			
-			// aapt resource value: 0x7f070012
-			public const int saveButton = 2131165202;
-			
-			// aapt resource value: 0x7f070004
-			public const int scrollView1 = 2131165188;
-			
-			// aapt resource value: 0x7f070034
-			public const int staffLoginButton = 2131165236;
-			
-			// aapt resource value: 0x7f070015
-			public const int startTimeLabel = 2131165205;
-			
-			// aapt resource value: 0x7f070035
-			public const int studentLoginButton = 2131165237;
-			
-			// aapt resource value: 0x7f070031
-			public const int submitButton = 2131165233;
-			
-			// aapt resource value: 0x7f07001c
-			public const int sundayCheckBox = 2131165212;
-			
-			// aapt resource value: 0x7f07002b
-			public const int surveyButton = 2131165227;
-			
-			// aapt resource value: 0x7f070006
-			public const int textView1 = 2131165190;
-			
-			// aapt resource value: 0x7f070008
-			public const int textView2 = 2131165192;
-			
-			// aapt resource value: 0x7f07000a
-			public const int textView3 = 2131165194;
+			public const int backButton = 2131165218;
 			
 			// aapt resource value: 0x7f070017
-			public const int textView4 = 2131165207;
+			public const int changeEndButton = 2131165207;
 			
-			// aapt resource value: 0x7f070010
-			public const int textView5 = 2131165200;
+			// aapt resource value: 0x7f070012
+			public const int changeStartButton = 2131165202;
+			
+			// aapt resource value: 0x7f070008
+			public const int changeTimeButton = 2131165192;
+			
+			// aapt resource value: 0x7f07002b
+			public const int createDeadlineButton = 2131165227;
+			
+			// aapt resource value: 0x7f07002a
+			public const int createEventButton = 2131165226;
+			
+			// aapt resource value: 0x7f070026
+			public const int deadlinesRadioButton = 2131165222;
+			
+			// aapt resource value: 0x7f07002d
+			public const int descriptionLabel = 2131165229;
+			
+			// aapt resource value: 0x7f070003
+			public const int descriptionText = 2131165187;
+			
+			// aapt resource value: 0x7f07000e
+			public const int drawerLayout = 2131165198;
+			
+			// aapt resource value: 0x7f070015
+			public const int endTimeLabel = 2131165205;
+			
+			// aapt resource value: 0x7f07002e
+			public const int estimateLabel = 2131165230;
 			
 			// aapt resource value: 0x7f070024
-			public const int textView6 = 2131165220;
+			public const int eventsRadioButton = 2131165220;
 			
-			// aapt resource value: 0x7f070020
-			public const int thursdayCheckBox = 2131165216;
+			// aapt resource value: 0x7f070028
+			public const int filterSpinner = 2131165224;
 			
-			// aapt resource value: 0x7f07000c
-			public const int timeLabel = 2131165196;
+			// aapt resource value: 0x7f070023
+			public const int forwardButton = 2131165219;
 			
-			// aapt resource value: 0x7f07001e
-			public const int tuesdayCheckBox = 2131165214;
+			// aapt resource value: 0x7f070021
+			public const int freeTimeLayout = 2131165217;
 			
-			// aapt resource value: 0x7f070011
-			public const int typeSpinner = 2131165201;
+			// aapt resource value: 0x7f07001d
+			public const int fridayCheckBox = 2131165213;
+			
+			// aapt resource value: 0x7f070031
+			public const int ignoreButton = 2131165233;
+			
+			// aapt resource value: 0x7f070009
+			public const int linearLayout1 = 2131165193;
+			
+			// aapt resource value: 0x7f070005
+			public const int linearLayout2 = 2131165189;
+			
+			// aapt resource value: 0x7f070007
+			public const int linearLayout3 = 2131165191;
+			
+			// aapt resource value: 0x7f07000a
+			public const int linearLayout4 = 2131165194;
+			
+			// aapt resource value: 0x7f070014
+			public const int linearLayout5 = 2131165204;
+			
+			// aapt resource value: 0x7f070016
+			public const int linearLayout6 = 2131165206;
 			
 			// aapt resource value: 0x7f07001f
-			public const int wednesdayCheckBox = 2131165215;
+			public const int linearLayout7 = 2131165215;
+			
+			// aapt resource value: 0x7f070027
+			public const int mainTextLayout = 2131165223;
+			
+			// aapt resource value: 0x7f070019
+			public const int mondayCheckBox = 2131165209;
+			
+			// aapt resource value: 0x7f07002c
+			public const int nameLabel = 2131165228;
+			
+			// aapt resource value: 0x7f070001
+			public const int nameText = 2131165185;
+			
+			// aapt resource value: 0x7f070025
+			public const int radioGroup1 = 2131165221;
+			
+			// aapt resource value: 0x7f070010
+			public const int recurringCheckBox = 2131165200;
+			
+			// aapt resource value: 0x7f07001e
+			public const int saturdayCheckBox = 2131165214;
+			
+			// aapt resource value: 0x7f07000d
+			public const int saveButton = 2131165197;
+			
+			// aapt resource value: 0x7f07000f
+			public const int scrollView1 = 2131165199;
+			
+			// aapt resource value: 0x7f070032
+			public const int staffLoginButton = 2131165234;
+			
+			// aapt resource value: 0x7f070011
+			public const int startTimeLabel = 2131165201;
+			
+			// aapt resource value: 0x7f070033
+			public const int studentLoginButton = 2131165235;
+			
+			// aapt resource value: 0x7f070030
+			public const int submitButton = 2131165232;
+			
+			// aapt resource value: 0x7f070018
+			public const int sundayCheckBox = 2131165208;
+			
+			// aapt resource value: 0x7f070029
+			public const int surveyButton = 2131165225;
+			
+			// aapt resource value: 0x7f070000
+			public const int textView1 = 2131165184;
+			
+			// aapt resource value: 0x7f070002
+			public const int textView2 = 2131165186;
+			
+			// aapt resource value: 0x7f070004
+			public const int textView3 = 2131165188;
+			
+			// aapt resource value: 0x7f070013
+			public const int textView4 = 2131165203;
+			
+			// aapt resource value: 0x7f07000b
+			public const int textView5 = 2131165195;
+			
+			// aapt resource value: 0x7f070020
+			public const int textView6 = 2131165216;
+			
+			// aapt resource value: 0x7f07001c
+			public const int thursdayCheckBox = 2131165212;
+			
+			// aapt resource value: 0x7f070006
+			public const int timeLabel = 2131165190;
+			
+			// aapt resource value: 0x7f07002f
+			public const int timeText = 2131165231;
+			
+			// aapt resource value: 0x7f07001a
+			public const int tuesdayCheckBox = 2131165210;
+			
+			// aapt resource value: 0x7f07000c
+			public const int typeSpinner = 2131165196;
+			
+			// aapt resource value: 0x7f07001b
+			public const int wednesdayCheckBox = 2131165211;
 			
 			static Id()
 			{
@@ -297,22 +291,19 @@ namespace MyUALife
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int Calendar = 2130903040;
+			public const int DeadlineEditor = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int DeadlineEditor = 2130903041;
+			public const int EventEditor = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int EventEditor = 2130903042;
+			public const int Main = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int Main = 2130903043;
+			public const int Survey = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int Survey = 2130903044;
-			
-			// aapt resource value: 0x7f030005
-			public const int TitleScreen = 2130903045;
+			public const int TitleScreen = 2130903044;
 			
 			static Layout()
 			{
