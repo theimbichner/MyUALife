@@ -46,7 +46,7 @@ namespace MyUALife
 
             // Setup the time buttons to display a time picker dialog
             deadlineTime = new DateTimeFetcher(this, DateTime.Now, OnTimeChanged);
-            changeTimeButton.Click += (sender, e) => deadlineTime.PollDateTime();
+            changeTimeButton.Click += (sender, e) => deadlineTime.PollDateTime(true);
 
             // Setup the save changes button to save the current data when pressed
             saveButton.Click += (sender, e) => SaveChanges();
