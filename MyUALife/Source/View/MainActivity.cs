@@ -1,7 +1,6 @@
 ﻿using Android.App;
 using Android.Widget;
 using Android.OS;
-using Android.Provider;
 using Android.Content;
 using Android.Runtime;
 using System;
@@ -11,49 +10,37 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MyUALife
 {
-    [Activity(Label = "Today's Overview")]
+    [Activity(Label = "MyUALife", MainLauncher = true)]
     public class MainActivity : Activity
     {
-        // Request codes for the EventEditorActivity
+        // Request codes for the event and deadline editors
         private const int AddEventRequest = 1;
         private const int EditEventRequest = 2;
         private const int DeadlineToEventRequest = 3;
-
-        // Request codes for the DeadlineEditorActivity
         private const int AddDeadlineRequest = 4;
         private const int EditDeadlineRequest = 5;
-
-        //Request code for the SurveyActivity
-        private const int SurveyRequest = 6;
 
         // The location to save/load the calendar
         private const String CalendarFileName = "calendar.bin";
 
-        // The opened tab -- true: events tab, false: deadlines tab
-        private bool eventsTabOpen = true;
-
         // GUI components
         private Button createEventButton;
         private Button createDeadlineButton;
-        private Button surveyButton;
-        private LinearLayout mainTextLayout;
+        private LinearLayout eventsLayout;
         private RadioButton eventsTab;
         private RadioButton deadlinesTab;
+        private ImageButton backButton;
+        private ImageButton forwardButton;
+        private TextView dateLabel;
 
         // Helper to setup the filter spinner
         private SpinnerHelper<FilterSet> filterSpinner;
 
-        // The currently selected filter for events and deadlines
-        private FilterSet CurrentFilter
-        {
-            get
-            {
-                return filterSpinner.SelectedItem;
-            }
-        }
-
         // The Calendar that stores all the user info
         private Calendar calendar;
+
+        // The date whose events the user is currently viewing
+        private DateTime loadedDate = DateTime.Now;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -65,17 +52,17 @@ namespace MyUALife
             // Get components by id
             createEventButton = FindViewById<Button>(Resource.Id.createEventButton);
             createDeadlineButton = FindViewById<Button>(Resource.Id.createDeadlineButton);
-            surveyButton = FindViewById<Button>(Resource.Id.surveyButton);
-            mainTextLayout = FindViewById<LinearLayout>(Resource.Id.mainTextLayout);
+            eventsLayout = FindViewById<LinearLayout>(Resource.Id.eventsLayout);
             eventsTab = FindViewById<RadioButton>(Resource.Id.eventsRadioButton);
             deadlinesTab = FindViewById<RadioButton>(Resource.Id.deadlinesRadioButton);
+            backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+            forwardButton = FindViewById<ImageButton>(Resource.Id.forwardButton);
+            dateLabel = FindViewById<TextView>(Resource.Id.dateLabel);
 
             // Setup the filter button to filter events
             Spinner spinner = FindViewById<Spinner>(Resource.Id.filterSpinner);
             filterSpinner = new SpinnerHelper<FilterSet>(spinner, FilterSet.FilterSets, f => f.Name);
-            filterSpinner.Spinner.ItemSelected += (sender, e) => UpdateCenterLayout();
-
-            surveyButton.Click += (sender, e) => StartSurveyActivity();
+            filterSpinner.Spinner.ItemSelected += (sender, e) => UpdateEventsLayout();
 
             // Setup the create event button to open the create event screen
             createEventButton.Click += (sender, e) => StartAddEventActivity();
@@ -83,11 +70,13 @@ namespace MyUALife
             // Setup the deadline button to open the create deadline screen
             createDeadlineButton.Click += (sender, e) => StartAddDeadlineActivity();
 
-            // Setup the events tab to display the events list
-            eventsTab.Click += (sender, e) => LoadEvents();
+            // Setup the events/deadlines tabs to update the events layout
+            eventsTab.Click += (sender, e) => UpdateEventsLayout();
+            deadlinesTab.Click += (sender, e) => UpdateEventsLayout();
 
-            // Setup the deadlines tab to display the deadlines list
-            deadlinesTab.Click += (sender, e) => LoadDeadlines();
+            // Setup the date changer buttons
+            backButton.Click += (sender, e) => ShiftDate(-1);
+            forwardButton.Click += (sender, e) => ShiftDate(1);
 
             // Initialize the calendar from saved file
             calendar = InitCalendar();
@@ -98,7 +87,10 @@ namespace MyUALife
             base.OnStart();
 
             // Load the events scheduled for today
-            UpdateCenterLayout();
+            UpdateEventsLayout();
+
+            // Update the date label
+            UpdateDateLabel();
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
@@ -153,15 +145,30 @@ namespace MyUALife
         /*
          * Loads the current events or deadlines into the mainTextLayout
          */
-        private void UpdateCenterLayout()
+        private void UpdateEventsLayout()
         {
-            if (eventsTabOpen)
+            if (eventsTab.Checked)
             {
                 LoadEvents();
             }
             else
             {
                 LoadDeadlines();
+            }
+        }
+
+        private void UpdateDateLabel()
+        {
+            dateLabel.Text = loadedDate.ToString("D");
+        }
+
+        private void ShiftDate(int i)
+        {
+            loadedDate = loadedDate.AddDays(i);
+            UpdateDateLabel();
+            if (eventsTab.Checked)
+            {
+                LoadEvents();
             }
         }
 
@@ -172,10 +179,11 @@ namespace MyUALife
         private void LoadEvents()
         {
             // Get the events in range from the calendar
-            var loadedEvents = calendar.GetEventsOnDate(DateTime.Today);
+            var loadedEvents = calendar.GetEventsOnDate(loadedDate);
 
             // Apply the filter
-            loadedEvents = Calendar.FilterEventsByTypes(loadedEvents, CurrentFilter.AllowedTypes);
+            var types = filterSpinner.SelectedItem.AllowedTypes;
+            loadedEvents = Calendar.FilterEventsByTypes(loadedEvents, types);
 
             // Sort the events
             loadedEvents.Sort();
@@ -191,34 +199,23 @@ namespace MyUALife
                 {
                     var infoDialog = new AlertDialog.Builder(this);
 
-                    if (calEvent.Type.IsEditable)
+                    infoDialog.SetMessage("Delete or edit this event?");
+                    infoDialog.SetPositiveButton("Delete", delegate
                     {
-                        infoDialog.SetMessage("Delete or edit this event?");
-                        infoDialog.SetPositiveButton("Delete", delegate
-                        {
-                            layout.RemoveView(view);
-                            calendar.RemoveEvent(calEvent);
-                            SaveCalendar();
-                        });
-                        infoDialog.SetNeutralButton("Edit", delegate
-                        {
-                            StartEditEventActivity(calEvent);
-                        });
-                        infoDialog.SetNegativeButton("Cancel", delegate { });
-                    }
-                    else
+                        layout.RemoveView(view);
+                        calendar.RemoveEvent(calEvent);
+                        SaveCalendar();
+                    });
+                    infoDialog.SetNeutralButton("Edit", delegate
                     {
-                        infoDialog.SetMessage("This event cannot be edited.");
-                        infoDialog.SetPositiveButton("Ok", delegate { });
-                    }
+                        StartEditEventActivity(calEvent);
+                    });
+                    infoDialog.SetNegativeButton("Cancel", delegate { });
 
                     infoDialog.Show();
                 };
             };
-            util.LoadListToLayout(mainTextLayout, loadedEvents, label, color, setup);
-
-            // Indicate that the events tab is now open
-            eventsTabOpen = true;
+            util.LoadListToLayout(eventsLayout, loadedEvents, label, color, setup);
         }
 
         /*
@@ -245,26 +242,18 @@ namespace MyUALife
                 {
                     var infoDialog = new AlertDialog.Builder(this);
 
-                    if (deadline.Type.IsEditable)
+                    infoDialog.SetMessage("Delete or edit this deadline?");
+                    infoDialog.SetPositiveButton("Delete", delegate
                     {
-                        infoDialog.SetMessage("Delete or edit this deadline?");
-                        infoDialog.SetPositiveButton("Delete", delegate
-                        {
-                            layout.RemoveView(view);
-                            calendar.RemoveDeadline(deadline);
-                            SaveCalendar();
-                        });
-                        infoDialog.SetNeutralButton("Edit", delegate
-                        {
-                            StartEditDeadlineActivity(deadline);
-                        });
-                        infoDialog.SetNegativeButton("Cancel", delegate { });
-                    }
-                    else
+                        layout.RemoveView(view);
+                        calendar.RemoveDeadline(deadline);
+                        SaveCalendar();
+                    });
+                    infoDialog.SetNeutralButton("Edit", delegate
                     {
-                        infoDialog.SetMessage("This deadline cannot be edited.");
-                        infoDialog.SetPositiveButton("Ok", delegate { });
-                    }
+                        StartEditDeadlineActivity(deadline);
+                    });
+                    infoDialog.SetNegativeButton("Cancel", delegate { });
 
                     infoDialog.Show();
                 };
@@ -282,10 +271,7 @@ namespace MyUALife
                     infoDialog.Show();
                 };
             };
-            util.LoadListToLayout(mainTextLayout, deadlines, label, color, setup);
-
-            // Indicate that the deadliens tab is now open
-            eventsTabOpen = false;
+            util.LoadListToLayout(eventsLayout, deadlines, label, color, setup);
         }
 
         private void SendFreeTime(Intent intent)
@@ -298,19 +284,6 @@ namespace MyUALife
                 serializer.WriteEvent(key, freeTimeEvents[i]);
             }
             intent.PutExtra("FreeTimeCount", freeTimeEvents.Count);
-        }
-
-        private void SendPastEvents(Intent intent)
-        {
-            List<Event> pastEvents = calendar.GetEventsInRange(DateTime.MinValue, DateTime.Today);
-            pastEvents = Calendar.FilterEventsByType(pastEvents, Category.homework);
-            EventSerializer serializer = new EventSerializer(intent);
-            for (int i = 0; i < pastEvents.Count; i++)
-            {
-                String key = "PastEvent" + i;
-                serializer.WriteEvent(key, pastEvents[i]);
-            }
-            intent.PutExtra("PastEventCount", pastEvents.Count);
         }
 
         private Calendar InitCalendar()
@@ -331,11 +304,7 @@ namespace MyUALife
             {
                 input?.Close();
             }
-            if (ret == null)
-            {
-                ret = Calendar.CreateDefaultCalendar();
-            }
-            return ret;
+            return ret ?? Calendar.CreateDefaultCalendar();
         }
 
         private void SaveCalendar()
@@ -357,6 +326,12 @@ namespace MyUALife
             }
         }
 
+
+
+        /* Start Activities */
+
+        
+        
         /*
          * Starts the EventEditorActivity. No event is passed to the editor, so
          * the returned event will be wholly new.
@@ -376,15 +351,6 @@ namespace MyUALife
         {
             Intent intent = new Intent(this, typeof(DeadlineEditorActivity));
             StartActivityForResult(intent, AddDeadlineRequest);
-        }
-
-        /* 
-         * Starts the SurveyActivity.
-         */
-        private void StartSurveyActivity()
-        {
-            Intent intent = new Intent(this, typeof(SurveyActivity));
-            StartActivityForResult(intent, SurveyRequest);
         }
 
         /*
@@ -428,12 +394,6 @@ namespace MyUALife
             new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
             calendar.RemoveDeadline(deadline);
             StartActivityForResult(intent, DeadlineToEventRequest);
-        }
-
-        private void GoToCalendarView()
-        {
-            Intent intent = new Intent(this, typeof(CalendarActivity));
-            StartActivity(intent);
         }
     }
 }

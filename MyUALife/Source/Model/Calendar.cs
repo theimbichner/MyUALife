@@ -115,9 +115,10 @@ namespace MyUALife
             return deadlines.Remove(d);
         }
 
-        public List<Event> GetEventsOnDate(DateTime date)
+        public List<Event> GetEventsOnDate(DateTime time)
         {
-            // Create a range of DateTimes
+            DateTime date = time.Date;
+
             // We want to count midnight as belonging to the previous day.
             DateTime start = date.AddMilliseconds(1);
             DateTime end = date.AddDays(1);

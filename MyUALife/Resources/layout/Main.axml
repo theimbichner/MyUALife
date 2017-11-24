@@ -17,11 +17,13 @@
             android:id="@+id/backButton" />
         <TextView
             android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="@style/EditorTextStyle"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView1" />
+            android:id="@+id/dateLabel" />
         <ImageButton
             android:src="@drawable/ic_chevron_right_black_24dp"
             android:layout_weight="0"
@@ -76,7 +78,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/mainTextLayout" />
+            android:id="@+id/eventsLayout" />
     </ScrollView>
 <!-- Contains the buttons below the event list -->
     <LinearLayout
