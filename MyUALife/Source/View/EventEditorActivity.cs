@@ -100,13 +100,14 @@ namespace MyUALife
 
             // Configure the spinner to display the correct list of EventTypes
             Spinner spinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
-            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.creatableTypes, t => t.Name);
+            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.CreatableTypes, t => t.Name);
 
             // Setup the spinner to turn on the save button
             typeSpinner.Spinner.ItemSelected += (sender, e) => HasUnsavedChanges = true;
 
             // Get the event stored in Intent, if any
-            Event input = new EventSerializer(Intent).ReadEvent(EventSerializer.InputEvent);
+            Event input = Event.ReadEvent(Intent, MainActivity.InputEvent);
+            Deadline inputDeadline = Deadline.ReadDeadline(Intent, MainActivity.InputDeadline);
             if (input != null)
             {
                 // Store data from input in the components
@@ -117,29 +118,24 @@ namespace MyUALife
                 typeSpinner.SelectedItem = input.Type;
                 SaveChanges();
             }
-            else
+            else if (inputDeadline != null)
             {
-                Deadline deadline = new DeadlineSerializer(Intent).ReadDeadline(DeadlineSerializer.InputDeadline);
-                if (deadline != null)
-                {
-                    nameText.Text = deadline.Name;
-                    descriptionText.Text = deadline.Description;
-                    endTime.Time = deadline.Time;
-                    typeSpinner.SelectedItem = deadline.Type;
+                nameText.Text = inputDeadline.Name;
+                descriptionText.Text = inputDeadline.Description;
+                endTime.Time = inputDeadline.Time;
+                typeSpinner.SelectedItem = inputDeadline.Type;
 
-                    Intent returnData = new Intent();
-                    new DeadlineSerializer(returnData).WriteDeadline(DeadlineSerializer.ResultDeadline, deadline);
-                    SetResult(Result.Ok, returnData);
-                }
+                Intent returnData = new Intent();
+                Deadline.WriteDeadline(returnData, MainActivity.ResultDeadline, inputDeadline);
+                SetResult(Result.Ok, returnData);
             }
 
             // Load the free time blocks from the intent
-            EventSerializer deserializer = new EventSerializer(Intent);
             List<Event> freeTimeEvents = new List<Event>();
             int count = Intent.GetIntExtra("FreeTimeCount", 0);
             for (int i = 0; i < count; i++)
             {
-                Event freeTime = deserializer.ReadEvent("FreeTime" + i);
+                Event freeTime = Event.ReadEvent(Intent, "FreeTime" + i);
                 if (freeTime != null)
                 {
                     freeTimeEvents.Add(freeTime);
@@ -187,7 +183,7 @@ namespace MyUALife
         {
             EventType type = typeSpinner.SelectedItem;
             Event resultEvent = new Event(nameText.Text, descriptionText.Text, type, startTime.Time, endTime.Time);
-            new EventSerializer(data).WriteEvent(EventSerializer.ResultEvent, resultEvent);
+            Event.WriteEvent(data, MainActivity.ResultEvent, resultEvent);
             SetResult(Result.Ok, data);
             HasUnsavedChanges = false;
         }

@@ -20,6 +20,12 @@ namespace MyUALife
         private const int AddDeadlineRequest = 4;
         private const int EditDeadlineRequest = 5;
 
+        // Keys for passing information through Intent extras
+        public const String InputDeadline = "MyUALife.InputDeadline";
+        public const String ResultDeadline = "MyUALife.ResultDeadline";
+        public const String InputEvent = "MyUALife.InputEvent";
+        public const String ResultEvent = "MyUALife.ResultEvent";
+
         // The location to save/load the calendar
         private const String CalendarFileName = "calendar.bin";
 
@@ -106,7 +112,7 @@ namespace MyUALife
             if (requestCode == AddEventRequest || requestCode == EditEventRequest)
             {
                 // Add the resulting event to the calendar
-                Event resultEvent = new EventSerializer(data).ReadEvent(EventSerializer.ResultEvent);
+                Event resultEvent = Event.ReadEvent(data, ResultEvent);
                 if (resultEvent != null)
                 {
                     calendar.AddEvent(resultEvent);
@@ -115,7 +121,7 @@ namespace MyUALife
             else if (requestCode == DeadlineToEventRequest)
             {
                 // Add the resulting event to the calendar
-                Event resultEvent = new EventSerializer(data).ReadEvent(EventSerializer.ResultEvent);
+                Event resultEvent = Event.ReadEvent(data, ResultEvent);
                 if (resultEvent != null)
                 {
                     calendar.AddEvent(resultEvent);
@@ -123,7 +129,7 @@ namespace MyUALife
                 // If no event came in, return the deadline to the calendar
                 else
                 {
-                    Deadline resultDeadline = new DeadlineSerializer(data).ReadDeadline(DeadlineSerializer.ResultDeadline);
+                    Deadline resultDeadline = Deadline.ReadDeadline(data, ResultDeadline);
                     if (resultDeadline != null)
                     {
                         calendar.AddDeadline(resultDeadline);
@@ -133,7 +139,7 @@ namespace MyUALife
             else if (requestCode == AddDeadlineRequest || requestCode == EditDeadlineRequest)
             {
                 // Add the resulting deadline to the calendar
-                Deadline resultDeadline = new DeadlineSerializer(data).ReadDeadline(DeadlineSerializer.ResultDeadline);
+                Deadline resultDeadline = Deadline.ReadDeadline(data, ResultDeadline);
                 if (resultDeadline != null)
                 {
                     calendar.AddDeadline(resultDeadline);
@@ -277,11 +283,9 @@ namespace MyUALife
         private void SendFreeTime(Intent intent)
         {
             List<Event> freeTimeEvents = calendar.GetFreeTimeOnDate(DateTime.Today);
-            EventSerializer serializer = new EventSerializer(intent);
             for (int i = 0; i < freeTimeEvents.Count; i++)
             {
-                String key = "FreeTime" + i;
-                serializer.WriteEvent(key, freeTimeEvents[i]);
+                Event.WriteEvent(intent, "FreeTime" + i, freeTimeEvents[i]);
             }
             intent.PutExtra("FreeTimeCount", freeTimeEvents.Count);
         }
@@ -362,7 +366,7 @@ namespace MyUALife
         {
             Intent intent = new Intent(this, typeof(EventEditorActivity));
             SendFreeTime(intent);
-            new EventSerializer(intent).WriteEvent(EventSerializer.InputEvent, calendarEvent);
+            Event.WriteEvent(intent, InputEvent, calendarEvent);
             calendar.RemoveEvent(calendarEvent);
             StartActivityForResult(intent, EditEventRequest);
         }
@@ -375,7 +379,7 @@ namespace MyUALife
         private void StartEditDeadlineActivity(Deadline deadline)
         {
             Intent intent = new Intent(this, typeof(DeadlineEditorActivity));
-            new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
+            Deadline.WriteDeadline(intent, InputDeadline, deadline);
             calendar.RemoveDeadline(deadline);
             StartActivityForResult(intent, EditDeadlineRequest);
         }
@@ -391,7 +395,7 @@ namespace MyUALife
         {
             Intent intent = new Intent(this, typeof(EventEditorActivity));
             SendFreeTime(intent);
-            new DeadlineSerializer(intent).WriteDeadline(DeadlineSerializer.InputDeadline, deadline);
+            Deadline.WriteDeadline(intent, InputDeadline, deadline);
             calendar.RemoveDeadline(deadline);
             StartActivityForResult(intent, DeadlineToEventRequest);
         }

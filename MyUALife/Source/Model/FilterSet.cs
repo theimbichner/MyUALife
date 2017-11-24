@@ -3,46 +3,26 @@ using System.Collections.Generic;
 
 namespace MyUALife
 {
-    class FilterSet
+    public class FilterSet
     {
         // The available FilterSets
-        private readonly static FilterSet allTypes   = new FilterSet("All types", Category.creatableTypes);
-        private readonly static FilterSet recreation = new FilterSet("Recreation", Category.recreation);
-        private readonly static FilterSet academics  = new FilterSet("Academics", Category.classTime, Category.homework);
+        private readonly static FilterSet allTypes = new FilterSet("All types", Category.CreatableTypes);
+        private readonly static FilterSet recreation = new FilterSet("Recreation", Category.Recreation);
+        private readonly static FilterSet academics = new FilterSet("Academics", Category.ClassTime, Category.Homework, Category.StudyTime);
+        private readonly static FilterSet appointments = new FilterSet("Appointments", Category.Appointment);
 
         // List containing all FilterSets
-        public static List<FilterSet> FilterSets
-        {
-            get
-            {
-                return new List<FilterSet> { allTypes, recreation, academics };
-            }
-        }
-
-        // A name for this FilterSet
-        public String Name { get; set; }
-
-        // The list of types in this FilterSet
-        private List<EventType> allowedTypes;
-        public List<EventType> AllowedTypes
-        {
-            get
-            {
-                var list = new List<EventType>();
-                list.AddRange(allowedTypes);
-                return list;
-            }
-        }
+        public readonly static List<FilterSet> FilterSets = new List<FilterSet> { allTypes, recreation, academics, appointments };
 
         /*
          * Creates a FilterSet from an array of EventTypes.
          */
         private FilterSet(String name, params EventType[] types)
         {
-            allowedTypes = new List<EventType>();
+            AllowedTypes = new List<EventType>();
             foreach (EventType t in types)
             {
-                allowedTypes.Add(t);
+                AllowedTypes.Add(t);
             }
             Name = name;
         }
@@ -52,9 +32,18 @@ namespace MyUALife
          */
         private FilterSet(String name, List<EventType> types)
         {
-            allowedTypes = new List<EventType>();
-            allowedTypes.AddRange(types);
+            AllowedTypes = new List<EventType>();
+            foreach (EventType t in types)
+            {
+                AllowedTypes.Add(t);
+            }
             Name = name;
         }
+
+        // A name for this FilterSet
+        public String Name { get; set; }
+
+        // The types allowed by this filter set
+        public List<EventType> AllowedTypes { get; private set; }
     }
 }

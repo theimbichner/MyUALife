@@ -56,13 +56,13 @@ namespace MyUALife
 
             // Configure the spinner to display the correct list of EventTypes
             Spinner spinner = FindViewById<Spinner>(Resource.Id.typeSpinner);
-            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.creatableTypes, t => t.Name);
+            typeSpinner = new SpinnerHelper<EventType>(spinner, Category.CreatableTypes, t => t.Name);
 
             // Setup the spinner to turn on the save button
             typeSpinner.Spinner.ItemSelected += (sender, e) => TurnOnSaveButton();
 
             // Get the deadline stored in Intent, if any
-            Deadline input = new DeadlineSerializer(Intent).ReadDeadline(DeadlineSerializer.InputDeadline);
+            Deadline input = Deadline.ReadDeadline(Intent, MainActivity.InputDeadline);
             if (input != null)
             {
                 // Store data from input in the components
@@ -92,7 +92,7 @@ namespace MyUALife
             EventType type = typeSpinner.SelectedItem;
             Deadline result = new Deadline(nameText.Text, descriptionText.Text, deadlineTime.Time, type);
             Intent data = new Intent();
-            new DeadlineSerializer(data).WriteDeadline(DeadlineSerializer.ResultDeadline, result);
+            Deadline.WriteDeadline(data, MainActivity.ResultDeadline, result);
             SetResult(Result.Ok, data);
             saveButton.Enabled = false;
         }

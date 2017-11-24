@@ -1,11 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MyUALife;
 
-namespace Tests
+namespace MyUALifeTests
 {
     [TestClass()]
     public class CalendarFilterTests
@@ -29,11 +27,9 @@ namespace Tests
             events.Add(event4);
             events.Add(event5);
             events.Add(event6);
-
-            Calendar theCalendar = new Calendar(events, null);
-
+            
             List<Event> temp = new List<Event>();
-            temp = theCalendar.FilterEventsByType(events, Category.GetTypeByName("Homework"));
+            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("Homework"));
 
             Assert.IsTrue(temp.Contains(event1));
             Assert.IsFalse(temp.Contains(event2));
@@ -62,11 +58,9 @@ namespace Tests
             events.Add(event4);
             events.Add(event5);
             events.Add(event6);
-
-            Calendar theCalendar = new Calendar(events, null);
-
+            
             List<Event> temp = new List<Event>();
-            temp = theCalendar.FilterEventsByType(events, Category.GetTypeByName("StudyTime"));
+            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("StudyTime"));
 
             Assert.IsFalse(temp.Contains(event1));
             Assert.IsTrue(temp.Contains(event2));
@@ -96,10 +90,8 @@ namespace Tests
             events.Add(event5);
             events.Add(event6);
 
-            Calendar theCalendar = new Calendar(events, null);
-
             List<Event> temp = new List<Event>();
-            temp = theCalendar.FilterEventsByType(events, Category.GetTypeByName("ClassTime"));
+            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("ClassTime"));
 
             Assert.IsFalse(temp.Contains(event1));
             Assert.IsFalse(temp.Contains(event2));
@@ -129,10 +121,8 @@ namespace Tests
             events.Add(event5);
             events.Add(event6);
 
-            Calendar theCalendar = new Calendar(events, null);
-
             List<Event> temp = new List<Event>();
-            temp = theCalendar.FilterEventsByType(events, Category.GetTypeByName("Appointment"));
+            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("Appointment"));
 
             Assert.IsFalse(temp.Contains(event1));
             Assert.IsFalse(temp.Contains(event2));
@@ -162,10 +152,8 @@ namespace Tests
             events.Add(event5);
             events.Add(event6);
 
-            Calendar theCalendar = new Calendar(events, null);
-
             List<Event> temp = new List<Event>();
-            temp = theCalendar.FilterEventsByType(events, Category.GetTypeByName("Recreation"));
+            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("Recreation"));
 
             Assert.IsFalse(temp.Contains(event1));
             Assert.IsFalse(temp.Contains(event2));
@@ -195,13 +183,11 @@ namespace Tests
             events.Add(event5);
             events.Add(event6);
 
-            Calendar theCalendar = new Calendar(events, null);
-
             List<Event> temp = new List<Event>();
             List<EventType> types = new List<EventType>();
             types.Add(Category.GetTypeByName("Homework"));
             types.Add(Category.GetTypeByName("ClassTime"));
-            temp = theCalendar.FilterEventsByTypes(events, types);
+            temp = Calendar.FilterEventsByTypes(events, types);
 
             Assert.IsTrue(temp.Contains(event1));
             Assert.IsFalse(temp.Contains(event2));

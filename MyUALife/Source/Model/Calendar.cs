@@ -53,11 +53,11 @@ namespace MyUALife
 
             Calendar ret = new Calendar();
 
-            ret.AddEvent(new Event("CS436 Class",          classDesc,       Category.classTime,   Time(12, 30), Time(13, 45)));
-            ret.AddEvent(new Event("Advising Appointment", appointmentDesc, Category.appointment, Time(14, 30), Time(15, 0)));
-            ret.AddEvent(new Event("Build Android App",    hwDesc,          Category.homework,    Time(15, 15), Time(17, 0)));
-            ret.AddEvent(new Event("Study",                studyDesc,       Category.studyTime,   Time(10, 0),  Time(12, 15)));
-            ret.AddEvent(new Event("Play Videogames",      recDesc,         Category.recreation,  Time(18, 25), Time(23, 59)));
+            ret.AddEvent(new Event("CS436 Class",          classDesc,       Category.ClassTime,   Time(12, 30), Time(13, 45)));
+            ret.AddEvent(new Event("Advising Appointment", appointmentDesc, Category.Appointment, Time(14, 30), Time(15, 0)));
+            ret.AddEvent(new Event("Build Android App",    hwDesc,          Category.Homework,    Time(15, 15), Time(17, 0)));
+            ret.AddEvent(new Event("Study",                studyDesc,       Category.StudyTime,   Time(10, 0),  Time(12, 15)));
+            ret.AddEvent(new Event("Play Videogames",      recDesc,         Category.Recreation,  Time(18, 25), Time(23, 59)));
 
             ret.AddDeadline(new Deadline("Test Deadline", "An example of a deadline.", Time(24, 0)));
 
@@ -215,7 +215,7 @@ namespace MyUALife
                     {
                         if ((end - currentTime).Duration().TotalMinutes > 0)
                         {
-                            freeBlocks.Add(new Event("Free", "", Category.freeTime, currentTime, end));
+                            freeBlocks.Add(new Event("Free", "", Category.FreeTime, currentTime, end));
                         }
                         currentTime = end;
                     }
@@ -224,7 +224,7 @@ namespace MyUALife
                     {
                         if ((nextEvent.StartTime - currentTime).Duration().TotalMinutes > 0)
                         {
-                            freeBlocks.Add(new Event("Free", "", Category.freeTime, currentTime, nextEvent.StartTime));
+                            freeBlocks.Add(new Event("Free", "", Category.FreeTime, currentTime, nextEvent.StartTime));
                         }
                         currentTime = nextEvent.EndTime;
                     }
