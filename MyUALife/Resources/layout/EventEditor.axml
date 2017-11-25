@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 <!-- The main view-->
     <LinearLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/contentLayout"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -22,7 +22,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/linearLayout2">
+                android:id="@+id/linearLayout1">
             <!-- The event name -->
                 <TextView
                     android:text="Name"
@@ -67,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:id="@+id/linearLayout3">
+                    android:id="@+id/linearLayout2">
                     <TextView
                         android:text="Select a time:"
                         android:textAppearance="@style/EditorTextStyleSmall"
@@ -81,7 +81,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="right"
-                        android:id="@+id/linearLayout4">
+                        android:id="@+id/linearLayout3">
                         <Button
                             android:text="Change"
                             android:id="@+id/changeStartButton"
@@ -101,7 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:id="@+id/linearLayout5">
+                    android:id="@+id/linearLayout4">
                     <TextView
                         android:text="Select a time:"
                         android:textAppearance="@style/EditorTextStyleSmall"
@@ -115,7 +115,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="right"
-                        android:id="@+id/linearLayout6">
+                        android:id="@+id/linearLayout5">
                         <Button
                             android:text="Change"
                             android:id="@+id/changeEndButton"
@@ -182,7 +182,7 @@
     </LinearLayout>
 <!-- The free time menu -->
     <LinearLayout
-        android:id="@+id/linearLayout7"
+        android:id="@+id/linearLayout6"
         android:orientation="vertical"
         android:background="?android:windowBackground"
         android:layout_width="240dp"

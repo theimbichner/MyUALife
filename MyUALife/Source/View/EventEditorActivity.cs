@@ -14,6 +14,7 @@ namespace MyUALife
     {
         // GUI components
         private DrawerLayout drawerLayout;
+        private LinearLayout contentLayout;
         private EditText nameText;
         private EditText descriptionText;
         private CheckBox recurringCheckBox;
@@ -56,6 +57,7 @@ namespace MyUALife
 
             // Get components from id
             drawerLayout = FindViewById<DrawerLayout>(Resource.Id.drawerLayout);
+            contentLayout = FindViewById<LinearLayout>(Resource.Id.contentLayout);
             nameText = FindViewById<EditText>(Resource.Id.nameText);
             descriptionText = FindViewById<EditText>(Resource.Id.descriptionText);
             recurringCheckBox = FindViewById<CheckBox>(Resource.Id.recurringCheckBox);
@@ -72,6 +74,9 @@ namespace MyUALife
             changeEndButton = FindViewById<Button>(Resource.Id.changeEndButton);
             saveButton = FindViewById<Button>(Resource.Id.saveButton);
             freeTimeLayout = FindViewById<LinearLayout>(Resource.Id.freeTimeLayout);
+
+            // Hook into the content root layout to detect the ime
+            contentLayout.ViewTreeObserver.GlobalLayout += (sender, e) => CheckIME();
 
             // Setup the text fields to turn on the save button when edited
             nameText.TextChanged += (sender, e) => HasUnsavedChanges = true;
@@ -105,6 +110,26 @@ namespace MyUALife
             // Setup the spinner to turn on the save button
             typeSpinner.Spinner.ItemSelected += (sender, e) => HasUnsavedChanges = true;
 
+            // Parse any input
+            LoadInputs();
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            // Initialize the start/end time labels with the correct times
+            UpdateTimeLabels();
+
+            // Update the visibility of recurrence componentes
+            UpdateRecurrenceVisisbility();
+
+            // Ensure that all components have the correct enabled state
+            UpdateEnableStates();
+        }
+
+        private void LoadInputs()
+        {
             // Get the event stored in Intent, if any
             Event input = Event.ReadEvent(Intent, MainActivity.InputEvent);
             Deadline inputDeadline = Deadline.ReadDeadline(Intent, MainActivity.InputDeadline);
@@ -117,6 +142,7 @@ namespace MyUALife
                 endTime.Time = input.EndTime;
                 typeSpinner.SelectedItem = input.Type;
                 SaveChanges();
+                Title = "Edit Event";
             }
             else if (inputDeadline != null)
             {
@@ -128,6 +154,7 @@ namespace MyUALife
                 Intent returnData = new Intent();
                 Deadline.WriteDeadline(returnData, MainActivity.ResultDeadline, inputDeadline);
                 SetResult(Result.Ok, returnData);
+                Title = "Create Event from Deadline";
             }
 
             // Load the free time blocks from the intent
@@ -157,20 +184,7 @@ namespace MyUALife
                 };
             };
             util.LoadListToLayout(freeTimeLayout, freeTimeEvents, label, color, setup);
-        }
 
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            // Initialize the start/end time labels with the correct times
-            UpdateTimeLabels();
-
-            // Update the visibility of recurrence componentes
-            UpdateRecurrenceVisisbility();
-
-            // Ensure that all components have the correct enabled state
-            UpdateEnableStates();
         }
 
         /*
@@ -252,6 +266,19 @@ namespace MyUALife
             {
                 c.Visibility = viewState;
                 c.Checked &= recurringCheckBox.Checked;
+            }
+        }
+
+        private void CheckIME()
+        {
+            int heightDiff = contentLayout.RootView.Height - contentLayout.Height;
+            if (heightDiff > new ViewUtil(this).DPToNearestPX(200))
+            {
+                saveButton.Visibility = ViewStates.Gone;
+            }
+            else
+            {
+                saveButton.Visibility = ViewStates.Visible;
             }
         }
     }
