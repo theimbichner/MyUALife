@@ -62,8 +62,8 @@
     <Compile Include="Source\Model\RecurringEventGenerator.cs" />
     <Compile Include="Source\Model\EventType.cs" />
     <Compile Include="Source\Model\FilterSet.cs" />
-    <Compile Include="Source\View\SurveyActivity.cs" />
-    <Compile Include="Source\View\TitleScreenActivity.cs" />
+    <None Include="Deprecated\SurveyActivity.cs.deprecated" />
+    <None Include="Deprecated\TitleScreenActivity.cs.deprecated" />
     <Compile Include="Source\View\Utility\DateTimeFetcher.cs" />
     <Compile Include="Source\View\DeadlineEditorActivity.cs" />
     <Compile Include="Source\View\Utility\SpinnerHelper.cs" />
@@ -76,12 +76,8 @@
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\View\MainActivity.cs" />
-    <AndroidResource Include="Resources\layout\TitleScreen.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-    <AndroidResource Include="Resources\layout\Survey.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
+    <None Include="Deprecated\TitleScreen.axml.deprecated" />
+    <None Include="Deprecated\Survey.axml.deprecated" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Deprecated\DayView.axml.deprecated">
