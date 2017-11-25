@@ -15,9 +15,6 @@ namespace MyUALife
         // Generators for all the recurring Events
         private readonly List<RecurringEventGenerator> recurringEvents = new List<RecurringEventGenerator>();
 
-        private int homeworkCount = 0;
-        private int homeworkTime = 0;
-
         /*
          * Default constructor. Creates a calendar with no events or deadlines.
          */
@@ -28,15 +25,8 @@ namespace MyUALife
          */
         public Calendar(List<Event> events, List<Deadline> deadlines)
         {
-            foreach (Event e in events)
-            {
-                this.events.Add(e);
-            }
-
-            foreach (Deadline d in deadlines)
-            {
-                this.deadlines.Add(d);
-            }
+            this.events.AddRange(events ?? new List<Event>());
+            this.deadlines.AddRange(deadlines ?? new List<Deadline>());
         }
 
         /*
@@ -90,42 +80,68 @@ namespace MyUALife
             return events.FindAll(e => types.Contains(e.Type));
         }
 
+        /*
+         * Adds the specified Event to the Calendar.
+         */
         public void AddEvent(Event e)
         {
             events.Add(e);
         }
 
+        /*
+         * Removes the specified Event from the Calendar. If the Event did not
+         * previously exist in the Calendar, returns false. Otherwise, returns
+         * true.
+         */
         public bool RemoveEvent(Event e)
         {
             return events.Remove(e);
         }
 
+        /*
+         * Adds a recurring Event to the Calendar.
+         */
         public void AddRecurringEvent(RecurringEventGenerator er)
         {
             recurringEvents.Add(er);
         }
 
+        /*
+         * Adds the specified Deadline to the Calendar.
+         */
         public void AddDeadline(Deadline d)
         {
             deadlines.Add(d);
         }
 
+        /*
+         * Removes the specified Deadline from the Calendar. Returns false if
+         * the Deadline did not previously exist in the Calendar, and true
+         * otherwise.
+         */
         public bool RemoveDeadline(Deadline d)
         {
             return deadlines.Remove(d);
         }
 
+        /*
+         * Returns a List containing all the Events in the calendar who
+         * intersect the day on which the specified DateTime falls.
+         */
         public List<Event> GetEventsOnDate(DateTime time)
         {
             DateTime date = time.Date;
 
-            // We want to count midnight as belonging to the previous day.
             DateTime start = date.AddMilliseconds(1);
             DateTime end = date.AddDays(1);
 
             return GetEventsInRange(start, end);
         }
 
+        /*
+         * Returns a List containing all the Events in the calendar who
+         * intersect the range of time starting at start and ending at end.
+         */
         public List<Event> GetEventsInRange(DateTime start, DateTime end)
         {
             foreach (RecurringEventGenerator re in recurringEvents)
@@ -148,29 +164,33 @@ namespace MyUALife
             return output;
         }
 
+        /*
+         * Returns a List containing all the Deadlines in the Calendar whose
+         * end times come after the specified DateTime.
+         */
         public List<Deadline> GetDeadlinesAfterTime(DateTime time)
         {
-            List<Deadline> output = new List<Deadline>();
-            foreach (Deadline d in deadlines)
-            {
-                if (d.Time > time)
-                {
-                    output.Add(d);
-                }
-            }
-            return output;
+            return deadlines.FindAll(d => d.Time > time);
         }
 
-        public List<Event> GetFreeTimeOnDate(DateTime date)
+        /*
+         * Returns a List containing Events representing the empty space on the
+         * Calendar on the day on which the specified DateTime falls.
+         */
+        public List<Event> GetFreeTimeOnDate(DateTime time)
         {
-            // Create a range of DateTimes
-            // We want to count midnight as belonging to the previous day.
+            DateTime date = time.Date;
+
             DateTime start = date.AddMilliseconds(1);
             DateTime end = date.AddDays(1);
 
             return GetFreeTimeBlocksInRange(start, end);
         }
 
+        /*
+         * Returns a List containing Events representing the empty space on the
+         * Calendar between start and end.
+         */
         public List<Event> GetFreeTimeBlocksInRange(DateTime start, DateTime end)
         {
             List<Event> freeBlocks = new List<Event>();
@@ -179,7 +199,6 @@ namespace MyUALife
 
             while (currentTime < end)
             {
-
                 bool freeTimeAvailableHere = true;
 
                 // search for any events occupying current time
@@ -235,21 +254,5 @@ namespace MyUALife
 
             return freeBlocks;
         }
-
-        public int getAverageHomeworkTime()
-        {
-            if (homeworkCount == 0)
-            {
-                return -1;
-            }
-            return homeworkTime / homeworkCount;
-        }
-
-        public void recordHomeworkTime(int minutes)
-        {
-            homeworkTime += minutes;
-            homeworkCount++;
-        }
-
     }
 }

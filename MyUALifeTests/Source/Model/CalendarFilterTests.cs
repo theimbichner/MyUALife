@@ -8,193 +8,72 @@ namespace MyUALifeTests
     [TestClass()]
     public class CalendarFilterTests
     {
-        [TestMethod()]
-        public void FilterTest1()
+        private static readonly DateTime now = DateTime.Now;
+
+        private static readonly Event event1 = new Event("Event1", "desc1", Category.Homework,    now.AddMinutes(10), now.AddMinutes(15));
+        private static readonly Event event2 = new Event("Event2", "desc2", Category.StudyTime,   now.AddMinutes(20), now.AddMinutes(25));
+        private static readonly Event event3 = new Event("Event3", "desc3", Category.ClassTime,   now.AddMinutes(30), now.AddMinutes(35));
+        private static readonly Event event4 = new Event("Event4", "desc4", Category.Appointment, now.AddMinutes(40), now.AddMinutes(45));
+        private static readonly Event event5 = new Event("Event5", "desc5", Category.Recreation,  now.AddMinutes(50), now.AddMinutes(55));
+        private static readonly Event event6 = new Event("Event6", "desc6", Category.Homework,    now.AddMinutes(60), now.AddMinutes(65));
+
+        private static readonly List<Event> events = new List<Event>
         {
-            DateTime basis = DateTime.Now;
-            List<Event> events = new List<Event>();
+            event1,
+            event2,
+            event3,
+            event4,
+            event5,
+            event6
+        };
 
-            Event event1 = new Event("Event1", "desc1", Category.GetTypeByName("Homework"), basis.AddMinutes(10), basis.AddMinutes(15));
-            Event event2 = new Event("Event2", "desc2", Category.GetTypeByName("StudyTime"), basis.AddMinutes(20), basis.AddMinutes(25));
-            Event event3 = new Event("Event3", "desc3", Category.GetTypeByName("ClassTime"), basis.AddMinutes(30), basis.AddMinutes(35));
-            Event event4 = new Event("Event4", "desc4", Category.GetTypeByName("Appointment"), basis.AddMinutes(40), basis.AddMinutes(45));
-            Event event5 = new Event("Event5", "desc5", Category.GetTypeByName("Recreation"), basis.AddMinutes(50), basis.AddMinutes(55));
-            Event event6 = new Event("Event6", "desc6", Category.GetTypeByName("Homework"), basis.AddMinutes(60), basis.AddMinutes(65));
+        [TestMethod()]
+        public void TestCalendarFilterSingle()
+        {
+            var filtered = Calendar.FilterEventsByType(events, Category.Homework);
+            Assert.IsTrue(filtered.Contains(event1));
+            Assert.IsTrue(filtered.Contains(event6));
+            Assert.AreEqual(2, filtered.Count);
 
-            events.Add(event1);
-            events.Add(event2);
-            events.Add(event3);
-            events.Add(event4);
-            events.Add(event5);
-            events.Add(event6);
-            
-            List<Event> temp = new List<Event>();
-            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("Homework"));
+            filtered = Calendar.FilterEventsByType(events, Category.StudyTime);
+            Assert.IsTrue(filtered.Contains(event2));
+            Assert.AreEqual(1, filtered.Count);
 
-            Assert.IsTrue(temp.Contains(event1));
-            Assert.IsFalse(temp.Contains(event2));
-            Assert.IsFalse(temp.Contains(event3));
-            Assert.IsFalse(temp.Contains(event4));
-            Assert.IsFalse(temp.Contains(event5));
-            Assert.IsTrue(temp.Contains(event6));
+            filtered = Calendar.FilterEventsByType(events, Category.ClassTime);
+            Assert.IsTrue(filtered.Contains(event3));
+            Assert.AreEqual(1, filtered.Count);
+
+            filtered = Calendar.FilterEventsByType(events, Category.Appointment);
+            Assert.IsTrue(filtered.Contains(event4));
+            Assert.AreEqual(1, filtered.Count);
+
+            filtered = Calendar.FilterEventsByType(events, Category.Recreation);
+            Assert.IsTrue(filtered.Contains(event5));
+            Assert.AreEqual(1, filtered.Count);
+
+            filtered = Calendar.FilterEventsByType(events, Category.FreeTime);
+            Assert.AreEqual(0, filtered.Count);
         }
 
         [TestMethod()]
-        public void FilterTest2()
+        public void TestCalendarFilterList()
         {
-            DateTime basis = DateTime.Now;
-            List<Event> events = new List<Event>();
+            List<EventType> filters = new List<EventType> { Category.Homework, Category.ClassTime };
+            var filtered = Calendar.FilterEventsByTypes(events, filters);
+            Assert.IsTrue(filtered.Contains(event1));
+            Assert.IsTrue(filtered.Contains(event3));
+            Assert.IsTrue(filtered.Contains(event6));
+            Assert.AreEqual(3, filtered.Count);
 
-            Event event1 = new Event("Event1", "desc1", Category.GetTypeByName("Homework"), basis.AddMinutes(10), basis.AddMinutes(15));
-            Event event2 = new Event("Event2", "desc2", Category.GetTypeByName("StudyTime"), basis.AddMinutes(20), basis.AddMinutes(25));
-            Event event3 = new Event("Event3", "desc3", Category.GetTypeByName("ClassTime"), basis.AddMinutes(30), basis.AddMinutes(35));
-            Event event4 = new Event("Event4", "desc4", Category.GetTypeByName("Appointment"), basis.AddMinutes(40), basis.AddMinutes(45));
-            Event event5 = new Event("Event5", "desc5", Category.GetTypeByName("Recreation"), basis.AddMinutes(50), basis.AddMinutes(55));
-            Event event6 = new Event("Event6", "desc6", Category.GetTypeByName("Homework"), basis.AddMinutes(60), basis.AddMinutes(65));
+            filtered = Calendar.FilterEventsByTypes(events, Category.CreatableTypes);
+            Assert.AreEqual(events.Count, filtered.Count);
+            foreach (Event e in events)
+            {
+                Assert.IsTrue(filtered.Contains(e));
+            }
 
-            events.Add(event1);
-            events.Add(event2);
-            events.Add(event3);
-            events.Add(event4);
-            events.Add(event5);
-            events.Add(event6);
-            
-            List<Event> temp = new List<Event>();
-            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("StudyTime"));
-
-            Assert.IsFalse(temp.Contains(event1));
-            Assert.IsTrue(temp.Contains(event2));
-            Assert.IsFalse(temp.Contains(event3));
-            Assert.IsFalse(temp.Contains(event4));
-            Assert.IsFalse(temp.Contains(event5));
-            Assert.IsFalse(temp.Contains(event6));
-        }
-
-        [TestMethod()]
-        public void FilterTest3()
-        {
-            DateTime basis = DateTime.Now;
-            List<Event> events = new List<Event>();
-
-            Event event1 = new Event("Event1", "desc1", Category.GetTypeByName("Homework"), basis.AddMinutes(10), basis.AddMinutes(15));
-            Event event2 = new Event("Event2", "desc2", Category.GetTypeByName("StudyTime"), basis.AddMinutes(20), basis.AddMinutes(25));
-            Event event3 = new Event("Event3", "desc3", Category.GetTypeByName("ClassTime"), basis.AddMinutes(30), basis.AddMinutes(35));
-            Event event4 = new Event("Event4", "desc4", Category.GetTypeByName("Appointment"), basis.AddMinutes(40), basis.AddMinutes(45));
-            Event event5 = new Event("Event5", "desc5", Category.GetTypeByName("Recreation"), basis.AddMinutes(50), basis.AddMinutes(55));
-            Event event6 = new Event("Event6", "desc6", Category.GetTypeByName("Homework"), basis.AddMinutes(60), basis.AddMinutes(65));
-
-            events.Add(event1);
-            events.Add(event2);
-            events.Add(event3);
-            events.Add(event4);
-            events.Add(event5);
-            events.Add(event6);
-
-            List<Event> temp = new List<Event>();
-            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("ClassTime"));
-
-            Assert.IsFalse(temp.Contains(event1));
-            Assert.IsFalse(temp.Contains(event2));
-            Assert.IsTrue(temp.Contains(event3));
-            Assert.IsFalse(temp.Contains(event4));
-            Assert.IsFalse(temp.Contains(event5));
-            Assert.IsFalse(temp.Contains(event6));
-        }
-
-        [TestMethod()]
-        public void FilterTest4()
-        {
-            DateTime basis = DateTime.Now;
-            List<Event> events = new List<Event>();
-
-            Event event1 = new Event("Event1", "desc1", Category.GetTypeByName("Homework"), basis.AddMinutes(10), basis.AddMinutes(15));
-            Event event2 = new Event("Event2", "desc2", Category.GetTypeByName("StudyTime"), basis.AddMinutes(20), basis.AddMinutes(25));
-            Event event3 = new Event("Event3", "desc3", Category.GetTypeByName("ClassTime"), basis.AddMinutes(30), basis.AddMinutes(35));
-            Event event4 = new Event("Event4", "desc4", Category.GetTypeByName("Appointment"), basis.AddMinutes(40), basis.AddMinutes(45));
-            Event event5 = new Event("Event5", "desc5", Category.GetTypeByName("Recreation"), basis.AddMinutes(50), basis.AddMinutes(55));
-            Event event6 = new Event("Event6", "desc6", Category.GetTypeByName("Homework"), basis.AddMinutes(60), basis.AddMinutes(65));
-
-            events.Add(event1);
-            events.Add(event2);
-            events.Add(event3);
-            events.Add(event4);
-            events.Add(event5);
-            events.Add(event6);
-
-            List<Event> temp = new List<Event>();
-            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("Appointment"));
-
-            Assert.IsFalse(temp.Contains(event1));
-            Assert.IsFalse(temp.Contains(event2));
-            Assert.IsFalse(temp.Contains(event3));
-            Assert.IsTrue(temp.Contains(event4));
-            Assert.IsFalse(temp.Contains(event5));
-            Assert.IsFalse(temp.Contains(event6));
-        }
-
-        [TestMethod()]
-        public void FilterTest5()
-        {
-            DateTime basis = DateTime.Now;
-            List<Event> events = new List<Event>();
-
-            Event event1 = new Event("Event1", "desc1", Category.GetTypeByName("Homework"), basis.AddMinutes(10), basis.AddMinutes(15));
-            Event event2 = new Event("Event2", "desc2", Category.GetTypeByName("StudyTime"), basis.AddMinutes(20), basis.AddMinutes(25));
-            Event event3 = new Event("Event3", "desc3", Category.GetTypeByName("ClassTime"), basis.AddMinutes(30), basis.AddMinutes(35));
-            Event event4 = new Event("Event4", "desc4", Category.GetTypeByName("Appointment"), basis.AddMinutes(40), basis.AddMinutes(45));
-            Event event5 = new Event("Event5", "desc5", Category.GetTypeByName("Recreation"), basis.AddMinutes(50), basis.AddMinutes(55));
-            Event event6 = new Event("Event6", "desc6", Category.GetTypeByName("Homework"), basis.AddMinutes(60), basis.AddMinutes(65));
-
-            events.Add(event1);
-            events.Add(event2);
-            events.Add(event3);
-            events.Add(event4);
-            events.Add(event5);
-            events.Add(event6);
-
-            List<Event> temp = new List<Event>();
-            temp = Calendar.FilterEventsByType(events, Category.GetTypeByName("Recreation"));
-
-            Assert.IsFalse(temp.Contains(event1));
-            Assert.IsFalse(temp.Contains(event2));
-            Assert.IsFalse(temp.Contains(event3));
-            Assert.IsFalse(temp.Contains(event4));
-            Assert.IsTrue(temp.Contains(event5));
-            Assert.IsFalse(temp.Contains(event6));
-        }
-
-        [TestMethod()]
-        public void FilterTest6()
-        {
-            DateTime basis = DateTime.Now;
-            List<Event> events = new List<Event>();
-
-            Event event1 = new Event("Event1", "desc1", Category.GetTypeByName("Homework"), basis.AddMinutes(10), basis.AddMinutes(15));
-            Event event2 = new Event("Event2", "desc2", Category.GetTypeByName("StudyTime"), basis.AddMinutes(20), basis.AddMinutes(25));
-            Event event3 = new Event("Event3", "desc3", Category.GetTypeByName("ClassTime"), basis.AddMinutes(30), basis.AddMinutes(35));
-            Event event4 = new Event("Event4", "desc4", Category.GetTypeByName("Appointment"), basis.AddMinutes(40), basis.AddMinutes(45));
-            Event event5 = new Event("Event5", "desc5", Category.GetTypeByName("Recreation"), basis.AddMinutes(50), basis.AddMinutes(55));
-            Event event6 = new Event("Event6", "desc6", Category.GetTypeByName("Homework"), basis.AddMinutes(60), basis.AddMinutes(65));
-
-            events.Add(event1);
-            events.Add(event2);
-            events.Add(event3);
-            events.Add(event4);
-            events.Add(event5);
-            events.Add(event6);
-
-            List<Event> temp = new List<Event>();
-            List<EventType> types = new List<EventType>();
-            types.Add(Category.GetTypeByName("Homework"));
-            types.Add(Category.GetTypeByName("ClassTime"));
-            temp = Calendar.FilterEventsByTypes(events, types);
-
-            Assert.IsTrue(temp.Contains(event1));
-            Assert.IsFalse(temp.Contains(event2));
-            Assert.IsTrue(temp.Contains(event3));
-            Assert.IsFalse(temp.Contains(event4));
-            Assert.IsFalse(temp.Contains(event5));
-            Assert.IsTrue(temp.Contains(event6));
+            filtered = Calendar.FilterEventsByTypes(events, new List<EventType>());
+            Assert.AreEqual(0, filtered.Count);
         }
     }
 }

@@ -59,6 +59,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Model\CalendarFilterTests.cs" />
     <Compile Include="Source\Model\CalendarEventTests.cs" />
+    <Compile Include="Source\Model\CalendarFreeTimeTests.cs" />
+    <Compile Include="Source\Model\DeadlineTests.cs" />
+    <Compile Include="Source\Model\EventTests.cs" />
+    <Compile Include="Source\Model\EventTypeTests.cs" />
+    <Compile Include="Source\Model\RecurringEventTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
