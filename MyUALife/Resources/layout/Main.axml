@@ -11,13 +11,15 @@
         android:id="@+id/linearLayout1">
         <ImageButton
             android:src="@drawable/ic_chevron_left_black_24dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:minWidth="0dp"
             android:layout_weight="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/backButton" />
         <TextView
             android:text=""
-            android:textAppearance="@style/EditorTextStyle"
+            android:textAppearance="@style/MyUALifeTextStyle"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_weight="1"
@@ -26,6 +28,8 @@
             android:id="@+id/dateLabel" />
         <ImageButton
             android:src="@drawable/ic_chevron_right_black_24dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:minWidth="0dp"
             android:layout_weight="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,17 +95,19 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/linearLayout5">
+            <TextView
+                android:text="Filter:"
+                android:textAppearance="@style/MyUALifeTextStyle"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         <!-- The filter spinner -->
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:id="@+id/filterSpinner" />
-            <Button
-                android:text="Survey"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/surveyButton" />
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"

@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:id="@+id/linearLayout1">
     <TextView
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="@style/MyUALifeTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/nameLabel"
         android:text="Name" />
     <TextView
         android:text="Description"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="@style/MyUALifeTextStyleSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/descriptionLabel" />
@@ -23,19 +23,19 @@
         android:id="@+id/linearLayout2">
         <TextView
             android:text="Start Time"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="@style/MyUALifeTextStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/startTimeLabel" />
         <TextView
             android:text="  to  "
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="@style/MyUALifeTextStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/textView1" />
         <TextView
             android:text="End Time"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="@style/MyUALifeTextStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/endTimeLabel" />
@@ -47,7 +47,7 @@
         android:id="@+id/textView2" />
     <TextView
         android:text="How long did you spend on this homework (in minutes)?"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="@style/MyUALifeTextStyleSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/estimateLabel" />

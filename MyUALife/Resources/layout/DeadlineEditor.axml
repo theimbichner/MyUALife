@@ -3,12 +3,13 @@
     android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
+    android:paddingTop="5dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 <!-- The event name -->
     <TextView
         android:text="Name"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="@style/MyUALifeTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView1" />
@@ -21,7 +22,7 @@
 <!-- The event description -->
     <TextView
         android:text="Description"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="@style/MyUALifeTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView2" />
@@ -34,7 +35,7 @@
 <!-- The starting date/time -->
     <TextView
         android:text="Date and Time"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="@style/MyUALifeTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView3" />
@@ -46,14 +47,12 @@
         android:id="@+id/linearLayout2">
         <TextView
             android:text="Select a time:"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="@style/MyUALifeTextStyle"
             android:id="@+id/timeLabel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
         <LinearLayout
             android:orientation="vertical"
-            android:minWidth="25px"
-            android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="right"
@@ -65,26 +64,10 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
-<!-- The ending date/time -->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/linearLayout1">
-        <LinearLayout
-            android:orientation="vertical"
-            android:minWidth="25px"
-            android:minHeight="25px"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="right"
-            android:id="@+id/linearLayout4" />
-    </LinearLayout>
 <!-- The type selection spinner -->
     <TextView
         android:text="Deadline Type"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="@style/MyUALifeTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView5" />

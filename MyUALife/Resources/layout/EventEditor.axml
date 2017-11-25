@@ -26,10 +26,15 @@
             <!-- The event name -->
                 <TextView
                     android:text="Name"
-                    android:textAppearance="@style/EditorTextStyle"
+                    android:textAppearance="@style/MyUALifeTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView1" />
+                <View
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="0px"
+                    android:layout_height="0px" />
                 <EditText
                     android:inputType="text"
                     android:imeOptions="actionDone"
@@ -39,7 +44,7 @@
             <!-- The event description -->
                 <TextView
                     android:text="Description"
-                    android:textAppearance="@style/EditorTextStyle"
+                    android:textAppearance="@style/MyUALifeTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView2" />
@@ -58,7 +63,7 @@
             <!-- The starting date/time -->
                 <TextView
                     android:text="Start Date and Time"
-                    android:textAppearance="@style/EditorTextStyle"
+                    android:textAppearance="@style/MyUALifeTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView3" />
@@ -70,7 +75,7 @@
                     android:id="@+id/linearLayout2">
                     <TextView
                         android:text="Select a time:"
-                        android:textAppearance="@style/EditorTextStyleSmall"
+                        android:textAppearance="@style/MyUALifeTextStyleSmall"
                         android:id="@+id/startTimeLabel"
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp"
@@ -92,7 +97,7 @@
             <!-- The ending date/time -->
                 <TextView
                     android:text="End Date and Time"
-                    android:textAppearance="@style/EditorTextStyle"
+                    android:textAppearance="@style/MyUALifeTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView4" />
@@ -104,7 +109,7 @@
                     android:id="@+id/linearLayout4">
                     <TextView
                         android:text="Select a time:"
-                        android:textAppearance="@style/EditorTextStyleSmall"
+                        android:textAppearance="@style/MyUALifeTextStyleSmall"
                         android:id="@+id/endTimeLabel"
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp"
@@ -162,7 +167,7 @@
             <!-- The type selection spinner -->
                 <TextView
                     android:text="Event Type"
-                    android:textAppearance="@style/EditorTextStyle"
+                    android:textAppearance="@style/MyUALifeTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView5" />
@@ -170,6 +175,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/typeSpinner" />
+                <View
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="0px"
+                    android:layout_height="0px" />
             </LinearLayout>
         </ScrollView>
     <!-- Save button -->
@@ -191,7 +201,7 @@
         android:clickable="true">
         <TextView
             android:text="Free Time"
-            android:textAppearance="@style/EditorTextStyle"
+            android:textAppearance="@style/MyUALifeTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
