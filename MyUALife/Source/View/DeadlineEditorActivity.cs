@@ -79,13 +79,12 @@ namespace MyUALife
             base.OnStart();
 
             // Initialize the start/end time labels with the correct times
-            UpdateTimeLabels();
+            UpdateTimeLabel();
         }
 
         /*
-         * Transfers the data entered into the GUI elements into the fields of
-         * the current Event. If there is no current Event, this method creates
-         * one and stores it in the Calendar.
+         * Transfers the data entered into the GUI elements into an Intent
+         * extra and returns the intent to the main activity.
          */
         private void SaveChanges()
         {
@@ -101,9 +100,10 @@ namespace MyUALife
          * Updates the time labels that display the selected start and end
          * times to reflect the DateTimes selected by the user.
          */
-        private void UpdateTimeLabels()
+        private void UpdateTimeLabel()
         {
-            timeLabel.Text = deadlineTime.Time.ToString("g");
+            timeLabel.Text = deadlineTime.Time.ToString("D");
+            timeLabel.Text += "\n" + deadlineTime.Time.ToString("t");
         }
 
         /*
@@ -125,7 +125,7 @@ namespace MyUALife
          */
         private void OnTimeChanged()
         {
-            UpdateTimeLabels();
+            UpdateTimeLabel();
             TurnOnSaveButton();
         }
     }

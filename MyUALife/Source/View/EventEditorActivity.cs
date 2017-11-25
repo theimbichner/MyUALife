@@ -91,7 +91,14 @@ namespace MyUALife
             {
                 UpdateRecurrenceVisisbility();
                 UpdateTimeLabels();
+                HasUnsavedChanges = true;
             };
+
+            // Setup the day of week checkboxes to turn on the save button
+            foreach (CheckBox c in weekdayCheckBoxes)
+            {
+                c.Click += (sender, e) => HasUnsavedChanges = true;
+            }
 
             // Setup the time buttons to display a time picker dialog
             DateTime time = DateTime.Now;
@@ -130,31 +137,35 @@ namespace MyUALife
 
         private void LoadInputs()
         {
-            // Get the event stored in Intent, if any
-            Event input = Event.ReadEvent(Intent, MainActivity.InputEvent);
+            // Get the input stored in Intent, if any
+            Event inputEvent = Event.ReadEvent(Intent, MainActivity.InputEvent);
             Deadline inputDeadline = Deadline.ReadDeadline(Intent, MainActivity.InputDeadline);
-            if (input != null)
+
+            if (inputEvent != null)
             {
                 // Store data from input in the components
-                nameText.Text = input.Name;
-                descriptionText.Text = input.Description;
-                startTime.Time = input.StartTime;
-                endTime.Time = input.EndTime;
-                typeSpinner.SelectedItem = input.Type;
+                nameText.Text = inputEvent.Name;
+                descriptionText.Text = inputEvent.Description;
+                startTime.Time = inputEvent.StartTime;
+                endTime.Time = inputEvent.EndTime;
+                typeSpinner.SelectedItem = inputEvent.Type;
+
+                // Return the event so it remains in the calendar if the user cancels
                 SaveChanges();
                 Title = "Edit Event";
             }
             else if (inputDeadline != null)
             {
+                // Store data from the deadline in the components
                 nameText.Text = inputDeadline.Name;
                 descriptionText.Text = inputDeadline.Description;
                 endTime.Time = inputDeadline.Time;
                 typeSpinner.SelectedItem = inputDeadline.Type;
 
+                // Return the deadline so it remains in the calendar if the user cancels
                 Intent returnData = new Intent();
                 Deadline.WriteDeadline(returnData, MainActivity.ResultDeadline, inputDeadline);
                 SetResult(Result.Ok, returnData);
-                Title = "Create Event from Deadline";
             }
 
             // Load the free time blocks from the intent
@@ -183,30 +194,24 @@ namespace MyUALife
                 };
             };
             ViewUtil.LoadListToLayout(freeTimeLayout, freeTimeEvents, label, color, setup);
-
         }
 
         /*
-         * Transfers the data entered into the GUI elements into the fields of
-         * the current Event. If there is no current Event, this method creates
-         * one and stores it in the Calendar. Any additional data that needs to
-         * be returned to the caller can be stored in the input intent.
-         */
-        private void SaveChanges(Intent data)
-        {
-            EventType type = typeSpinner.SelectedItem;
-            Event resultEvent = new Event(nameText.Text, descriptionText.Text, type, startTime.Time, endTime.Time);
-            Event.WriteEvent(data, MainActivity.ResultEvent, resultEvent);
-            SetResult(Result.Ok, data);
-            HasUnsavedChanges = false;
-        }
-
-        /*
-         * Saves changes with no additional data.
+         * Transfers the data entered into the GUI elements into an intent
+         * extra and returns that extra to the main activity.
          */
         private void SaveChanges()
         {
-            SaveChanges(new Intent());
+            Intent data = new Intent();
+            EventType type = typeSpinner.SelectedItem;
+            Event resultEvent = new Event(nameText.Text, descriptionText.Text, type, startTime.Time, endTime.Time);
+            Event.WriteEvent(data, MainActivity.ResultEvent, resultEvent);
+            for (int i = 0; i < weekdayCheckBoxes.Length; i++)
+            {
+                data.PutExtra(MainActivity.RecurrenceKey + i, weekdayCheckBoxes[i].Checked);
+            }
+            SetResult(Result.Ok, data);
+            HasUnsavedChanges = false;
         }
 
         /*
@@ -241,12 +246,21 @@ namespace MyUALife
         }
 
         /*
-         * Determines whether each component of this view should be enabled or
-         * disabled and updates them appropriately.
+         * Determines whether the save button should be enabled or disabled and
+         * updates them appropriately.
          */
         private void UpdateEnableStates()
         {
-            saveButton.Enabled = HasUnsavedChanges && nameText.Text != "";
+            bool recurrenceOk = true;
+            if (recurringCheckBox.Checked)
+            {
+                recurrenceOk = false;
+                foreach (CheckBox c in weekdayCheckBoxes)
+                {
+                    recurrenceOk |= c.Checked;
+                }
+            }
+            saveButton.Enabled = recurrenceOk && HasUnsavedChanges && nameText.Text != "";
         }
 
         /*
@@ -268,6 +282,10 @@ namespace MyUALife
             }
         }
 
+        /*
+         * Determines whether an IME is open. If one is, then the save button
+         * is hidden. Otherwise, the save button is revealed.
+         */
         private void CheckIME()
         {
             int heightDiff = contentLayout.RootView.Height - contentLayout.Height;

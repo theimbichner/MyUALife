@@ -25,6 +25,7 @@ namespace MyUALife
         public const String ResultDeadline = "MyUALife.ResultDeadline";
         public const String InputEvent = "MyUALife.InputEvent";
         public const String ResultEvent = "MyUALife.ResultEvent";
+        public const String RecurrenceKey = "MyUALife.Recurrence";
 
         // The location to save/load the calendar
         private const String CalendarFileName = "calendar.bin";
