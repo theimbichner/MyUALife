@@ -170,7 +170,6 @@ namespace MyUALife
             }
 
             // Fill the free time display with a list of free times.
-            ViewUtil util = new ViewUtil(this);
             ToStr<Event> label = e => String.Format("{0} - {1}", e.StartTime, e.EndTime);
             ToStr<Event> color = e => e.Type.ColorString;
             ViewUtil.SetupCallback<Event> setup = (view, layout, freeTime) =>
@@ -183,7 +182,7 @@ namespace MyUALife
                     drawerLayout.CloseDrawers();
                 };
             };
-            util.LoadListToLayout(freeTimeLayout, freeTimeEvents, label, color, setup);
+            ViewUtil.LoadListToLayout(freeTimeLayout, freeTimeEvents, label, color, setup);
 
         }
 
@@ -272,7 +271,7 @@ namespace MyUALife
         private void CheckIME()
         {
             int heightDiff = contentLayout.RootView.Height - contentLayout.Height;
-            if (heightDiff > new ViewUtil(this).DPToNearestPX(200))
+            if (heightDiff > this.DPToNearestPX(200))
             {
                 saveButton.Visibility = ViewStates.Gone;
             }

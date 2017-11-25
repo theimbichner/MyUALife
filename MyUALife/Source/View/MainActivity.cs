@@ -195,7 +195,6 @@ namespace MyUALife
             loadedEvents.Sort();
 
             // Fill the main display with a list of events
-            ViewUtil util = new ViewUtil(this);
             ToStr<Event> label = e => e.ToString();
             ToStr<Event> color = e => e.Type.ColorString;
             ViewUtil.SetupCallback<Event> setup = (view, layout, calEvent) =>
@@ -221,7 +220,7 @@ namespace MyUALife
                     infoDialog.Show();
                 };
             };
-            util.LoadListToLayout(eventsLayout, loadedEvents, label, color, setup);
+            ViewUtil.LoadListToLayout(eventsLayout, loadedEvents, label, color, setup);
         }
 
         /*
@@ -238,7 +237,6 @@ namespace MyUALife
             deadlines.Sort();
 
             // Fill the main display with the list of deadlines
-            ViewUtil util = new ViewUtil(this);
             ToStr<Deadline> label = d => d.ToString();
             ToStr<Deadline> color = d => "#F44336";
             ViewUtil.SetupCallback<Deadline> setup = (view, layout, deadline) =>
@@ -277,7 +275,7 @@ namespace MyUALife
                     infoDialog.Show();
                 };
             };
-            util.LoadListToLayout(eventsLayout, deadlines, label, color, setup);
+            ViewUtil.LoadListToLayout(eventsLayout, deadlines, label, color, setup);
         }
 
         private void SendFreeTime(Intent intent)
