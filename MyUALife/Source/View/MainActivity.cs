@@ -47,7 +47,8 @@ namespace MyUALife
         private Calendar calendar;
 
         // The date whose events the user is currently viewing
-        private DateTime loadedDate = DateTime.Now;
+        private DateTime earliestDate = DateTime.Today;
+        private DateTime loadedDate = DateTime.Today;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -208,6 +209,10 @@ namespace MyUALife
         private void ShiftDate(int i)
         {
             loadedDate = loadedDate.AddDays(i);
+            if (loadedDate < earliestDate)
+            {
+                loadedDate = earliestDate;
+            }
             UpdateDateLabel();
             if (eventsTab.Checked)
             {
