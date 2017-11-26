@@ -206,10 +206,12 @@ namespace MyUALife
             EventType type = typeSpinner.SelectedItem;
             Event resultEvent = new Event(nameText.Text, descriptionText.Text, type, startTime.Time, endTime.Time);
             Event.WriteEvent(data, MainActivity.ResultEvent, resultEvent);
-            for (int i = 0; i < weekdayCheckBoxes.Length; i++)
+            bool[] recurrences = new bool[7];
+            for (int i = 0; i < 7; i++)
             {
-                data.PutExtra(MainActivity.RecurrenceKey + i, weekdayCheckBoxes[i].Checked);
+                recurrences[i] = weekdayCheckBoxes[i].Checked;
             }
+            data.PutExtra(MainActivity.RecurrenceKey, recurrences);
             SetResult(Result.Ok, data);
             HasUnsavedChanges = false;
         }

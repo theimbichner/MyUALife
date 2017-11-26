@@ -81,7 +81,7 @@ namespace MyUALife
             eventsTab.Click += (sender, e) => UpdateEventsLayout();
             deadlinesTab.Click += (sender, e) => UpdateEventsLayout();
 
-            // Setup the date changer buttons
+            // Setup the date changer buttons to change the date
             backButton.Click += (sender, e) => ShiftDate(-1);
             forwardButton.Click += (sender, e) => ShiftDate(1);
 
@@ -112,23 +112,12 @@ namespace MyUALife
 
             if (requestCode == AddEventRequest || requestCode == EditEventRequest)
             {
-                // Add the resulting event to the calendar
-                Event resultEvent = Event.ReadEvent(data, ResultEvent);
-                if (resultEvent != null)
-                {
-                    calendar.AddEvent(resultEvent);
-                }
+                LoadResultEvent(data);
             }
             else if (requestCode == DeadlineToEventRequest)
             {
-                // Add the resulting event to the calendar
-                Event resultEvent = Event.ReadEvent(data, ResultEvent);
-                if (resultEvent != null)
-                {
-                    calendar.AddEvent(resultEvent);
-                }
-                // If no event came in, return the deadline to the calendar
-                else
+                // If the event is not found, return the deadline to the calendar
+                if (!LoadResultEvent(data))
                 {
                     Deadline resultDeadline = Deadline.ReadDeadline(data, ResultDeadline);
                     if (resultDeadline != null)
@@ -150,6 +139,47 @@ namespace MyUALife
         }
 
         /*
+         * Reads an event from the given intent, if any, and saves it to the
+         * calendar. If the intent specifies that the event should recurr,
+         * a RecurringEventGenerator will be added instead.
+         */
+        private bool LoadResultEvent(Intent intent)
+        {
+            // Add the resulting event to the calendar, if possible
+            Event resultEvent = Event.ReadEvent(intent, ResultEvent);
+            if (resultEvent == null)
+            {
+                return false;
+            }
+
+            bool[] recurrences = intent.GetBooleanArrayExtra(RecurrenceKey);
+            if (!Array.Exists(recurrences, b => b))
+            {
+                calendar.AddEvent(resultEvent);
+                return true;
+            }
+
+            DateTime now = DateTime.Now;
+            int currentDay = (int) now.DayOfWeek;
+            for (int i = 0; i < 7; i++)
+            {
+                if (!recurrences[i])
+                {
+                    continue;
+                }
+                int dayOffset = (i - currentDay + 7) % 7;
+                DateTime date = now.Date.AddDays(dayOffset);
+                DateTime start = date + resultEvent.StartTime.TimeOfDay;
+                DateTime end = date + resultEvent.EndTime.TimeOfDay;
+                Event baseEvent = new Event(resultEvent.Name, resultEvent.Description, resultEvent.Type, start, end);
+                var gen = new RecurringEventGenerator(baseEvent, new TimeSpan(7, 0, 0, 0));
+                calendar.AddEvent(baseEvent);
+                calendar.AddRecurringEvent(gen);
+            }
+            return true;
+        }
+
+        /*
          * Loads the current events or deadlines into the mainTextLayout
          */
         private void UpdateEventsLayout()
@@ -164,11 +194,17 @@ namespace MyUALife
             }
         }
 
+        /*
+         * Updates the label that displays the current date.
+         */
         private void UpdateDateLabel()
         {
             dateLabel.Text = loadedDate.ToString("D");
         }
 
+        /*
+         * Adds i days to the current selected date.
+         */
         private void ShiftDate(int i)
         {
             loadedDate = loadedDate.AddDays(i);
@@ -279,6 +315,9 @@ namespace MyUALife
             ViewUtil.LoadListToLayout(eventsLayout, deadlines, label, color, setup);
         }
 
+        /*
+         * Sends a list of free time events to the given intent.
+         */
         private void SendFreeTime(Intent intent)
         {
             List<Event> freeTimeEvents = calendar.GetFreeTimeOnDate(DateTime.Today);
@@ -289,6 +328,10 @@ namespace MyUALife
             intent.PutExtra("FreeTimeCount", freeTimeEvents.Count);
         }
 
+        /*
+         * Reads the calendar save file. If the file could be read, then the
+         * result is returned. Otherwise, the default calendar is returned.
+         */
         private Calendar InitCalendar()
         {
             Stream input = null;
@@ -310,6 +353,9 @@ namespace MyUALife
             return ret ?? Calendar.CreateDefaultCalendar();
         }
 
+        /*
+         * Saves the state of the calendar to a file.
+         */
         private void SaveCalendar()
         {
             Stream output = null;
@@ -328,16 +374,11 @@ namespace MyUALife
                 output?.Close();
             }
         }
-
-
-
-        /* Start Activities */
-
         
+        /* Start Activity Methods */
         
         /*
-         * Starts the EventEditorActivity. No event is passed to the editor, so
-         * the returned event will be wholly new.
+         * Starts the event editor with no input.
          */
         private void StartAddEventActivity()
         {
@@ -347,8 +388,7 @@ namespace MyUALife
         }
 
         /*
-         * Starts the DeadlineEditorActivity. No deadline is passed to the
-         * editor, so the returned event will be wholly new.
+         * Starts the deadline editor with no input.
          */
         private void StartAddDeadlineActivity()
         {
@@ -357,9 +397,8 @@ namespace MyUALife
         }
 
         /*
-         * Starts the editor with the given event's info as the starting values
-         * of the editor's components. The returned value will replace the
-         * given event in the calendar.
+         * Starts the event editor with the given event's properties as the
+         * default values. The given event will be replaced by the result.
          */
         private void StartEditEventActivity(Event calendarEvent)
         {
@@ -371,9 +410,9 @@ namespace MyUALife
         }
 
         /*
-         * Starts the editor with the given deadline's info as the starting
-         * values of the editor's components. The returned value will replace
-         * the given deadline in the calendar.
+         * Starts the deadline editor with the given deadline's properties as
+         * the default values. The given deadline will be replaced by the
+         * result.
          */
         private void StartEditDeadlineActivity(Deadline deadline)
         {
@@ -384,11 +423,8 @@ namespace MyUALife
         }
 
         /*
-         * Starts the event editor with the given deadline's info as the
-         * starting values of the editor's components. The editor is expected
-         * to return either a new event, or the same deadline. If there is a
-         * new event, then the deadline will be removed from the calendar.
-         * Otherwise, the deadline remains in the calendar.
+         * Starts the event editor with the given deadline's properties as the
+         * default values. The given deadline will be replaced by the result.
          */
         private void StartDeadlineToEventActivity(Deadline deadline)
         {
